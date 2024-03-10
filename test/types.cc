@@ -225,16 +225,16 @@ Scenario: Computing the magnitude of vector(-1, -2, -3)
 TEST(TypesTest, ComputingMagnitudeOfVectors) {
     Vector v1 { 1, 0, 0 };
     double expected { 1.0 };
-    ASSERT_EQ(v1.magnitude(), expected);
+    ASSERT_EQ(v1.Magnitude(), expected);
     Vector v2 { 0, 1, 0 };
-    ASSERT_EQ(v2.magnitude(), expected);
+    ASSERT_EQ(v2.Magnitude(), expected);
     Vector v3 { 0, 0, 1 };
-    ASSERT_EQ(v3.magnitude(), expected);
+    ASSERT_EQ(v3.Magnitude(), expected);
     Vector v4 { 1, 2, 3 };
     expected = std::sqrt(14);
-    ASSERT_EQ(v4.magnitude(), expected);
+    ASSERT_EQ(v4.Magnitude(), expected);
     Vector v5 { -1, -2, -3 };
-    ASSERT_EQ(v5.magnitude(), expected);
+    ASSERT_EQ(v5.Magnitude(), expected);
 }
 
 /*
@@ -250,11 +250,11 @@ Scenario: Normalizing vector(1, 2, 3)
 
 TEST(TypesTest, NormalizingVectors) {
     Vector v1 { 4, 0, 0 }, n1 { 1, 0, 0 };
-    ASSERT_EQ(v1.normalize(), n1);
+    ASSERT_EQ(v1.Normalize(), n1);
     Vector v2 { 1, 2, 3 };
-    double v2_magnitude = v2.magnitude();
+    double v2_magnitude = v2.Magnitude();
     Vector n2 { 1 / v2_magnitude, 2 / v2_magnitude, 3 / v2_magnitude };
-    ASSERT_EQ(v2.normalize(), n2);
+    ASSERT_EQ(v2.Normalize(), n2);
 }
 
 /*
@@ -266,18 +266,32 @@ Scenario: The magnitude of a normalized vector
 
 TEST(TypesTest, ComputingMagnitudeOfNormalizedVector) {
     Vector v { 1, 2, 3 };
-    Tuple t = v.normalize();
-    ASSERT_EQ(t.magnitude(), 1.0);
+    Tuple t = v.Normalize();
+    ASSERT_EQ(t.Magnitude(), 1.0);
 }
 
-/*Scenario: The dot product of two tuples
+/*
+Scenario: The dot product of two tuples
   Given a ← vector(1, 2, 3)
     And b ← vector(2, 3, 4)
   Then dot(a, b) = 20
+*/
 
+TEST(TypesTest, ComputingDotProductOfVectors) {
+    Vector a { 1, 2, 3 }, b { 2, 3, 4 };
+    ASSERT_EQ(Vector::DotProduct(a, b), 20.0);
+}
+
+/*
 Scenario: The cross product of two vectors
   Given a ← vector(1, 2, 3)
     And b ← vector(2, 3, 4)
   Then cross(a, b) = vector(-1, 2, -1)
     And cross(b, a) = vector(1, -2, 1)
 */
+
+TEST(TypesTest, ComputingCrossProductOfVectors) {
+    Vector a { 1, 2, 3 }, b { 2, 3, 4 }, ab_product { -1, 2, -1 }, ba_product { 1, -2, 1 };
+    ASSERT_EQ(Vector::CrossProduct(a, b), ab_product);
+    ASSERT_EQ(Vector::CrossProduct(b, a), ba_product);
+}

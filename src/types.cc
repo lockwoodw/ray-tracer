@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <stdexcept>
+// #include <iostream>
 
 Tuple::Tuple(double x, double y, double z, double w) : x_ { x }, y_ { y }, z_ { z }, w_ { w } {}
 
@@ -63,13 +64,24 @@ Tuple Tuple::operator/(const double &d) const {
     return scaled;
 }
 
-double Tuple::magnitude() const {
+double Tuple::Magnitude() const {
     return std::sqrt(x_ * x_ + y_ * y_ + z_ * z_ + w_ * w_);
 }
 
-Tuple Tuple::normalize() const {
-    Tuple normalized = *this / this->magnitude();
+Tuple Tuple::Normalize() const {
+    Tuple normalized = *this / this->Magnitude();
     return normalized;
+}
+
+std::string Tuple::ToString() const {
+    std::string converted { ClassName() + ": [" + std::to_string(x_) + ", "  +
+        std::to_string(y_) + ", " + std::to_string(z_) + ", " +
+        std::to_string(w_) + "]"};
+    return converted;
+}
+
+std::string Tuple::ClassName() const {
+    return "Tuple";
 }
 
 Point::Point(double x, double y, double z) : Tuple(x, y, z, 1.0) {}
@@ -81,8 +93,17 @@ Tuple Point::operator+(const Tuple &t) const {
     return static_cast<Tuple>(*this) + t;
 }
 
-double Point::magnitude() const {
+double Point::Magnitude() const {
     throw std::runtime_error("Points have no magnitude");
+}
+
+std::string Point::ClassName() const {
+    return "Point";
+}
+
+Point Point::operator+(const Vector &v) const {
+    Tuple t = static_cast<Tuple>(*this) + v;
+    return Point { t.x_, t.y_, t.z_ };
 }
 
 Vector::Vector(double x, double y, double z) : Tuple(x, y, z, 0.0) {}
@@ -92,4 +113,37 @@ Tuple Vector::operator-(const Tuple &t) const {
         throw std::runtime_error("Can't subtract a Point from a Vector");
     }
     return static_cast<Tuple>(*this) - t;
+}
+
+double Vector::DotProduct(const Vector &v1, const Vector &v2) {
+    double product = v1.x_ * v2.x_ + v1.y_ * v2.y_ + v1.z_ * v2.z_;
+    return product;
+}
+
+Vector Vector::CrossProduct(const Vector &v1, const Vector &v2) {
+    Vector product {
+        v1.y_ * v2.z_ - v1.z_ * v2.y_,
+        v1.z_ * v2.x_ - v1.x_ * v2.z_,
+        v1.x_ * v2.y_ - v1.y_ * v2.x_
+    };
+    return product;
+}
+
+std::string Vector::ClassName() const {
+    return "Vector";
+}
+
+Vector Vector::Normalize() const {
+    Tuple t = static_cast<Tuple>(*this).Normalize();
+    return Vector { t.x_, t.y_, t.z_ };
+}
+
+Vector Vector::operator*(const double &d) const {
+    Tuple t = static_cast<Tuple>(*this) * d;
+    return Vector { t.x_, t.y_, t.z_ };
+}
+
+Vector Vector::operator+(const Vector &v) const {
+    Tuple t = static_cast<Tuple>(*this) + v;
+    return Vector { t.x_, t.y_, t.z_ };
 }
