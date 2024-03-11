@@ -30,5 +30,19 @@ target_link_libraries(
 
 target_include_directories(type-test PRIVATE ../include/)
 
+add_executable(
+  matrix-test
+  ../src/utils.cc
+  ../src/matrix.cc
+  matrix.cc
+)
+
+target_link_libraries(
+  matrix-test
+  GTest::gtest_main
+)
+
+target_include_directories(matrix-test PRIVATE ../include/)
+
 include(GoogleTest)
-gtest_discover_tests(type-test)
+gtest_discover_tests(type-test matrix-test)
