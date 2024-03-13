@@ -16,6 +16,18 @@ Matrix::~Matrix() {
     delete[] m_;
 }
 
+void Matrix::SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2) {
+    for (int i = 0; i < m1.nrows_; i++) {
+        for (int j = 0; j < m2.ncolumns_; j++) {
+            double sum = 0;
+            for (int k = 0; k < m1.ncolumns_; k++) {
+                    sum += m1.m_[i][k] * m2.m_[k][j];
+            }
+            product.m_[i][j] = sum;
+        }
+    }
+}
+
 double& Matrix::At(int row, int column) {
     if (row < 0 || row >= nrows_) {
         throw std::runtime_error("Row index out of bounds");
@@ -48,17 +60,8 @@ Matrix* Matrix::operator*(const Matrix &m) const {
     if (ncolumns_ != m.nrows_) {
         throw std::runtime_error("Operand dimensions invalid for Matrix multiplication");
     }
-    int common = ncolumns_;
     Matrix *product = new Matrix(nrows_, m.ncolumns_);
-    for (int i = 0; i < nrows_; i++) {
-        for (int j = 0; j < m.ncolumns_; j++) {
-            double sum = 0;
-            for (int k = 0; k < common; k++) {
-                    sum += m_[i][k] * m.m_[k][j];
-            }
-            product->m_[i][j] = sum;
-        }
-    }
+    Matrix::SetProduct(*product, *this, m);
     return product;
 }
 
@@ -68,6 +71,12 @@ Matrix4x4::Matrix4x4(double m[4][4]): Matrix { 4, 4 } {
             m_[i][j] = m[i][j];
         }
     }
+}
+
+Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &m) const {
+    Matrix4x4 product;
+    Matrix::SetProduct(product, *this, m);
+    return product;
 }
 
 Matrix2x2::Matrix2x2(double m[2][2]): Matrix { 2, 2 } {

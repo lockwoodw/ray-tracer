@@ -92,7 +92,7 @@ TEST(MatrixTest, MatrixEqualityWithDifferentMatrices) {
     ASSERT_NE(ma, mb);
 }
 
-TEST(MatrixTest, MultiplyingTwoMatrices) {
+TEST(MatrixTest, MultiplyingTwo4x4Matrices) {
     double
         a[][4] {
             { 1, 2, 3, 4 },
@@ -106,14 +106,59 @@ TEST(MatrixTest, MultiplyingTwoMatrices) {
             { 4, 3, 6, 5 },
             { 1, 2, 7, 8 }
         },
-        a_x_b[][4] {
+        axb[][4] {
             { 20, 22, 50, 48 },
             { 44, 54, 114, 108 },
             { 40, 58, 110, 102 },
             { 16, 26, 46, 42}
         };
-    Matrix4x4 ma { a }, mb { b }, m_a_x_b { a_x_b };
+    Matrix4x4 ma { a }, mb { b }, m_axb { axb };
+    Matrix4x4 product = ma * mb;
+    ASSERT_EQ(m_axb, product);
+}
+
+TEST(MatrixTest, MultiplyingTwoMatricesWithACommonDimension) {
+    double
+        a4x2[][2] {
+            { 10, 8 },
+            { 11, 9 },
+            { -4, 42 },
+            { 12, 10 }
+        },
+        b2x3[][3] {
+            { 1, 2, 3 },
+            { 4, 5, 16 }
+        },
+        c4x3[][3] {
+            { 42, 60, 158 },
+            { 47, 67, 177 },
+            { 164, 202, 660 },
+            { 52, 74, 196 }
+        };
+    Matrix ma { 4, 2 }, mb { 2, 3 };
+    for (int i = 0; i < ma.Nrows(); i++) {
+        for (int j = 0; j < ma.Ncolumns(); j++) {
+            ma.At(i, j) = a4x2[i][j];
+        }
+    }
+    for (int i = 0; i < mb.Nrows(); i++) {
+        for (int j = 0; j < mb.Ncolumns(); j++) {
+            mb.At(i, j) = b2x3[i][j];
+        }
+    }
     Matrix *product = ma * mb;
-    ASSERT_EQ(m_a_x_b, *product);
+    for (int i = 0; i < product->Nrows(); i++) {
+        for (int j = 0; j < product->Ncolumns(); j++) {
+            ASSERT_FLOAT_EQ(product->At(i, j), c4x3[i][j]);
+        }
+    }
+    delete product;
+}
+
+TEST(MatrixTest, MultiplyingTwoMatricesWithoutACommonDimension) {
+    Matrix2x2 m2x2;
+    Matrix3x3 m3x3;
+    Matrix *product = nullptr;
+    ASSERT_ANY_THROW(product = m2x2 * m3x3);
     delete product;
 }

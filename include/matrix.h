@@ -10,6 +10,7 @@ class Matrix {
         int ncolumns_;
 
     public:
+        void static SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2);
         Matrix(int nrows, int ncolumns);
         ~Matrix();
         int Nrows() const { return nrows_; }
@@ -24,6 +25,7 @@ class Matrix4x4 : public Matrix {
     public:
         Matrix4x4(): Matrix { 4, 4 } {}
         Matrix4x4(double m[4][4]);
+        Matrix4x4 operator*(const Matrix4x4 &m) const;
 };
 
 class Matrix2x2 : public Matrix {
