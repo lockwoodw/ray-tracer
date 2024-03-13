@@ -44,6 +44,24 @@ bool Matrix::operator!=(const Matrix &m) const {
     return !(*this == m);
 }
 
+Matrix* Matrix::operator*(const Matrix &m) const {
+    if (ncolumns_ != m.nrows_) {
+        throw std::runtime_error("Operand dimensions invalid for Matrix multiplication");
+    }
+    int common = ncolumns_;
+    Matrix *product = new Matrix(nrows_, m.ncolumns_);
+    for (int i = 0; i < nrows_; i++) {
+        for (int j = 0; j < m.ncolumns_; j++) {
+            double sum = 0;
+            for (int k = 0; k < common; k++) {
+                    sum += m_[i][k] * m.m_[k][j];
+            }
+            product->m_[i][j] = sum;
+        }
+    }
+    return product;
+}
+
 Matrix4x4::Matrix4x4(double m[4][4]): Matrix { 4, 4 } {
     for (int i = 0; i < nrows_; i++) {
         for (int j = 0; j < ncolumns_; j++) {

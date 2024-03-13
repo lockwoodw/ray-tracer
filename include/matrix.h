@@ -17,6 +17,7 @@ class Matrix {
         double& At(int row, int column);
         bool operator==(const Matrix &m) const;
         bool operator!=(const Matrix &m) const;
+        Matrix* operator*(const Matrix &m) const;
 };
 
 class Matrix4x4 : public Matrix {

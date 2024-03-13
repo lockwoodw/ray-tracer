@@ -59,17 +59,17 @@ TEST(MatrixTest, ConstructingAndInspectingA3x3Matrix) {
 TEST(MatrixTest, MatrixEqualityWithIdenticalMatrices) {
     double
         a[][4] {
-        { 1, 2, 3, 4 },
-        { 5, 6, 7, 8 },
-        { 9, 8, 7, 6 },
-        { 5, 4, 3, 2 }
-    },
-        b[][4] {
-        { 1, 2, 3, 4 },
-        { 5, 6, 7, 8 },
-        { 9, 8, 7, 6 },
-        { 5, 4, 3, 2 }
-    };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 8, 7, 6 },
+            { 5, 4, 3, 2 }
+        },
+            b[][4] {
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 8, 7, 6 },
+            { 5, 4, 3, 2 }
+        };
     Matrix4x4 ma { a }, mb { b };
     ASSERT_EQ(ma, mb);
 }
@@ -77,17 +77,43 @@ TEST(MatrixTest, MatrixEqualityWithIdenticalMatrices) {
 TEST(MatrixTest, MatrixEqualityWithDifferentMatrices) {
     double
         a[][4] {
-        { 1, 2, 3, 4 },
-        { 5, 6, 7, 8 },
-        { 9, 8, 7, 6 },
-        { 5, 4, 3, 2 }
-    },
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 8, 7, 6 },
+            { 5, 4, 3, 2 }
+        },
         b[][4] {
-        { 1, 2, 3, 4 },
-        { 5, 6, 7, 8 },
-        { 9, 8, 7, 6 },
-        { 5, 4, 0, 2 }
-    };
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 8, 7, 6 },
+            { 5, 4, 0, 2 }
+        };
     Matrix4x4 ma { a }, mb { b };
     ASSERT_NE(ma, mb);
+}
+
+TEST(MatrixTest, MultiplyingTwoMatrices) {
+    double
+        a[][4] {
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 8, 7, 6 },
+            { 5, 4, 3, 2 }
+        },
+        b[][4] {
+            { -2, 1, 2, 3 },
+            { 3, 2, 1, -1 },
+            { 4, 3, 6, 5 },
+            { 1, 2, 7, 8 }
+        },
+        a_x_b[][4] {
+            { 20, 22, 50, 48 },
+            { 44, 54, 114, 108 },
+            { 40, 58, 110, 102 },
+            { 16, 26, 46, 42}
+        };
+    Matrix4x4 ma { a }, mb { b }, m_a_x_b { a_x_b };
+    Matrix *product = ma * mb;
+    ASSERT_EQ(m_a_x_b, *product);
+    delete product;
 }
