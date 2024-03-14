@@ -31,18 +31,18 @@ target_link_libraries(
 target_include_directories(utils-test PRIVATE ../include/)
 
 add_executable(
-  type-test
+  tuple-test
   ../src/utils.cc
-  ../src/types.cc
-  types.cc
+  ../src/tuple.cc
+  tuple.cc
 )
 
 target_link_libraries(
-  type-test
+  tuple-test
   GTest::gtest_main
 )
 
-target_include_directories(type-test PRIVATE ../include/)
+target_include_directories(tuple-test PRIVATE ../include/)
 
 add_executable(
   matrix-test
@@ -59,4 +59,4 @@ target_link_libraries(
 target_include_directories(matrix-test PRIVATE ../include/)
 
 include(GoogleTest)
-gtest_discover_tests(utils-test type-test matrix-test)
+gtest_discover_tests(utils-test tuple-test matrix-test)

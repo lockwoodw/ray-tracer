@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "types.h"
+#include "tuple.h"
 #include <cmath>
 
 TEST(TypesTest, EqualityOperator) {

@@ -1,6 +1,6 @@
 #include <cmath>
 #include <stdexcept>
-#include "types.h"
+#include "tuple.h"
 #include "utils.h"
 
 Tuple::Tuple(double x, double y, double z, double w) : x_ { x }, y_ { y }, z_ { z }, w_ { w } {}
