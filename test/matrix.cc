@@ -174,3 +174,20 @@ TEST(MatrixTest, MultiplyingAMatrixByATuple) {
     Tuple b { 1, 2, 3, 1 }, expected { 18, 24, 33, 1 };
     ASSERT_EQ(ma * b, expected);
 }
+
+TEST(MatrixTest, AccessingAMatrixValueByOperator) {
+    double data[][3] {
+        { -3, 5, 0 },
+        { 1, -2, -7 },
+        { 0, 1, 1}
+    };
+    Matrix3x3 m { data };
+    ASSERT_FLOAT_EQ(m[0][0], data[0][0]);
+    ASSERT_FLOAT_EQ(m[1][2], data[1][2]);
+    ASSERT_FLOAT_EQ(m[2][1], data[2][1]);
+    // Try setting by indexing operator
+    double new_value = 42.0;
+    m[2][0] = new_value;
+    ASSERT_NE(m[2][0], data[2][0]);
+    ASSERT_FLOAT_EQ(m[2][0], new_value);
+}

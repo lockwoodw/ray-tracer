@@ -38,6 +38,13 @@ double& Matrix::At(int row, int column) {
     return m_[row][column];
 }
 
+double* Matrix::operator[](int row) {
+    if (row < 0 || row >= nrows_) {
+        throw std::runtime_error("Row index out of bounds");
+    }
+    return m_[row];
+}
+
 bool Matrix::operator==(const Matrix &m) const {
     if (nrows_ != m.nrows_ || ncolumns_ != m.ncolumns_) {
         return false;
