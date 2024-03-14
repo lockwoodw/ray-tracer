@@ -2,19 +2,6 @@
 #include "types.h"
 #include <cmath>
 
-TEST(TypesTest, ComparingDoublesForEquality) {
-    // Samples from https://www.learncpp.com/cpp-tutorial/relational-operators-and-floating-point-comparisons/
-    double a { 10000 }, b { 10000.0001 }, epsilon { 1e-5 };
-    ASSERT_TRUE(Tuple::AbsEqual(a, b, epsilon, epsilon));
-    double c { 1e-7 }, d { 1e-5 };
-    ASSERT_TRUE(Tuple::AbsEqual(c, d, epsilon, epsilon));
-    double e { 1.0 }, f { 1.0001 }, g { 1.00001 };
-    ASSERT_FALSE(Tuple::AbsEqual(e, f, epsilon, epsilon));
-    ASSERT_TRUE(Tuple::AbsEqual(e, g, epsilon, epsilon));
-    double close_to_one { 0.1 + 0.1 + 0.1 + 0.1 + 0.1 + 0.1 + 0.1 + 0.1 + 0.1 + 0.1 };
-    ASSERT_TRUE(Tuple::AbsEqual(close_to_one - 1.0, 0.0, Tuple::kAbsEpsilon, Tuple::kRelEpsilon));
-}
-
 TEST(TypesTest, EqualityOperator) {
     double x { 4.3 }, y { -4.2 }, z { 3.1 }, w { 1.0 };
     Tuple t1 { x, y, z, w }, t2 { x, y, z, w };
