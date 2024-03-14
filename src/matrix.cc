@@ -53,7 +53,7 @@ bool Matrix::operator==(const Matrix &m) const {
 }
 
 bool Matrix::operator!=(const Matrix &m) const {
-    return !(*this == m);
+    return ! operator==(m);
 }
 
 Matrix* Matrix::operator*(const Matrix &m) const {

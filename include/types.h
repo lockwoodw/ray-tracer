@@ -5,11 +5,6 @@
 
 class Tuple {
     public:
-        static const double kAbsEpsilon;
-        static const double kRelEpsilon;
-        static bool RelEqual(double, double, double);
-        static bool AbsEqual(double, double, double, double);
-
         Tuple(double x, double y, double z, double w);
         bool operator==(const Tuple &t) const;
         bool operator!=(const Tuple &t) const;
@@ -21,7 +16,6 @@ class Tuple {
         double Magnitude() const;
         Tuple Normalize() const;
         std::string ToString() const;
-        virtual std::string ClassName() const;
 
         double x_;
         double y_;
@@ -35,7 +29,6 @@ class Vector : public Tuple {
         static Vector CrossProduct(const Vector &v1, const Vector &v2);
         Vector(double x, double y, double z);
         Tuple operator-(const Tuple &t) const;
-        std::string ClassName() const;
         Vector Normalize() const;
         Vector operator*(const double &d) const;
         Vector operator+(const Vector &v) const;
@@ -47,7 +40,6 @@ class Point : public Tuple {
         Tuple operator+(const Tuple &v) const;
         Point operator+(const Vector &v) const;
         double Magnitude() const;
-        std::string ClassName() const;
 };
 
 #endif

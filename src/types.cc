@@ -1,35 +1,15 @@
-#include "types.h"
-#include <algorithm>
 #include <cmath>
 #include <stdexcept>
-// #include <iostream>
+#include "types.h"
+#include "utils.h"
 
 Tuple::Tuple(double x, double y, double z, double w) : x_ { x }, y_ { y }, z_ { z }, w_ { w } {}
 
-// Use combination of regular-epsilon and Donald Knuth's scaled-epsilon method to
-// test equality of doubles;
-// see https://www.learncpp.com/cpp-tutorial/relational-operators-and-floating-point-comparisons/
-
-const double Tuple::Tuple::kAbsEpsilon = 1e-12;
-const double Tuple::Tuple::kRelEpsilon = 1e-8;
-
-bool Tuple::RelEqual(double a, double b, double rel_epsilon) {
-    return (std::abs(a - b) <= (std::max(std::abs(a), std::abs(b)) * rel_epsilon));
-}
-
-bool Tuple::AbsEqual(double a, double b, double abs_epsilon, double rel_epsilon) {
-    // if the numbers are close, use the regular epsilon method
-    if (std::abs(a - b) <= abs_epsilon)
-        return true;
-    // otherwise use Knuth's scaled approach
-    return Tuple::RelEqual(a, b, rel_epsilon);
-}
-
 bool Tuple::operator==(const Tuple &t) const {
-    return Tuple::AbsEqual(x_, t.x_, Tuple::kAbsEpsilon, Tuple::kRelEpsilon)
-        && Tuple::AbsEqual(y_, t.y_, Tuple::kAbsEpsilon, Tuple::kRelEpsilon)
-        && Tuple::AbsEqual(z_, t.z_, Tuple::kAbsEpsilon, Tuple::kRelEpsilon)
-        && Tuple::AbsEqual(w_, t.w_, Tuple::kAbsEpsilon, Tuple::kRelEpsilon);
+    return floating_point_compare(x_, t.x_)
+        && floating_point_compare(y_, t.y_)
+        && floating_point_compare(z_, t.z_)
+        && floating_point_compare(w_, t.w_);
 }
 
 bool Tuple::operator!=(const Tuple &t) const {
@@ -74,14 +54,9 @@ Tuple Tuple::Normalize() const {
 }
 
 std::string Tuple::ToString() const {
-    std::string converted { ClassName() + ": [" + std::to_string(x_) + ", "  +
+    return "[" + std::to_string(x_) + ", "  +
         std::to_string(y_) + ", " + std::to_string(z_) + ", " +
-        std::to_string(w_) + "]"};
-    return converted;
-}
-
-std::string Tuple::ClassName() const {
-    return "Tuple";
+        std::to_string(w_) + "]";
 }
 
 Point::Point(double x, double y, double z) : Tuple(x, y, z, 1.0) {}
@@ -95,10 +70,6 @@ Tuple Point::operator+(const Tuple &t) const {
 
 double Point::Magnitude() const {
     throw std::runtime_error("Points have no magnitude");
-}
-
-std::string Point::ClassName() const {
-    return "Point";
 }
 
 Point Point::operator+(const Vector &v) const {
@@ -127,10 +98,6 @@ Vector Vector::CrossProduct(const Vector &v1, const Vector &v2) {
         v1.x_ * v2.y_ - v1.y_ * v2.x_
     };
     return product;
-}
-
-std::string Vector::ClassName() const {
-    return "Vector";
 }
 
 Vector Vector::Normalize() const {
