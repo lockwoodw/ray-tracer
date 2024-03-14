@@ -162,3 +162,15 @@ TEST(MatrixTest, MultiplyingTwoMatricesWithoutACommonDimension) {
     ASSERT_ANY_THROW(product = m2x2 * m3x3);
     delete product;
 }
+
+TEST(MatrixTest, MultiplyingAMatrixByATuple) {
+    double a[][4] {
+        { 1, 2, 3, 4 },
+        { 2, 4, 4, 2 },
+        { 8, 6, 4, 1 },
+        { 0, 0, 0, 1 }
+    };
+    Matrix4x4 ma { a };
+    Tuple b { 1, 2, 3, 1 }, expected { 18, 24, 33, 1 };
+    ASSERT_EQ(ma * b, expected);
+}

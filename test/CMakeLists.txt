@@ -47,6 +47,7 @@ target_include_directories(tuple-test PRIVATE ../include/)
 add_executable(
   matrix-test
   ../src/utils.cc
+  ../src/tuple.cc
   ../src/matrix.cc
   matrix.cc
 )

@@ -65,6 +65,13 @@ Matrix* Matrix::operator*(const Matrix &m) const {
     return product;
 }
 
+Matrix4x1::Matrix4x1(const Tuple &t): Matrix { 4, 1 } {
+    m_[0][0] = t.x_;
+    m_[1][0] = t.y_;
+    m_[2][0] = t.z_;
+    m_[3][0] = t.w_;
+}
+
 Matrix4x4::Matrix4x4(double m[4][4]): Matrix { 4, 4 } {
     for (int i = 0; i < nrows_; i++) {
         for (int j = 0; j < ncolumns_; j++) {
@@ -77,6 +84,12 @@ Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &m) const {
     Matrix4x4 product;
     Matrix::SetProduct(product, *this, m);
     return product;
+}
+
+Tuple Matrix4x4::operator*(const Tuple &t) const {
+    Matrix4x1 tuple { t }, product;
+    Matrix::SetProduct(product, *this, tuple);
+    return Tuple { product.m_[0][0], product.m_[1][0], product.m_[2][0], product.m_[3][0] };
 }
 
 Matrix2x2::Matrix2x2(double m[2][2]): Matrix { 2, 2 } {
