@@ -1,4 +1,5 @@
 #include <stdexcept>
+#include <cstring> // memset
 #include "matrix.h"
 #include "utils.h"
 
@@ -6,6 +7,8 @@ Matrix::Matrix(int nrows, int ncolumns) : nrows_ { nrows }, ncolumns_ { ncolumns
     m_ = new double*[nrows_];
     for (int i = 0; i < nrows_; i++) {
         m_[i] = new double[ncolumns_];
+        // initialize all values to zero
+        memset(m_[i], 0, ncolumns_ * sizeof(double));
     }
 }
 
@@ -63,13 +66,34 @@ bool Matrix::operator!=(const Matrix &m) const {
     return ! operator==(m);
 }
 
-Matrix* Matrix::operator*(const Matrix &m) const {
+Matrix Matrix::operator*(const Matrix &m) const {
     if (ncolumns_ != m.nrows_) {
         throw std::runtime_error("Operand dimensions invalid for Matrix multiplication");
     }
-    Matrix *product = new Matrix(nrows_, m.ncolumns_);
-    Matrix::SetProduct(*product, *this, m);
+    Matrix product { nrows_, m.ncolumns_ };
+    Matrix::SetProduct(product, *this, m);
     return product;
+}
+
+const Matrix Matrix::Identity() const {
+    if (nrows_ != ncolumns_) {
+        throw std::runtime_error("Cannot generate Identity matrix");
+    }
+    Matrix identity { nrows_, ncolumns_ };
+    for (int i = 0; i < nrows_; i++) {
+        identity.m_[i][i] = 1;
+    }
+    return identity;
+}
+
+std::ostream& operator<<(std::ostream& os, const Matrix& m) {
+    for (int i = 0; i < m.nrows_; i++) {
+        for (int j = 0; j < m.ncolumns_; j++) {
+            os << (j > 0 ? "\t" : "") << m.m_[i][j];
+        }
+        os << std::endl;
+    }
+    return os;
 }
 
 Matrix4x1::Matrix4x1(const Tuple &t): Matrix { 4, 1 } {
@@ -87,17 +111,11 @@ Matrix4x4::Matrix4x4(double m[4][4]): Matrix { 4, 4 } {
     }
 }
 
-Matrix4x4 Matrix4x4::operator*(const Matrix4x4 &m) const {
-    Matrix4x4 product;
-    Matrix::SetProduct(product, *this, m);
-    return product;
-}
-
-Tuple Matrix4x4::operator*(const Tuple &t) const {
-    Matrix4x1 tuple { t }, product;
-    Matrix::SetProduct(product, *this, tuple);
-    return Tuple { product.m_[0][0], product.m_[1][0], product.m_[2][0], product.m_[3][0] };
-}
+// Tuple Matrix4x4::operator*(const Tuple &t) const {
+//     Matrix4x1 tuple { t }, product;
+//     Matrix::SetProduct(product, *this, tuple);
+//     return Tuple { product.m_[0][0], product.m_[1][0], product.m_[2][0], product.m_[3][0] };
+// }
 
 Matrix2x2::Matrix2x2(double m[2][2]): Matrix { 2, 2 } {
     for (int i = 0; i < nrows_; i++) {

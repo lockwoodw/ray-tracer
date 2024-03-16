@@ -2,6 +2,7 @@
 #define RAY_TRACER_MATRIX_H
 
 #include <cstddef>
+#include <iostream>
 #include "tuple.h"
 
 class Matrix {
@@ -20,15 +21,17 @@ class Matrix {
         double* operator[](int row);
         bool operator==(const Matrix &m) const;
         bool operator!=(const Matrix &m) const;
-        Matrix* operator*(const Matrix &m) const;
+        Matrix operator*(const Matrix &m) const;
+        const Matrix Identity() const;
+
+        friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
 };
 
 class Matrix4x4 : public Matrix {
     public:
         Matrix4x4(): Matrix { 4, 4 } {}
         Matrix4x4(double m[4][4]);
-        Matrix4x4 operator*(const Matrix4x4 &m) const;
-        Tuple operator*(const Tuple &t) const;
+        // Tuple operator*(const Tuple &t) const;
 };
 
 class Matrix4x1 : public Matrix {

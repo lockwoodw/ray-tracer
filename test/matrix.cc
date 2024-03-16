@@ -113,7 +113,7 @@ TEST(MatrixTest, MultiplyingTwo4x4Matrices) {
             { 16, 26, 46, 42}
         };
     Matrix4x4 ma { a }, mb { b }, m_axb { axb };
-    Matrix4x4 product = ma * mb;
+    Matrix product = ma * mb;
     ASSERT_EQ(m_axb, product);
 }
 
@@ -146,21 +146,18 @@ TEST(MatrixTest, MultiplyingTwoMatricesWithACommonDimension) {
             mb.At(i, j) = b2x3[i][j];
         }
     }
-    Matrix *product = ma * mb;
-    for (int i = 0; i < product->Nrows(); i++) {
-        for (int j = 0; j < product->Ncolumns(); j++) {
-            ASSERT_FLOAT_EQ(product->At(i, j), c4x3[i][j]);
+    Matrix product = ma * mb;
+    for (int i = 0; i < product.Nrows(); i++) {
+        for (int j = 0; j < product.Ncolumns(); j++) {
+            ASSERT_FLOAT_EQ(product.At(i, j), c4x3[i][j]);
         }
     }
-    delete product;
 }
 
 TEST(MatrixTest, MultiplyingTwoMatricesWithoutACommonDimension) {
     Matrix2x2 m2x2;
     Matrix3x3 m3x3;
-    Matrix *product = nullptr;
-    ASSERT_ANY_THROW(product = m2x2 * m3x3);
-    delete product;
+    ASSERT_ANY_THROW(m2x2 * m3x3);
 }
 
 TEST(MatrixTest, MultiplyingAMatrixByATuple) {
@@ -172,7 +169,8 @@ TEST(MatrixTest, MultiplyingAMatrixByATuple) {
     };
     Matrix4x4 ma { a };
     Tuple b { 1, 2, 3, 1 }, expected { 18, 24, 33, 1 };
-    ASSERT_EQ(ma * b, expected);
+    Matrix product = ma * Matrix4x1 { b };
+    ASSERT_EQ(product, Matrix4x1 { expected });
 }
 
 TEST(MatrixTest, AccessingAMatrixValueByOperator) {
@@ -190,4 +188,22 @@ TEST(MatrixTest, AccessingAMatrixValueByOperator) {
     m[2][0] = new_value;
     ASSERT_NE(m[2][0], data[2][0]);
     ASSERT_FLOAT_EQ(m[2][0], new_value);
+}
+
+TEST(MatrixTest, GeneratingIdentityMatrix) {
+    double
+        a[][4] {
+            { 1, 2, 3, 4 },
+            { 2, 4, 4, 2 },
+            { 8, 6, 4, 1 },
+            { 0, 0, 0, 1 }
+        },
+        id[][4] {
+            { 1, 0, 0, 0 },
+            { 0, 1, 0, 0 },
+            { 0, 0, 1, 0 },
+            { 0, 0, 0, 1 }
+    };
+    Matrix4x4 ma { a }, expected { id };
+    ASSERT_EQ(ma.Identity(), expected);
 }
