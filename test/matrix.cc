@@ -168,9 +168,9 @@ TEST(MatrixTest, MultiplyingAMatrixByATuple) {
         { 0, 0, 0, 1 }
     };
     Matrix4x4 ma { a };
-    Tuple b { 1, 2, 3, 1 }, expected { 18, 24, 33, 1 };
-    Matrix product = ma * Matrix4x1 { b };
-    ASSERT_EQ(product, Matrix4x1 { expected });
+    Tuple b { 1, 2, 3, 1 }, expected { 18, 24, 33, 1 },
+        product = ma * b;
+    ASSERT_EQ(product, expected);
 }
 
 TEST(MatrixTest, AccessingAMatrixValueByOperator) {
@@ -191,19 +191,122 @@ TEST(MatrixTest, AccessingAMatrixValueByOperator) {
 }
 
 TEST(MatrixTest, GeneratingIdentityMatrix) {
+    double id[][4] {
+        { 1, 0, 0, 0 },
+        { 0, 1, 0, 0 },
+        { 0, 0, 1, 0 },
+        { 0, 0, 0, 1 }
+    };
+    Matrix4x4 expected { id };
+    ASSERT_EQ(Matrix::Identity(expected.Nrows()), expected);
+}
+
+TEST(MatrixTest, MultiplyingAMatrixByTheIdentityMatrix) {
+    double a[][4] {
+        { 0, 1, 2, 4 },
+        { 1, 2, 4, 8 },
+        { 2, 4, 8, 16 },
+        { 4, 8, 16, 32 }
+    };
+    Matrix4x4 ma { a };
+    Matrix id = Matrix::Identity(ma.Nrows());
+    ASSERT_EQ(id * ma, ma);
+}
+
+TEST(MatrixTest, MultiplyingTheIdentityMatrixByTuple) {
+    Tuple a { 1, 2, 3, 4 };
+    Matrix id = Matrix::Identity(4);
+    ASSERT_EQ(id * a, a);
+}
+
+TEST(MatrixTest, TransposingAMatrix) {
     double
         a[][4] {
-            { 1, 2, 3, 4 },
-            { 2, 4, 4, 2 },
-            { 8, 6, 4, 1 },
-            { 0, 0, 0, 1 }
+            { 0, 9, 3, 0 },
+            { 9, 8, 0, 8 },
+            { 1, 8, 5, 3 },
+            { 0, 0, 5, 8 }
         },
-        id[][4] {
-            { 1, 0, 0, 0 },
-            { 0, 1, 0, 0 },
-            { 0, 0, 1, 0 },
-            { 0, 0, 0, 1 }
+        b[][4] {
+            { 0, 9, 1, 0 },
+            { 9, 8, 8, 0 },
+            { 3, 0, 5, 5 },
+            { 0, 8, 3, 8 }
+        };
+    Matrix4x4 ma { a }, expected { b };
+    ASSERT_EQ(ma.Transpose(), expected);
+}
+
+TEST(MatrixTest, TransposingTheIdentityMatrix) {
+    Matrix id = Matrix::Identity(4);
+    ASSERT_EQ(id.Transpose(), id);
+}
+
+TEST(MatrixTest, TransposingAnAsymmetricMatrix) {
+    double
+        a[][2] {
+            { 10, 8 },
+            { 11, 9 },
+            { -4, 42 },
+            { 12, 10 }
+        },
+        b[][4] {
+            { 10, 11, -4, 12 },
+            { 8, 9, 42, 10 }
+        };
+    Matrix ma { 4, 2 }, mb { 2, 4 };
+    for (int i = 0; i < ma.Nrows(); i++) {
+        for (int j = 0; j < ma.Ncolumns(); j++) {
+            ma[i][j] = a[i][j];
+        }
+    }
+    for (int i = 0; i < mb.Nrows(); i++) {
+        for (int j = 0; j < mb.Ncolumns(); j++) {
+            mb[i][j] = b[i][j];
+        }
+    }
+    ASSERT_EQ(ma.Transpose(), mb);
+}
+
+TEST(MatrixTest, GeneratingDeterminantOfA2x2Matrix) {
+    double a[][2] {
+        { 1, 5 },
+        { -3, 2 }
     };
-    Matrix4x4 ma { a }, expected { id };
-    ASSERT_EQ(ma.Identity(), expected);
+    Matrix2x2 ma { a };
+    ASSERT_DOUBLE_EQ(ma.Determinant(), 17);
+}
+
+TEST(MatrixTest, GeneratingSubmatrixOfA3x3Matrix) {
+    double
+        a[][3] {
+            { 1, 5, 0 },
+            { -3, 2, 7 },
+            { 0, 6, -3 }
+        },
+        b[][2] {
+            { -3, 2 },
+            { 0, 6 }
+        };
+    Matrix3x3 ma { a };
+    Matrix2x2 mb { b };
+    ASSERT_EQ(ma.Submatrix(0, 2), mb);
+}
+
+TEST(MatrixTest, GeneratingSubmatrixOfA4x4Matrix) {
+    double
+        a[][4] {
+            { -6, 1, 1, 6 },
+            { -8, 5, 8, 6 },
+            { -1, 0, 8, 2 },
+            { -7, 1, -1, 1 }
+        },
+        b[][3] {
+            { -6, 1, 6 },
+            { -8, 8, 6 },
+            { -7, -1, 1 }
+        };
+    Matrix4x4 ma { a };
+    Matrix3x3 mb { b };
+    ASSERT_EQ(ma.Submatrix(2, 1), mb);
 }

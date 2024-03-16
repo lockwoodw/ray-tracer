@@ -13,6 +13,7 @@ class Matrix {
 
     public:
         void static SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2);
+        const static Matrix Identity(int size);
         Matrix(int nrows, int ncolumns);
         ~Matrix();
         int Nrows() const { return nrows_; }
@@ -21,9 +22,11 @@ class Matrix {
         double* operator[](int row);
         bool operator==(const Matrix &m) const;
         bool operator!=(const Matrix &m) const;
-        Matrix operator*(const Matrix &m) const;
-        const Matrix Identity() const;
+        const Matrix operator*(const Matrix &m) const;
+        Matrix Transpose() const;
+        Matrix Submatrix(int row, int column) const;
 
+        friend const Tuple operator*(const Matrix& m, const Tuple &t);
         friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
 };
 
@@ -31,7 +34,6 @@ class Matrix4x4 : public Matrix {
     public:
         Matrix4x4(): Matrix { 4, 4 } {}
         Matrix4x4(double m[4][4]);
-        // Tuple operator*(const Tuple &t) const;
 };
 
 class Matrix4x1 : public Matrix {
@@ -45,6 +47,9 @@ class Matrix2x2 : public Matrix {
     public:
         Matrix2x2(): Matrix { 2, 2 } {}
         Matrix2x2(double m[2][2]);
+        double Determinant() const {
+            return m_[0][0] * m_[1][1] - m_[1][0] * m_[0][1];
+        }
 };
 
 class Matrix3x3 : public Matrix {

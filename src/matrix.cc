@@ -31,6 +31,14 @@ void Matrix::SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2) {
     }
 }
 
+const Matrix Matrix::Identity(int size) {
+    Matrix identity { size, size };
+    for (int i = 0; i < size; i++) {
+        identity.m_[i][i] = 1;
+    }
+    return identity;
+}
+
 double& Matrix::At(int row, int column) {
     if (row < 0 || row >= nrows_) {
         throw std::runtime_error("Row index out of bounds");
@@ -66,7 +74,7 @@ bool Matrix::operator!=(const Matrix &m) const {
     return ! operator==(m);
 }
 
-Matrix Matrix::operator*(const Matrix &m) const {
+Matrix const Matrix::operator*(const Matrix &m) const {
     if (ncolumns_ != m.nrows_) {
         throw std::runtime_error("Operand dimensions invalid for Matrix multiplication");
     }
@@ -75,15 +83,50 @@ Matrix Matrix::operator*(const Matrix &m) const {
     return product;
 }
 
-const Matrix Matrix::Identity() const {
-    if (nrows_ != ncolumns_) {
-        throw std::runtime_error("Cannot generate Identity matrix");
-    }
-    Matrix identity { nrows_, ncolumns_ };
+Matrix Matrix::Transpose() const {
+    Matrix transposed { ncolumns_, nrows_ };
     for (int i = 0; i < nrows_; i++) {
-        identity.m_[i][i] = 1;
+        for (int j = 0; j < ncolumns_; j++) {
+            transposed.m_[j][i] = m_[i][j];
+        }
     }
-    return identity;
+    return transposed;
+}
+
+// Returns a copy of the matrix with the given row and column removed
+Matrix Matrix::Submatrix(int row, int column) const {
+    if (nrows_ < 2 || ncolumns_ < 2) {
+        throw std::runtime_error("Submatrix does not exist");
+    }
+    if (row < 0 || row >= nrows_) {
+        throw std::runtime_error("Row index out of bounds");
+    }
+    if (column < 0 || column >= ncolumns_) {
+        throw std::runtime_error("Column index out of bounds");
+    }
+    Matrix submatrix { nrows_ - 1, ncolumns_ - 1 };
+    int r = 0, c;
+    for (int i = 0; i < nrows_; i++) {
+        if (i == row) {
+            continue;
+        }
+        c = 0;
+        for (int j = 0; j < ncolumns_; j++) {
+            if (j == column) {
+                continue;
+            }
+            submatrix.m_[r][c] = m_[i][j];
+            c++;
+        }
+        r++;
+    }
+    return submatrix;
+}
+
+const Tuple operator*(const Matrix& m, const Tuple &t) {
+    Matrix4x1 tuple { t }, product;
+    Matrix::SetProduct(product, m, tuple);
+    return Tuple { product[0][0], product[1][0], product[2][0], product[3][0] };
 }
 
 std::ostream& operator<<(std::ostream& os, const Matrix& m) {
@@ -110,12 +153,6 @@ Matrix4x4::Matrix4x4(double m[4][4]): Matrix { 4, 4 } {
         }
     }
 }
-
-// Tuple Matrix4x4::operator*(const Tuple &t) const {
-//     Matrix4x1 tuple { t }, product;
-//     Matrix::SetProduct(product, *this, tuple);
-//     return Tuple { product.m_[0][0], product.m_[1][0], product.m_[2][0], product.m_[3][0] };
-// }
 
 Matrix2x2::Matrix2x2(double m[2][2]): Matrix { 2, 2 } {
     for (int i = 0; i < nrows_; i++) {
