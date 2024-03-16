@@ -39,7 +39,7 @@ const Matrix Matrix::Identity(int size) {
     return identity;
 }
 
-double& Matrix::At(int row, int column) {
+double Matrix::At(int row, int column) const {
     if (row < 0 || row >= nrows_) {
         throw std::runtime_error("Row index out of bounds");
     }
@@ -123,6 +123,43 @@ Matrix Matrix::Submatrix(int row, int column) const {
     return submatrix;
 }
 
+// Conversion constructor required for Submatrix()
+SquareMatrix::SquareMatrix(const Matrix& m): Matrix { m.Nrows(), m.Nrows() } {
+    if (m.Ncolumns() < nrows_) {
+        throw std::runtime_error("Cannot convert to square matrix");
+    }
+    for (int i = 0; i < nrows_; i++) {
+        for (int j = 0; j < ncolumns_; j++) {
+            m_[i][j] = m.At(i, j);
+        }
+    }
+}
+
+// The minor of an element at (i, j) is the determinant of the
+// submatrix(i, j)
+double SquareMatrix::Minor(int row, int column) const {
+    SquareMatrix submatrix = Submatrix(row, column);
+    return submatrix.Determinant();
+}
+
+double SquareMatrix::Cofactor(int row, int column) const {
+    int sign = (row + column) % 2 == 0 ? 1 : -1;
+    return Minor(row, column) * sign;
+}
+
+double SquareMatrix::Determinant() const {
+    if (nrows_ == 2) {
+        // By definition:
+        return m_[0][0] * m_[1][1] - m_[1][0] * m_[0][1];
+    }
+    // Choose first row: sum the products of each element and its cofactor
+    double determinant = 0;
+    for (int j = 0; j < ncolumns_; j++) {
+        determinant += m_[0][j] * Cofactor(0, j);
+    }
+    return determinant;
+}
+
 const Tuple operator*(const Matrix& m, const Tuple &t) {
     Matrix4x1 tuple { t }, product;
     Matrix::SetProduct(product, m, tuple);
@@ -146,7 +183,7 @@ Matrix4x1::Matrix4x1(const Tuple &t): Matrix { 4, 1 } {
     m_[3][0] = t.w_;
 }
 
-Matrix4x4::Matrix4x4(double m[4][4]): Matrix { 4, 4 } {
+Matrix4x4::Matrix4x4(double m[4][4]): SquareMatrix { 4 } {
     for (int i = 0; i < nrows_; i++) {
         for (int j = 0; j < ncolumns_; j++) {
             m_[i][j] = m[i][j];
@@ -154,7 +191,7 @@ Matrix4x4::Matrix4x4(double m[4][4]): Matrix { 4, 4 } {
     }
 }
 
-Matrix2x2::Matrix2x2(double m[2][2]): Matrix { 2, 2 } {
+Matrix2x2::Matrix2x2(double m[2][2]): SquareMatrix { 2 } {
     for (int i = 0; i < nrows_; i++) {
         for (int j = 0; j < ncolumns_; j++) {
             m_[i][j] = m[i][j];
@@ -162,7 +199,7 @@ Matrix2x2::Matrix2x2(double m[2][2]): Matrix { 2, 2 } {
     }
 }
 
-Matrix3x3::Matrix3x3(double m[3][3]): Matrix { 3, 3 } {
+Matrix3x3::Matrix3x3(double m[3][3]): SquareMatrix { 3 } {
     for (int i = 0; i < nrows_; i++) {
         for (int j = 0; j < ncolumns_; j++) {
             m_[i][j] = m[i][j];

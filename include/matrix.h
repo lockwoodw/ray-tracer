@@ -14,11 +14,13 @@ class Matrix {
     public:
         void static SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2);
         const static Matrix Identity(int size);
+
         Matrix(int nrows, int ncolumns);
         ~Matrix();
+
         int Nrows() const { return nrows_; }
         int Ncolumns() const { return ncolumns_; }
-        double& At(int row, int column);
+        double At(int row, int column) const;
         double* operator[](int row);
         bool operator==(const Matrix &m) const;
         bool operator!=(const Matrix &m) const;
@@ -30,9 +32,19 @@ class Matrix {
         friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
 };
 
-class Matrix4x4 : public Matrix {
+class SquareMatrix : public Matrix {
     public:
-        Matrix4x4(): Matrix { 4, 4 } {}
+        SquareMatrix(int size): Matrix { size, size } {}
+        SquareMatrix(const Matrix& m);
+
+        double Minor(int row, int column) const;
+        double Cofactor(int row, int column) const;
+        double Determinant() const;
+};
+
+class Matrix4x4 : public SquareMatrix {
+    public:
+        Matrix4x4(): SquareMatrix { 4 } {}
         Matrix4x4(double m[4][4]);
 };
 
@@ -43,18 +55,15 @@ class Matrix4x1 : public Matrix {
         friend Matrix4x4;
 };
 
-class Matrix2x2 : public Matrix {
+class Matrix2x2 : public SquareMatrix {
     public:
-        Matrix2x2(): Matrix { 2, 2 } {}
+        Matrix2x2(): SquareMatrix { 2 } {}
         Matrix2x2(double m[2][2]);
-        double Determinant() const {
-            return m_[0][0] * m_[1][1] - m_[1][0] * m_[0][1];
-        }
 };
 
-class Matrix3x3 : public Matrix {
+class Matrix3x3 : public SquareMatrix {
     public:
-        Matrix3x3(): Matrix { 3, 3 } {}
+        Matrix3x3(): SquareMatrix { 3 } {}
         Matrix3x3(double m[3][3]);
 };
 

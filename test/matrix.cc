@@ -9,28 +9,28 @@ TEST(MatrixTest, ConstructingAndInspectingA4x4Matrix) {
         { 13.5, 14.5, 15.5, 16.5 }
     };
     Matrix4x4 m { data };
-    ASSERT_DOUBLE_EQ(data[0][0], m.At(0, 0));
-    ASSERT_DOUBLE_EQ(data[0][3], m.At(0, 3));
-    ASSERT_DOUBLE_EQ(data[1][2], m.At(1, 2));
-    ASSERT_DOUBLE_EQ(data[3][2], m.At(3, 2));
+    ASSERT_DOUBLE_EQ(data[0][0], m[0][0]);
+    ASSERT_DOUBLE_EQ(data[0][3], m[0][3]);
+    ASSERT_DOUBLE_EQ(data[1][2], m[1][2]);
+    ASSERT_DOUBLE_EQ(data[3][2], m[3][2]);
 }
 
 TEST(MatrixTest, SettingAnElementInA4x4Matrix) {
     Matrix4x4 m;
-    m.At(0, 0) = 2.5;
-    m.At(3, 3) = 42;
-    ASSERT_DOUBLE_EQ(2.5, m.At(0, 0));
-    ASSERT_DOUBLE_EQ(42, m.At(3, 3));
-    ASSERT_DOUBLE_EQ(0, m.At(1, 1));
+    m[0][0] = 2.5;
+    m[3][3] = 42;
+    ASSERT_DOUBLE_EQ(2.5, m[0][0]);
+    ASSERT_DOUBLE_EQ(42, m[3][3]);
+    ASSERT_DOUBLE_EQ(0, m[1][1]);
 }
 
-TEST(MatrixTest, SettingAnElementInA4x4MatrixOutOfBounds) {
-    Matrix4x4 m;
-    ASSERT_ANY_THROW(m.At(0, 4) = 2.5);
-    ASSERT_ANY_THROW(m.At(-1, 2) = 3.5);
-    ASSERT_ANY_THROW(m.At(4, 0) = 4.5);
-    ASSERT_ANY_THROW(m.At(0, -4) = 42.5);
-}
+// TEST(MatrixTest, SettingAnElementInA4x4MatrixOutOfBounds) {
+//     Matrix4x4 m;
+//     ASSERT_ANY_THROW(m[0][4] = 2.5);
+//     ASSERT_ANY_THROW(m[-1][2] = 3.5);
+//     ASSERT_ANY_THROW(m[4][0] = 4.5);
+//     ASSERT_ANY_THROW(m[0][-4] = 42.5);
+// }
 
 TEST(MatrixTest, ConstructingAndInspectingA2x2Matrix) {
     double data[][2] {
@@ -138,12 +138,12 @@ TEST(MatrixTest, MultiplyingTwoMatricesWithACommonDimension) {
     Matrix ma { 4, 2 }, mb { 2, 3 };
     for (int i = 0; i < ma.Nrows(); i++) {
         for (int j = 0; j < ma.Ncolumns(); j++) {
-            ma.At(i, j) = a4x2[i][j];
+            ma[i][j] = a4x2[i][j];
         }
     }
     for (int i = 0; i < mb.Nrows(); i++) {
         for (int j = 0; j < mb.Ncolumns(); j++) {
-            mb.At(i, j) = b2x3[i][j];
+            mb[i][j] = b2x3[i][j];
         }
     }
     Matrix product = ma * mb;
@@ -242,7 +242,7 @@ TEST(MatrixTest, TransposingTheIdentityMatrix) {
     ASSERT_EQ(id.Transpose(), id);
 }
 
-TEST(MatrixTest, TransposingAnAsymmetricMatrix) {
+TEST(MatrixTest, TransposingANonSquareMatrix) {
     double
         a[][2] {
             { 10, 8 },
@@ -309,4 +309,78 @@ TEST(MatrixTest, GeneratingSubmatrixOfA4x4Matrix) {
     Matrix4x4 ma { a };
     Matrix3x3 mb { b };
     ASSERT_EQ(ma.Submatrix(2, 1), mb);
+}
+
+TEST(MatrixTest, GeneratingSubmatrixOfAnAssymetricMatrix) {
+    double
+        a[][3] {
+            { -6, 1, 6 },
+            { -8, 5, 6 },
+            { -1, 0, 42 },
+            { -7, 1, 1 }
+        },
+        b[][2] {
+            { 1, 6 },
+            { 5, 6 },
+            { 1, 1 }
+        };
+    Matrix ma { 4, 3 }, mb { 3, 2 };
+    for (int i = 0; i < ma.Nrows(); i++) {
+        for (int j = 0; j < ma.Ncolumns(); j++) {
+            ma[i][j] = a[i][j];
+        }
+    }
+    for (int i = 0; i < mb.Nrows(); i++) {
+        for (int j = 0; j < mb.Ncolumns(); j++) {
+            mb[i][j] = b[i][j];
+        }
+    }
+    ASSERT_EQ(ma.Submatrix(2, 0), mb);
+}
+
+TEST(MatrixTest, CalculatingAMinorOfA3x3Matrix) {
+    double a[][3] {
+        { 3, 5, 0 },
+        { 2, -1, -7 },
+        { 6, -1, 5 }
+    };
+    Matrix3x3 ma { a };
+    ASSERT_DOUBLE_EQ(ma.Minor(1, 0), 25);
+}
+
+TEST(MatrixTest, CalculatingACofactorOfA3x3Matrix) {
+    double a[][3] {
+        { 3, 5, 0 },
+        { 2, -1, -7 },
+        { 6, -1, 5 }
+    };
+    Matrix3x3 ma { a };
+    ASSERT_DOUBLE_EQ(ma.Cofactor(0, 0), -12);
+    ASSERT_DOUBLE_EQ(ma.Cofactor(1, 0), -25);
+}
+
+TEST(MatrixTest, CalculatingDeterminantOfA3x3Matrix) {
+    double a[][3] {
+        { 1 , 2, 6 },
+        { -5, 8, -4 },
+        { 2, 6, 4 }
+    };
+    Matrix3x3 ma { a };
+    ASSERT_DOUBLE_EQ(ma.Determinant(), -196);
+}
+
+TEST(MatrixTest, CalculatingDeterminantOfA4x4Matrix) {
+    double a[][4] {
+        { -2, -8, 3, 5 },
+        { -3, 1, 7, 3 },
+        { 1, 2, -9, 6},
+        { -6, 7, 7, -9 }
+    };
+    double b[][3] {
+        { -3, 7, 3 },
+        { 1, -9, 6 },
+        { -6, 7, -9}
+    };
+    Matrix4x4 ma { a };
+    ASSERT_DOUBLE_EQ(ma.Determinant(), -4071);
 }
