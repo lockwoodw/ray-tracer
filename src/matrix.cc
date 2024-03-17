@@ -1,9 +1,10 @@
 #include <stdexcept>
 #include <cstring> // memset
 #include "matrix.h"
-#include "utils.h"
 
 Matrix::Matrix(int nrows, int ncolumns) : nrows_ { nrows }, ncolumns_ { ncolumns } {
+    comparator_ = new FloatingPointComparator();
+    original_comparator_ = comparator_; // Save for destructor
     m_ = new double*[nrows_];
     for (int i = 0; i < nrows_; i++) {
         m_[i] = new double[ncolumns_];
@@ -13,6 +14,9 @@ Matrix::Matrix(int nrows, int ncolumns) : nrows_ { nrows }, ncolumns_ { ncolumns
 }
 
 Matrix::~Matrix() {
+    // Delete the comparator that this class instantiated.
+    // If the client changed the comparator, it is their responsibility to free it.
+    delete original_comparator_;
     for (int i = 0; i < nrows_; i++) {
         delete[] m_[i];
     }
@@ -62,7 +66,7 @@ bool Matrix::operator==(const Matrix &m) const {
     }
     for (int i = 0; i < nrows_; i++) {
         for (int j = 0; j < ncolumns_; j++) {
-            if (!floating_point_compare(m_[i][j], m.m_[i][j])) {
+            if (!comparator_->compare(m_[i][j], m.m_[i][j])) {
                 return false;
             }
         }
@@ -123,6 +127,22 @@ Matrix Matrix::Submatrix(int row, int column) const {
     return submatrix;
 }
 
+const Tuple operator*(const Matrix& m, const Tuple &t) {
+    Matrix4x1 tuple { t }, product;
+    Matrix::SetProduct(product, m, tuple);
+    return Tuple { product[0][0], product[1][0], product[2][0], product[3][0] };
+}
+
+std::ostream& operator<<(std::ostream& os, const Matrix& m) {
+    for (int i = 0; i < m.nrows_; i++) {
+        for (int j = 0; j < m.ncolumns_; j++) {
+            os << (j > 0 ? "\t" : "") << m.m_[i][j];
+        }
+        os << std::endl;
+    }
+    return os;
+}
+
 // Conversion constructor required for Submatrix()
 SquareMatrix::SquareMatrix(const Matrix& m): Matrix { m.Nrows(), m.Nrows() } {
     if (m.Ncolumns() < nrows_) {
@@ -160,20 +180,23 @@ double SquareMatrix::Determinant() const {
     return determinant;
 }
 
-const Tuple operator*(const Matrix& m, const Tuple &t) {
-    Matrix4x1 tuple { t }, product;
-    Matrix::SetProduct(product, m, tuple);
-    return Tuple { product[0][0], product[1][0], product[2][0], product[3][0] };
-}
+SquareMatrix SquareMatrix::Inverse() const {
+    double determinant = Determinant();
 
-std::ostream& operator<<(std::ostream& os, const Matrix& m) {
-    for (int i = 0; i < m.nrows_; i++) {
-        for (int j = 0; j < m.ncolumns_; j++) {
-            os << (j > 0 ? "\t" : "") << m.m_[i][j];
-        }
-        os << std::endl;
+    if (comparator_->compare(determinant, 0)) {
+        throw std::runtime_error("Matrix not invertible");
     }
-    return os;
+
+    SquareMatrix inverse { nrows_ };
+
+    for (int i = 0; i < nrows_; i++) {
+        for (int j = 0; j < nrows_; j++) {
+            double cofactor = Cofactor(i, j);
+            inverse.m_[j][i] = cofactor / determinant;
+        }
+    }
+
+    return inverse;
 }
 
 Matrix4x1::Matrix4x1(const Tuple &t): Matrix { 4, 1 } {

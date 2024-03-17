@@ -17,3 +17,15 @@ bool floating_point_compare(double a, double b, double abs_epsilon, double rel_e
     // otherwise use Knuth's scaled approach
     return floating_point_relative_compare(a, b, rel_epsilon);
 }
+
+bool simple_floating_point_compare(double a, double b, double epsilon) {
+    return std::abs(a - b) < epsilon;
+}
+
+bool FloatingPointComparator::compare(double a, double b) {
+    return floating_point_compare(a, b, abs_epsilon_, rel_epsilon_);
+}
+
+bool SimpleFloatingPointComparator::compare(double a, double b) {
+    return simple_floating_point_compare(a, b, epsilon_);
+}

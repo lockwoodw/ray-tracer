@@ -149,7 +149,7 @@ TEST(MatrixTest, MultiplyingTwoMatricesWithACommonDimension) {
     Matrix product = ma * mb;
     for (int i = 0; i < product.Nrows(); i++) {
         for (int j = 0; j < product.Ncolumns(); j++) {
-            ASSERT_FLOAT_EQ(product.At(i, j), c4x3[i][j]);
+            ASSERT_DOUBLE_EQ(product.At(i, j), c4x3[i][j]);
         }
     }
 }
@@ -180,14 +180,14 @@ TEST(MatrixTest, AccessingAMatrixValueByOperator) {
         { 0, 1, 1}
     };
     Matrix3x3 m { data };
-    ASSERT_FLOAT_EQ(m[0][0], data[0][0]);
-    ASSERT_FLOAT_EQ(m[1][2], data[1][2]);
-    ASSERT_FLOAT_EQ(m[2][1], data[2][1]);
+    ASSERT_DOUBLE_EQ(m[0][0], data[0][0]);
+    ASSERT_DOUBLE_EQ(m[1][2], data[1][2]);
+    ASSERT_DOUBLE_EQ(m[2][1], data[2][1]);
     // Try setting by indexing operator
     double new_value = 42.0;
     m[2][0] = new_value;
     ASSERT_NE(m[2][0], data[2][0]);
-    ASSERT_FLOAT_EQ(m[2][0], new_value);
+    ASSERT_DOUBLE_EQ(m[2][0], new_value);
 }
 
 TEST(MatrixTest, GeneratingIdentityMatrix) {
@@ -242,7 +242,7 @@ TEST(MatrixTest, TransposingTheIdentityMatrix) {
     ASSERT_EQ(id.Transpose(), id);
 }
 
-TEST(MatrixTest, TransposingANonSquareMatrix) {
+TEST(MatrixTest, TransposingANonsquareMatrix) {
     double
         a[][2] {
             { 10, 8 },
@@ -311,7 +311,7 @@ TEST(MatrixTest, GeneratingSubmatrixOfA4x4Matrix) {
     ASSERT_EQ(ma.Submatrix(2, 1), mb);
 }
 
-TEST(MatrixTest, GeneratingSubmatrixOfAnAssymetricMatrix) {
+TEST(MatrixTest, GeneratingSubmatrixOfANonSquareMatrix) {
     double
         a[][3] {
             { -6, 1, 6 },
@@ -373,14 +373,190 @@ TEST(MatrixTest, CalculatingDeterminantOfA4x4Matrix) {
     double a[][4] {
         { -2, -8, 3, 5 },
         { -3, 1, 7, 3 },
-        { 1, 2, -9, 6},
+        { 1, 2, -9, 6 },
         { -6, 7, 7, -9 }
-    };
-    double b[][3] {
-        { -3, 7, 3 },
-        { 1, -9, 6 },
-        { -6, 7, -9}
     };
     Matrix4x4 ma { a };
     ASSERT_DOUBLE_EQ(ma.Determinant(), -4071);
+}
+
+TEST(MatrixTest, TestingAnInvertibleMatrixForInvertability) {
+    double a[][4] {
+        { 6, 4, 4, 4 },
+        { 5, 5, 7, 6 },
+        { 4, -9, 3, -7 },
+        { 9, 1, 7, -6 }
+    };
+    Matrix4x4 ma { a };
+    ASSERT_DOUBLE_EQ(ma.Determinant(), -2120);
+}
+
+TEST(MatrixTest, TestingAnNoninvertibleMatrixForInvertability) {
+    double a[][4] {
+        { -4, 2, -2, -3 },
+        { 9, 6, 2, 6 },
+        { 0, -5, 1, -5 },
+        { 0, 0, 0, 0 }
+    };
+    Matrix4x4 ma { a };
+    ASSERT_DOUBLE_EQ(ma.Determinant(), 0);
+}
+
+TEST(MatrixTest, CalculatingTheInverseOfAMatrix) {
+    double
+        a[][4] {
+            { -5, 2, 6, -8 },
+            { 1, -5, 1, 8 },
+            { 7, 7, -6, -7 },
+            { 1, -3, 7, 4 }
+        },
+        b[][4] {
+            {  0.21805,  0.45113,  0.24060, -0.04511 },
+            { -0.80827, -1.45677, -0.44361,  0.52068 },
+            { -0.07895, -0.22368, -0.05263,  0.19737 },
+            { -0.52256, -0.81391, -0.30075,  0.30639 }
+        };
+    Matrix4x4 ma { a }, mb { b };
+    SquareMatrix inverse = ma.Inverse();
+    // Because the given reference values are not sufficiently precise for
+    // comparison using ASSERT_DOUBLE_EQ, compare them using a comparator
+    // with a smaller Epsilon
+    for (int i = 0; i < inverse.Nrows(); i++) {
+        for (int j = 0; j < inverse.Ncolumns(); j++) {
+            ASSERT_TRUE(simple_floating_point_compare(inverse[i][j], mb[i][j]));
+        }
+    }
+}
+
+TEST(MatrixTest, EvaluatingInverseOfAMatrixUsingSimpleComparator) {
+    // Same test as previous but using ASSERT_EQ, which requires the
+    // operator== method of the matrix to use a comparator with a smaller Epsilon
+    double
+        a[][4] {
+            { -5, 2, 6, -8 },
+            { 1, -5, 1, 8 },
+            { 7, 7, -6, -7 },
+            { 1, -3, 7, 4 }
+        },
+        b[][4] {
+            {  0.21805,  0.45113,  0.24060, -0.04511 },
+            { -0.80827, -1.45677, -0.44361,  0.52068 },
+            { -0.07895, -0.22368, -0.05263,  0.19737 },
+            { -0.52256, -0.81391, -0.30075,  0.30639 }
+        };
+    Matrix4x4 ma { a }, mb { b };
+    SquareMatrix inverse = ma.Inverse();
+    FloatingPointComparatorInterface* comparator = new SimpleFloatingPointComparator();
+    inverse.SetComparator(comparator);
+    ASSERT_EQ(inverse, mb);
+    // Client is responsible for freeing the comparator
+    delete comparator;
+}
+
+TEST(MatrixTest, CalculatingTheInverseOfAnotherMatrix) {
+    double
+        a[][4] {
+            {  8, -5,  9,  2 },
+            {  7,  5,  6,  1 },
+            { -6,  0,  9,  6 },
+            { -3,  0, -9, -4 }
+        },
+        b[][4] {
+            { -0.15385, -0.15385, -0.28205, -0.53846 },
+            { -0.07692,  0.12308,  0.02564,  0.03077 },
+            {  0.35897,  0.35897,  0.43590,  0.92308 },
+            { -0.69231, -0.69231, -0.76923, -1.92308 }
+        };
+    Matrix4x4 ma { a }, mb { b };
+    SquareMatrix inverse = ma.Inverse();
+    for (int i = 0; i < inverse.Nrows(); i++) {
+        for (int j = 0; j < inverse.Ncolumns(); j++) {
+            ASSERT_TRUE(simple_floating_point_compare(inverse[i][j], mb[i][j]));
+        }
+    }
+}
+
+TEST(MatrixTest, CalculatingTheInverseOfAThirdMatrix) {
+    double
+        a[][4] {
+            {  9,  3,  0,  9 },
+            { -5, -2, -6, -3 },
+            { -4,  9,  6,  4 },
+            { -7,  6,  6,  2 }
+        },
+        b[][4] {
+            { -0.04074, -0.07778,  0.14444, -0.22222 },
+            { -0.07778,  0.03333,  0.36667, -0.33333 },
+            { -0.02901, -0.14630, -0.10926,  0.12963 },
+            {  0.17778,  0.06667, -0.26667,  0.33333 }
+        };
+    Matrix4x4 ma { a }, mb { b };
+    SquareMatrix inverse = ma.Inverse();
+    FloatingPointComparatorInterface* comparator = new SimpleFloatingPointComparator();
+    inverse.SetComparator(comparator);
+    ASSERT_EQ(inverse, mb);
+    delete comparator;
+}
+
+TEST(MatrixTest, MultiplyingTheProductOfTwoMatricesByTheInverseOfOneOfThem) {
+    double
+        a[][4] {
+            {  3, -9,  7,  3 },
+            {  3, -8,  2, -9 },
+            { -4,  4,  4,  1 },
+            { -6,  5, -1,  1 }
+        },
+        b[][4] {
+            {  8,  2,  2,  2 },
+            {  3, -1,  7,  0 },
+            {  7,  0,  5,  4 },
+            {  6, -2,  0,  5 }
+        };
+    Matrix4x4 ma { a }, mb { b };
+    Matrix mc = ma * mb;
+    ASSERT_EQ(mc * mb.Inverse(), ma);
+}
+
+TEST(MatrixTest, InvertingTheIdentityMatrix) {
+    // Inverting the Identity matrix yields the same
+    SquareMatrix id = Matrix::Identity(4);
+    ASSERT_EQ(id.Inverse(), id);
+}
+
+TEST(MatrixTest, MultiplyingAMatrixByItsInverse) {
+    // Multiplying a matrix by its inverse yeilds the Identity matrix
+    double a[][4] {
+            {  3, -9,  7,  3 },
+            {  3, -8,  2, -9 },
+            { -4,  4,  4,  1 },
+            { -6,  5, -1,  1 }
+        };
+    Matrix4x4 ma { a };
+    SquareMatrix inverse = ma.Inverse();
+    ASSERT_EQ(ma * inverse, Matrix::Identity(4));
+}
+
+TEST(MatrixTest, TransposingAndInvertingAMatrix) {
+    // The inverse of the transpose of a matrix is the same as
+    // the transpose of the inverse
+    double a[][4] {
+            {  3, -9,  7,  3 },
+            {  3, -8,  2, -9 },
+            { -4,  4,  4,  1 },
+            { -6,  5, -1,  1 }
+        };
+    Matrix4x4 ma { a };
+    SquareMatrix transpose = ma.Transpose();
+    SquareMatrix inverse = ma.Inverse();
+    ASSERT_EQ(transpose.Inverse(), inverse.Transpose());
+}
+
+TEST(MatrixTest, MultiplyingATupleByAModifiedIdentityMatrix) {
+    // Multiplying a tuple by a modified Identity matrix
+    // scales the tuple by the modified amount
+    Tuple t { 3, 4, 5, 6 }, expected { 3, 40, 5, -12 };
+    Matrix id = Matrix::Identity(4);
+    id[1][1] = 10;
+    id[3][3] = -2;
+    ASSERT_EQ(id * t, expected);
 }
