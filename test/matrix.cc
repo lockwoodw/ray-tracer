@@ -402,6 +402,17 @@ TEST(MatrixTest, TestingAnNoninvertibleMatrixForInvertability) {
     ASSERT_DOUBLE_EQ(ma.Determinant(), 0);
 }
 
+// Because the given reference values are not sufficiently precise for
+// comparison using ASSERT_DOUBLE_EQ, compare them using a comparator
+// with a smaller Epsilon
+void compare_matrices(const Matrix& a, const Matrix& b) {
+    for (int i = 0; i < a.Nrows(); i++) {
+        for (int j = 0; j < a.Ncolumns(); j++) {
+            ASSERT_TRUE(simple_floating_point_compare(a.At(i, j), b.At(i, j)));
+        }
+    }
+}
+
 TEST(MatrixTest, CalculatingTheInverseOfAMatrix) {
     double
         a[][4] {
@@ -418,39 +429,7 @@ TEST(MatrixTest, CalculatingTheInverseOfAMatrix) {
         };
     Matrix4x4 ma { a }, mb { b };
     SquareMatrix inverse = ma.Inverse();
-    // Because the given reference values are not sufficiently precise for
-    // comparison using ASSERT_DOUBLE_EQ, compare them using a comparator
-    // with a smaller Epsilon
-    for (int i = 0; i < inverse.Nrows(); i++) {
-        for (int j = 0; j < inverse.Ncolumns(); j++) {
-            ASSERT_TRUE(simple_floating_point_compare(inverse[i][j], mb[i][j]));
-        }
-    }
-}
-
-TEST(MatrixTest, EvaluatingInverseOfAMatrixUsingSimpleComparator) {
-    // Same test as previous but using ASSERT_EQ, which requires the
-    // operator== method of the matrix to use a comparator with a smaller Epsilon
-    double
-        a[][4] {
-            { -5, 2, 6, -8 },
-            { 1, -5, 1, 8 },
-            { 7, 7, -6, -7 },
-            { 1, -3, 7, 4 }
-        },
-        b[][4] {
-            {  0.21805,  0.45113,  0.24060, -0.04511 },
-            { -0.80827, -1.45677, -0.44361,  0.52068 },
-            { -0.07895, -0.22368, -0.05263,  0.19737 },
-            { -0.52256, -0.81391, -0.30075,  0.30639 }
-        };
-    Matrix4x4 ma { a }, mb { b };
-    SquareMatrix inverse = ma.Inverse();
-    FloatingPointComparatorInterface* comparator = new SimpleFloatingPointComparator();
-    inverse.SetComparator(comparator);
-    ASSERT_EQ(inverse, mb);
-    // Client is responsible for freeing the comparator
-    delete comparator;
+    compare_matrices(inverse, mb);
 }
 
 TEST(MatrixTest, CalculatingTheInverseOfAnotherMatrix) {
@@ -469,11 +448,7 @@ TEST(MatrixTest, CalculatingTheInverseOfAnotherMatrix) {
         };
     Matrix4x4 ma { a }, mb { b };
     SquareMatrix inverse = ma.Inverse();
-    for (int i = 0; i < inverse.Nrows(); i++) {
-        for (int j = 0; j < inverse.Ncolumns(); j++) {
-            ASSERT_TRUE(simple_floating_point_compare(inverse[i][j], mb[i][j]));
-        }
-    }
+    compare_matrices(inverse, mb);
 }
 
 TEST(MatrixTest, CalculatingTheInverseOfAThirdMatrix) {
@@ -492,10 +467,7 @@ TEST(MatrixTest, CalculatingTheInverseOfAThirdMatrix) {
         };
     Matrix4x4 ma { a }, mb { b };
     SquareMatrix inverse = ma.Inverse();
-    FloatingPointComparatorInterface* comparator = new SimpleFloatingPointComparator();
-    inverse.SetComparator(comparator);
-    ASSERT_EQ(inverse, mb);
-    delete comparator;
+    compare_matrices(inverse, mb);
 }
 
 TEST(MatrixTest, MultiplyingTheProductOfTwoMatricesByTheInverseOfOneOfThem) {

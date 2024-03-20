@@ -3,8 +3,6 @@
 #include "matrix.h"
 
 Matrix::Matrix(int nrows, int ncolumns) : nrows_ { nrows }, ncolumns_ { ncolumns } {
-    comparator_ = new FloatingPointComparator();
-    original_comparator_ = comparator_; // Save for destructor
     m_ = new double*[nrows_];
     for (int i = 0; i < nrows_; i++) {
         m_[i] = new double[ncolumns_];
@@ -14,9 +12,6 @@ Matrix::Matrix(int nrows, int ncolumns) : nrows_ { nrows }, ncolumns_ { ncolumns
 }
 
 Matrix::~Matrix() {
-    // Delete the comparator that this class instantiated.
-    // If the client changed the comparator, it is their responsibility to free it.
-    delete original_comparator_;
     for (int i = 0; i < nrows_; i++) {
         delete[] m_[i];
     }
@@ -66,7 +61,7 @@ bool Matrix::operator==(const Matrix &m) const {
     }
     for (int i = 0; i < nrows_; i++) {
         for (int j = 0; j < ncolumns_; j++) {
-            if (!comparator_->compare(m_[i][j], m.m_[i][j])) {
+            if (!floating_point_compare(m_[i][j], m.m_[i][j])) {
                 return false;
             }
         }
@@ -183,7 +178,7 @@ double SquareMatrix::Determinant() const {
 SquareMatrix SquareMatrix::Inverse() const {
     double determinant = Determinant();
 
-    if (comparator_->compare(determinant, 0)) {
+    if (floating_point_compare(determinant, 0)) {
         throw std::runtime_error("Matrix not invertible");
     }
 

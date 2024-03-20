@@ -11,8 +11,6 @@ class Matrix {
         double** m_;
         int nrows_;
         int ncolumns_;
-        FloatingPointComparatorInterface* comparator_;
-        FloatingPointComparatorInterface* original_comparator_;
 
     public:
         void static SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2);
@@ -30,7 +28,6 @@ class Matrix {
         const Matrix operator*(const Matrix &m) const;
         Matrix Transpose() const;
         Matrix Submatrix(int row, int column) const;
-        void SetComparator(FloatingPointComparatorInterface *comparator) { comparator_ = comparator; }
 
         friend const Tuple operator*(const Matrix& m, const Tuple &t);
         friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
