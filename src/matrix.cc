@@ -30,14 +30,6 @@ void Matrix::SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2) {
     }
 }
 
-const Matrix Matrix::Identity(int size) {
-    Matrix identity { size, size };
-    for (int i = 0; i < size; i++) {
-        identity.m_[i][i] = 1;
-    }
-    return identity;
-}
-
 double Matrix::At(int row, int column) const {
     if (row < 0 || row >= nrows_) {
         throw std::runtime_error("Row index out of bounds");
@@ -192,6 +184,14 @@ SquareMatrix SquareMatrix::Inverse() const {
     }
 
     return inverse;
+}
+
+const SquareMatrix SquareMatrix::Identity(int size) {
+    SquareMatrix identity { size };
+    for (int i = 0; i < size; i++) {
+        identity.m_[i][i] = 1;
+    }
+    return identity;
 }
 
 Matrix4x1::Matrix4x1(const Tuple &t): Matrix { 4, 1 } {

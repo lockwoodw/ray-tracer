@@ -198,7 +198,7 @@ TEST(MatrixTest, GeneratingIdentityMatrix) {
         { 0, 0, 0, 1 }
     };
     Matrix4x4 expected { id };
-    ASSERT_EQ(Matrix::Identity(expected.Nrows()), expected);
+    ASSERT_EQ(SquareMatrix::Identity(expected.Nrows()), expected);
 }
 
 TEST(MatrixTest, MultiplyingAMatrixByTheIdentityMatrix) {
@@ -209,13 +209,13 @@ TEST(MatrixTest, MultiplyingAMatrixByTheIdentityMatrix) {
         { 4, 8, 16, 32 }
     };
     Matrix4x4 ma { a };
-    Matrix id = Matrix::Identity(ma.Nrows());
+    SquareMatrix id = SquareMatrix::Identity(ma.Nrows());
     ASSERT_EQ(id * ma, ma);
 }
 
 TEST(MatrixTest, MultiplyingTheIdentityMatrixByTuple) {
     Tuple a { 1, 2, 3, 4 };
-    Matrix id = Matrix::Identity(4);
+    SquareMatrix id = SquareMatrix::Identity(4);
     ASSERT_EQ(id * a, a);
 }
 
@@ -238,7 +238,7 @@ TEST(MatrixTest, TransposingAMatrix) {
 }
 
 TEST(MatrixTest, TransposingTheIdentityMatrix) {
-    Matrix id = Matrix::Identity(4);
+    SquareMatrix id = SquareMatrix::Identity(4);
     ASSERT_EQ(id.Transpose(), id);
 }
 
@@ -491,7 +491,7 @@ TEST(MatrixTest, MultiplyingTheProductOfTwoMatricesByTheInverseOfOneOfThem) {
 
 TEST(MatrixTest, InvertingTheIdentityMatrix) {
     // Inverting the Identity matrix yields the same
-    SquareMatrix id = Matrix::Identity(4);
+    SquareMatrix id = SquareMatrix::Identity(4);
     ASSERT_EQ(id.Inverse(), id);
 }
 
@@ -505,7 +505,7 @@ TEST(MatrixTest, MultiplyingAMatrixByItsInverse) {
         };
     Matrix4x4 ma { a };
     SquareMatrix inverse = ma.Inverse();
-    ASSERT_EQ(ma * inverse, Matrix::Identity(4));
+    ASSERT_EQ(ma * inverse, SquareMatrix::Identity(4));
 }
 
 TEST(MatrixTest, TransposingAndInvertingAMatrix) {
@@ -527,7 +527,7 @@ TEST(MatrixTest, MultiplyingATupleByAModifiedIdentityMatrix) {
     // Multiplying a tuple by a modified Identity matrix
     // scales the tuple by the modified amount
     Tuple t { 3, 4, 5, 6 }, expected { 3, 40, 5, -12 };
-    Matrix id = Matrix::Identity(4);
+    SquareMatrix id = SquareMatrix::Identity(4);
     id[1][1] = 10;
     id[3][3] = -2;
     ASSERT_EQ(id * t, expected);

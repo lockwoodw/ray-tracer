@@ -14,7 +14,6 @@ class Matrix {
 
     public:
         void static SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2);
-        const static Matrix Identity(int size);
 
         Matrix(int nrows, int ncolumns);
         ~Matrix();
@@ -35,6 +34,8 @@ class Matrix {
 
 class SquareMatrix : public Matrix {
     public:
+        const static SquareMatrix Identity(int size);
+
         SquareMatrix(int size): Matrix { size, size } {}
         SquareMatrix(const Matrix& m);
 
