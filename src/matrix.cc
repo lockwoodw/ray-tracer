@@ -74,46 +74,6 @@ Matrix const Matrix::operator*(const Matrix &m) const {
     return product;
 }
 
-Matrix Matrix::Transpose() const {
-    Matrix transposed { ncolumns_, nrows_ };
-    for (int i = 0; i < nrows_; i++) {
-        for (int j = 0; j < ncolumns_; j++) {
-            transposed.m_[j][i] = m_[i][j];
-        }
-    }
-    return transposed;
-}
-
-// Returns a copy of the matrix with the given row and column removed
-Matrix Matrix::Submatrix(int row, int column) const {
-    if (nrows_ < 2 || ncolumns_ < 2) {
-        throw std::runtime_error("Submatrix does not exist");
-    }
-    if (row < 0 || row >= nrows_) {
-        throw std::runtime_error("Row index out of bounds");
-    }
-    if (column < 0 || column >= ncolumns_) {
-        throw std::runtime_error("Column index out of bounds");
-    }
-    Matrix submatrix { nrows_ - 1, ncolumns_ - 1 };
-    int r = 0, c;
-    for (int i = 0; i < nrows_; i++) {
-        if (i == row) {
-            continue;
-        }
-        c = 0;
-        for (int j = 0; j < ncolumns_; j++) {
-            if (j == column) {
-                continue;
-            }
-            submatrix.m_[r][c] = m_[i][j];
-            c++;
-        }
-        r++;
-    }
-    return submatrix;
-}
-
 const Tuple operator*(const Matrix& m, const Tuple &t) {
     Matrix4x1 tuple { t }, product;
     Matrix::SetProduct(product, m, tuple);
@@ -130,22 +90,10 @@ std::ostream& operator<<(std::ostream& os, const Matrix& m) {
     return os;
 }
 
-// Conversion constructor required for Submatrix()
-SquareMatrix::SquareMatrix(const Matrix& m): Matrix { m.Nrows(), m.Nrows() } {
-    if (m.Ncolumns() < nrows_) {
-        throw std::runtime_error("Cannot convert to square matrix");
-    }
-    for (int i = 0; i < nrows_; i++) {
-        for (int j = 0; j < ncolumns_; j++) {
-            m_[i][j] = m.At(i, j);
-        }
-    }
-}
-
 // The minor of an element at (i, j) is the determinant of the
 // submatrix(i, j)
 double SquareMatrix::Minor(int row, int column) const {
-    SquareMatrix submatrix = Submatrix(row, column);
+    SquareMatrix submatrix = Submatrix<SquareMatrix>(row, column);
     return submatrix.Determinant();
 }
 

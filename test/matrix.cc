@@ -518,7 +518,7 @@ TEST(MatrixTest, TransposingAndInvertingAMatrix) {
             { -6,  5, -1,  1 }
         };
     Matrix4x4 ma { a };
-    SquareMatrix transpose = ma.Transpose();
+    SquareMatrix transpose = ma.Transpose<SquareMatrix>();
     SquareMatrix inverse = ma.Inverse();
     ASSERT_EQ(transpose.Inverse(), inverse.Transpose());
 }
