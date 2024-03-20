@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <iostream>
+#include <array>
 #include "tuple.h"
 #include "utils.h"
 
@@ -16,6 +17,18 @@ class Matrix {
         void static SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2);
 
         Matrix(int nrows, int ncolumns);
+
+        template <std::size_t R, std::size_t C>
+        Matrix(const std::array<std::array<double, C>, R>& src): nrows_ { R }, ncolumns_ { C } {
+            m_ = new double*[nrows_];
+            for (int i = 0; i < nrows_; i++) {
+                m_[i] = new double[ncolumns_];
+                for (int j = 0; j < ncolumns_; j++) {
+                    m_[i][j] = src[i][j];
+                }
+            }
+        }
+
         ~Matrix();
 
         int Nrows() const { return nrows_; }
