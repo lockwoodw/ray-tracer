@@ -14,7 +14,7 @@ class Matrix {
         int ncolumns_;
 
     public:
-        void static SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2);
+        void static SetProduct(Matrix& product, const Matrix& m1, const Matrix& m2);
         const static Matrix Identity(int size);
 
         Matrix(int nrows, int ncolumns);
@@ -34,7 +34,7 @@ class Matrix {
         ~Matrix();
 
         // conversion constructor
-        Matrix(const Tuple &t): Matrix { 4, 1 } {
+        Matrix(const Tuple& t): Matrix { 4, 1 } {
             m_[0][0] = t.x_;
             m_[1][0] = t.y_;
             m_[2][0] = t.z_;
@@ -45,9 +45,9 @@ class Matrix {
         int Ncolumns() const { return ncolumns_; }
         double At(int row, int column) const;
         double* operator[](int row);
-        bool operator==(const Matrix &m) const;
-        bool operator!=(const Matrix &m) const;
-        const Matrix operator*(const Matrix &m) const;
+        bool operator==(const Matrix& m) const;
+        bool operator!=(const Matrix& m) const;
+        const Matrix operator*(const Matrix& m) const;
 
         Matrix Transpose() const;
         Matrix Submatrix(int row, int column) const;
@@ -56,7 +56,7 @@ class Matrix {
         double Determinant() const;
         Matrix Inverse() const;
 
-        friend const Tuple operator*(const Matrix& m, const Tuple &t);
+        friend const Tuple operator*(const Matrix& m, const Tuple& t);
         friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
 };
 

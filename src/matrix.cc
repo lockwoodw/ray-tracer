@@ -18,7 +18,7 @@ Matrix::~Matrix() {
     delete[] m_;
 }
 
-void Matrix::SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2) {
+void Matrix::SetProduct(Matrix& product, const Matrix& m1, const Matrix& m2) {
     for (int i = 0; i < m1.nrows_; i++) {
         for (int j = 0; j < m2.ncolumns_; j++) {
             double sum = 0;
@@ -47,7 +47,7 @@ double* Matrix::operator[](int row) {
     return m_[row];
 }
 
-bool Matrix::operator==(const Matrix &m) const {
+bool Matrix::operator==(const Matrix& m) const {
     if (nrows_ != m.nrows_ || ncolumns_ != m.ncolumns_) {
         return false;
     }
@@ -61,11 +61,11 @@ bool Matrix::operator==(const Matrix &m) const {
     return true;
 }
 
-bool Matrix::operator!=(const Matrix &m) const {
+bool Matrix::operator!=(const Matrix& m) const {
     return ! operator==(m);
 }
 
-Matrix const Matrix::operator*(const Matrix &m) const {
+Matrix const Matrix::operator*(const Matrix& m) const {
     if (ncolumns_ != m.nrows_) {
         throw std::runtime_error("Operand dimensions invalid for Matrix multiplication");
     }
@@ -114,7 +114,7 @@ Matrix Matrix::Submatrix(int row, int column) const {
     return submatrix;
 }
 
-const Tuple operator*(const Matrix& m, const Tuple &t) {
+const Tuple operator*(const Matrix& m, const Tuple& t) {
     Matrix tuple { t }, product { 4, 1 };
     Matrix::SetProduct(product, m, tuple);
     return Tuple { product[0][0], product[1][0], product[2][0], product[3][0] };
