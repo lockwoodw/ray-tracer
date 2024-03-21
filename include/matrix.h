@@ -15,9 +15,11 @@ class Matrix {
 
     public:
         void static SetProduct(Matrix &product, const Matrix &m1, const Matrix &m2);
+        const static Matrix Identity(int size);
 
         Matrix(int nrows, int ncolumns);
 
+        // templated methods must be defined in the header file
         template <std::size_t R, std::size_t C>
         Matrix(const std::array<std::array<double, C>, R>& src): nrows_ { R }, ncolumns_ { C } {
             m_ = new double*[nrows_];
@@ -31,6 +33,14 @@ class Matrix {
 
         ~Matrix();
 
+        // conversion constructor
+        Matrix(const Tuple &t): Matrix { 4, 1 } {
+            m_[0][0] = t.x_;
+            m_[1][0] = t.y_;
+            m_[2][0] = t.z_;
+            m_[3][0] = t.w_;
+        }
+
         int Nrows() const { return nrows_; }
         int Ncolumns() const { return ncolumns_; }
         double At(int row, int column) const;
@@ -39,73 +49,15 @@ class Matrix {
         bool operator!=(const Matrix &m) const;
         const Matrix operator*(const Matrix &m) const;
 
-        // Templated methods let derived classes create instances of their
-        // own type without a conversion constructor; must be defined in the
-        // header file.
-        template<typename T = Matrix> T Transpose() const {
-            T transposed { ncolumns_, nrows_ };
-            for (int i = 0; i < nrows_; i++) {
-                for (int j = 0; j < ncolumns_; j++) {
-                    transposed.m_[j][i] = m_[i][j];
-                }
-            }
-            return transposed;
-        }
-
-        // Returns a copy of the matrix with the given row and column removed
-        template<typename T = Matrix> T Submatrix(int row, int column) const {
-            if (nrows_ < 2 || ncolumns_ < 2) {
-                throw std::runtime_error("Submatrix does not exist");
-            }
-            if (row < 0 || row >= nrows_) {
-                throw std::runtime_error("Row index out of bounds");
-            }
-            if (column < 0 || column >= ncolumns_) {
-                throw std::runtime_error("Column index out of bounds");
-            }
-            T submatrix { nrows_ - 1, ncolumns_ - 1 };
-            int r = 0, c;
-            for (int i = 0; i < nrows_; i++) {
-                if (i == row) {
-                    continue;
-                }
-                c = 0;
-                for (int j = 0; j < ncolumns_; j++) {
-                    if (j == column) {
-                        continue;
-                    }
-                    submatrix.m_[r][c] = m_[i][j];
-                    c++;
-                }
-                r++;
-            }
-            return submatrix;
-        }
-
-        friend const Tuple operator*(const Matrix& m, const Tuple &t);
-        friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
-};
-
-class SquareMatrix : public Matrix {
-    public:
-        const static SquareMatrix Identity(int size);
-
-        SquareMatrix(int size): Matrix { size, size } {}
-        SquareMatrix(int size, int): Matrix { size, size } {} // for templated methods
-        template <std::size_t R, std::size_t C>
-        SquareMatrix(const std::array<std::array<double, C>, R>& src): Matrix { src } {}
-
+        Matrix Transpose() const;
+        Matrix Submatrix(int row, int column) const;
         double Minor(int row, int column) const;
         double Cofactor(int row, int column) const;
         double Determinant() const;
-        SquareMatrix Inverse() const;
-};
+        Matrix Inverse() const;
 
-class Matrix4x1 : public Matrix {
-    public:
-        Matrix4x1(): Matrix { 4, 1 } {}
-        Matrix4x1(const Tuple &t);
-        friend Matrix;
+        friend const Tuple operator*(const Matrix& m, const Tuple &t);
+        friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
 };
 
 #endif

@@ -188,7 +188,7 @@ TEST(MatrixTest, GeneratingIdentityMatrix) {
         { 0, 0, 0, 1 }
     }};
     Matrix expected { id };
-    ASSERT_EQ(SquareMatrix::Identity(expected.Nrows()), expected);
+    ASSERT_EQ(Matrix::Identity(expected.Nrows()), expected);
 }
 
 TEST(MatrixTest, MultiplyingAMatrixByTheIdentityMatrix) {
@@ -199,13 +199,13 @@ TEST(MatrixTest, MultiplyingAMatrixByTheIdentityMatrix) {
         { 4, 8, 16, 32 }
     }};
     Matrix ma { a };
-    SquareMatrix id = SquareMatrix::Identity(ma.Nrows());
+    Matrix id = Matrix::Identity(ma.Nrows());
     ASSERT_EQ(id * ma, ma);
 }
 
 TEST(MatrixTest, MultiplyingTheIdentityMatrixByTuple) {
     Tuple a { 1, 2, 3, 4 };
-    SquareMatrix id = SquareMatrix::Identity(4);
+    Matrix id = Matrix::Identity(4);
     ASSERT_EQ(id * a, a);
 }
 
@@ -228,7 +228,7 @@ TEST(MatrixTest, TransposingAMatrix) {
 }
 
 TEST(MatrixTest, TransposingTheIdentityMatrix) {
-    SquareMatrix id = SquareMatrix::Identity(4);
+    Matrix id = Matrix::Identity(4);
     ASSERT_EQ(id.Transpose(), id);
 }
 
@@ -252,7 +252,7 @@ TEST(MatrixTest, GeneratingDeterminantOfA2x2Matrix) {
         { 1, 5 },
         { -3, 2 }
     }};
-    SquareMatrix ma { a };
+    Matrix ma { a };
     ASSERT_DOUBLE_EQ(ma.Determinant(), 17);
 }
 
@@ -308,7 +308,7 @@ TEST(MatrixTest, CalculatingAMinorOfA3x3Matrix) {
         { 2, -1, -7 },
         { 6, -1, 5 }
     }};
-    SquareMatrix ma { a };
+    Matrix ma { a };
     ASSERT_DOUBLE_EQ(ma.Minor(1, 0), 25);
 }
 
@@ -318,7 +318,7 @@ TEST(MatrixTest, CalculatingACofactorOfA3x3Matrix) {
         { 2, -1, -7 },
         { 6, -1, 5 }
     }};
-    SquareMatrix ma { a };
+    Matrix ma { a };
     ASSERT_DOUBLE_EQ(ma.Cofactor(0, 0), -12);
     ASSERT_DOUBLE_EQ(ma.Cofactor(1, 0), -25);
 }
@@ -329,7 +329,7 @@ TEST(MatrixTest, CalculatingDeterminantOfA3x3Matrix) {
         { -5, 8, -4 },
         { 2, 6, 4 }
     }};
-    SquareMatrix ma { a };
+    Matrix ma { a };
     ASSERT_DOUBLE_EQ(ma.Determinant(), -196);
 }
 
@@ -340,7 +340,7 @@ TEST(MatrixTest, CalculatingDeterminantOfA4x4Matrix) {
         { 1, 2, -9, 6 },
         { -6, 7, 7, -9 }
     }};
-    SquareMatrix ma { a };
+    Matrix ma { a };
     ASSERT_DOUBLE_EQ(ma.Determinant(), -4071);
 }
 
@@ -351,7 +351,7 @@ TEST(MatrixTest, TestingAnInvertibleMatrixForInvertability) {
         { 4, -9, 3, -7 },
         { 9, 1, 7, -6 }
     }};
-    SquareMatrix ma { a };
+    Matrix ma { a };
     ASSERT_DOUBLE_EQ(ma.Determinant(), -2120);
 }
 
@@ -362,7 +362,7 @@ TEST(MatrixTest, TestingAnNoninvertibleMatrixForInvertability) {
         { 0, -5, 1, -5 },
         { 0, 0, 0, 0 }
     }};
-    SquareMatrix ma { a };
+    Matrix ma { a };
     ASSERT_DOUBLE_EQ(ma.Determinant(), 0);
 }
 
@@ -391,7 +391,7 @@ TEST(MatrixTest, CalculatingTheInverseOfAMatrix) {
             { -0.07895, -0.22368, -0.05263,  0.19737 },
             { -0.52256, -0.81391, -0.30075,  0.30639 }
         }};
-    SquareMatrix ma { a }, mb { b }, inverse = ma.Inverse();
+    Matrix ma { a }, mb { b }, inverse = ma.Inverse();
     compare_matrices(inverse, mb);
 }
 
@@ -409,7 +409,7 @@ TEST(MatrixTest, CalculatingTheInverseOfAnotherMatrix) {
             {  0.35897,  0.35897,  0.43590,  0.92308 },
             { -0.69231, -0.69231, -0.76923, -1.92308 }
         }};
-    SquareMatrix ma { a }, mb { b }, inverse = ma.Inverse();
+    Matrix ma { a }, mb { b }, inverse = ma.Inverse();
     compare_matrices(inverse, mb);
 }
 
@@ -427,7 +427,7 @@ TEST(MatrixTest, CalculatingTheInverseOfAThirdMatrix) {
             { -0.02901, -0.14630, -0.10926,  0.12963 },
             {  0.17778,  0.06667, -0.26667,  0.33333 }
         }};
-    SquareMatrix ma { a }, mb { b }, inverse = ma.Inverse();
+    Matrix ma { a }, mb { b }, inverse = ma.Inverse();
     compare_matrices(inverse, mb);
 }
 
@@ -445,14 +445,14 @@ TEST(MatrixTest, MultiplyingTheProductOfTwoMatricesByTheInverseOfOneOfThem) {
             {  7,  0,  5,  4 },
             {  6, -2,  0,  5 }
         }};
-    SquareMatrix ma { a }, mb { b };
+    Matrix ma { a }, mb { b };
     Matrix mc = ma * mb;
     ASSERT_EQ(mc * mb.Inverse(), ma);
 }
 
 TEST(MatrixTest, InvertingTheIdentityMatrix) {
     // Inverting the Identity matrix yields the same
-    SquareMatrix id = SquareMatrix::Identity(4);
+    Matrix id = Matrix::Identity(4);
     ASSERT_EQ(id.Inverse(), id);
 }
 
@@ -464,8 +464,8 @@ TEST(MatrixTest, MultiplyingAMatrixByItsInverse) {
         { -4,  4,  4,  1 },
         { -6,  5, -1,  1 }
     }};
-    SquareMatrix ma { a }, inverse = ma.Inverse();
-    ASSERT_EQ(ma * inverse, SquareMatrix::Identity(4));
+    Matrix ma { a }, inverse = ma.Inverse();
+    ASSERT_EQ(ma * inverse, Matrix::Identity(4));
 }
 
 TEST(MatrixTest, TransposingAndInvertingAMatrix) {
@@ -477,7 +477,7 @@ TEST(MatrixTest, TransposingAndInvertingAMatrix) {
         { -4,  4,  4,  1 },
         { -6,  5, -1,  1 }
     }};
-    SquareMatrix ma { a }, transpose = ma.Transpose<SquareMatrix>(), inverse = ma.Inverse();
+    Matrix ma { a }, transpose = ma.Transpose(), inverse = ma.Inverse();
     ASSERT_EQ(transpose.Inverse(), inverse.Transpose());
 }
 
@@ -485,7 +485,7 @@ TEST(MatrixTest, MultiplyingATupleByAModifiedIdentityMatrix) {
     // Multiplying a tuple by a modified Identity matrix
     // scales the tuple by the modified amount
     Tuple t { 3, 4, 5, 6 }, expected { 3, 40, 5, -12 };
-    SquareMatrix id = SquareMatrix::Identity(4);
+    Matrix id = Matrix::Identity(4);
     id[1][1] = 10;
     id[3][3] = -2;
     ASSERT_EQ(id * t, expected);
