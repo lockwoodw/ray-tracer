@@ -148,27 +148,3 @@ Matrix4x1::Matrix4x1(const Tuple &t): Matrix { 4, 1 } {
     m_[2][0] = t.z_;
     m_[3][0] = t.w_;
 }
-
-Matrix4x4::Matrix4x4(double m[4][4]): SquareMatrix { 4 } {
-    for (int i = 0; i < nrows_; i++) {
-        for (int j = 0; j < ncolumns_; j++) {
-            m_[i][j] = m[i][j];
-        }
-    }
-}
-
-Matrix2x2::Matrix2x2(double m[2][2]): SquareMatrix { 2 } {
-    for (int i = 0; i < nrows_; i++) {
-        for (int j = 0; j < ncolumns_; j++) {
-            m_[i][j] = m[i][j];
-        }
-    }
-}
-
-Matrix3x3::Matrix3x3(double m[3][3]): SquareMatrix { 3 } {
-    for (int i = 0; i < nrows_; i++) {
-        for (int j = 0; j < ncolumns_; j++) {
-            m_[i][j] = m[i][j];
-        }
-    }
-}

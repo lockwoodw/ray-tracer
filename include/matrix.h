@@ -92,6 +92,8 @@ class SquareMatrix : public Matrix {
 
         SquareMatrix(int size): Matrix { size, size } {}
         SquareMatrix(int size, int): Matrix { size, size } {} // for templated methods
+        template <std::size_t R, std::size_t C>
+        SquareMatrix(const std::array<std::array<double, C>, R>& src): Matrix { src } {}
 
         double Minor(int row, int column) const;
         double Cofactor(int row, int column) const;
@@ -99,29 +101,11 @@ class SquareMatrix : public Matrix {
         SquareMatrix Inverse() const;
 };
 
-class Matrix4x4 : public SquareMatrix {
-    public:
-        Matrix4x4(): SquareMatrix { 4 } {}
-        Matrix4x4(double m[4][4]);
-};
-
 class Matrix4x1 : public Matrix {
     public:
         Matrix4x1(): Matrix { 4, 1 } {}
         Matrix4x1(const Tuple &t);
-        friend Matrix4x4;
-};
-
-class Matrix2x2 : public SquareMatrix {
-    public:
-        Matrix2x2(): SquareMatrix { 2 } {}
-        Matrix2x2(double m[2][2]);
-};
-
-class Matrix3x3 : public SquareMatrix {
-    public:
-        Matrix3x3(): SquareMatrix { 3 } {}
-        Matrix3x3(double m[3][3]);
+        friend Matrix;
 };
 
 #endif
