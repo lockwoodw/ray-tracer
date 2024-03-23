@@ -59,5 +59,20 @@ target_link_libraries(
 
 target_include_directories(matrix-test PRIVATE ../include/)
 
+add_executable(
+  space-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/space.cc
+  space.cc
+)
+
+target_link_libraries(
+  space-test
+  GTest::gtest_main
+)
+
+target_include_directories(space-test PRIVATE ../include/)
+
 include(GoogleTest)
-gtest_discover_tests(utils-test tuple-test matrix-test)
+gtest_discover_tests(utils-test tuple-test matrix-test space-test)

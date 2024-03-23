@@ -14,7 +14,6 @@ class Matrix {
         int ncolumns_;
 
     public:
-        void static SetProduct(Matrix& product, const Matrix& m1, const Matrix& m2);
         const static Matrix Identity(int size);
 
         Matrix(int nrows, int ncolumns);

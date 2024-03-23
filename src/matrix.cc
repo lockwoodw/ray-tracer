@@ -24,18 +24,6 @@ Matrix::Matrix(const Tuple& t): Matrix { t.Size(), 1 } {
     }
 }
 
-void Matrix::SetProduct(Matrix& product, const Matrix& m1, const Matrix& m2) {
-    for (int i = 0; i < m1.nrows_; i++) {
-        for (int j = 0; j < m2.ncolumns_; j++) {
-            double sum = 0;
-            for (int k = 0; k < m1.ncolumns_; k++) {
-                    sum += m1.m_[i][k] * m2.m_[k][j];
-            }
-            product.m_[i][j] = sum;
-        }
-    }
-}
-
 double Matrix::At(int row, int column) const {
     if (row < 0 || row >= nrows_) {
         throw std::runtime_error("Row index out of bounds");
@@ -76,7 +64,15 @@ Matrix const Matrix::operator*(const Matrix& m) const {
         throw std::runtime_error("Operand dimensions invalid for Matrix multiplication");
     }
     Matrix product { nrows_, m.ncolumns_ };
-    Matrix::SetProduct(product, *this, m);
+    for (int i = 0; i < nrows_; i++) {
+        for (int j = 0; j < m.ncolumns_; j++) {
+            double sum = 0;
+            for (int k = 0; k < ncolumns_; k++) {
+                    sum += m_[i][k] * m.m_[k][j];
+            }
+            product.m_[i][j] = sum;
+        }
+    }
     return product;
 }
 
@@ -121,9 +117,18 @@ Matrix Matrix::Submatrix(int row, int column) const {
 }
 
 const Tuple operator*(const Matrix& m, const Tuple& t) {
-    Matrix tuple { t }, product { 4, 1 };
-    Matrix::SetProduct(product, m, tuple);
-    return get_4_tuple(product[0][0], product[1][0], product[2][0], product[3][0]);
+    if (m.ncolumns_ != t.Size()) {
+        throw std::runtime_error("Operand dimensions invalid for multiplication");
+    }
+    Tuple product { static_cast<std::size_t>(m.nrows_) };
+    for (int i = 0; i < m.nrows_; i++) {
+        double sum = 0;
+        for (int j = 0; j < m.ncolumns_; j++) {
+            sum += m.m_[i][j] * t.At(j);
+        }
+        product[i] = sum;
+    }
+    return product;
 }
 
 std::ostream& operator<<(std::ostream& os, const Matrix& m) {
