@@ -6,18 +6,18 @@ Vector::Vector(const Tuple& t): tuple_ { t } {
     if (t.Size() != 4) {
         throw std::invalid_argument("Incorrect tuple size for Vector");
     }
-    tuple_[w_] = 0.0;
+    tuple_[kW] = 0.0;
 }
 
 double Vector::DotProduct(const Vector& v1, const Vector& v2) {
-    return v1.At(x_) * v2.At(x_) + v1.At(y_) * v2.At(y_) + v1.At(z_) * v2.At(z_);
+    return v1.At(kX) * v2.At(kX) + v1.At(kY) * v2.At(kY) + v1.At(kZ) * v2.At(kZ);
 }
 
 Vector Vector::CrossProduct(const Vector& v1, const Vector& v2) {
     Vector product {
-        v1.At(y_) * v2.At(z_) - v1.At(z_) * v2.At(y_),
-        v1.At(z_) * v2.At(x_) - v1.At(x_) * v2.At(z_),
-        v1.At(x_) * v2.At(y_) - v1.At(y_) * v2.At(x_)
+        v1.At(kY) * v2.At(kZ) - v1.At(kZ) * v2.At(kY),
+        v1.At(kZ) * v2.At(kX) - v1.At(kX) * v2.At(kZ),
+        v1.At(kX) * v2.At(kY) - v1.At(kY) * v2.At(kX)
     };
     return product;
 }
@@ -67,9 +67,9 @@ bool Vector::operator!=(const Vector& v) const {
 }
 
 double Vector::Magnitude() const {
-    return std::sqrt(tuple_.At(x_) * tuple_.At(x_)
-        + tuple_.At(y_) * tuple_.At(y_)
-        + tuple_.At(z_) * tuple_.At(z_)
+    return std::sqrt(tuple_.At(kX) * tuple_.At(kX)
+        + tuple_.At(kY) * tuple_.At(kY)
+        + tuple_.At(kZ) * tuple_.At(kZ)
     );
 }
 
@@ -81,7 +81,7 @@ Point::Point(const Tuple& t): tuple_ { t } {
     if (t.Size() != 4) {
         throw std::invalid_argument("Incorrect tuple size for Point");
     }
-    tuple_[w_] = 1.0;
+    tuple_[kW] = 1.0;
 }
 
 Point Point::operator+(const Vector& v) const {

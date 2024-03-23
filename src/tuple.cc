@@ -125,7 +125,7 @@ std::ostream& operator<<(std::ostream& os, const Tuple& t) {
     return os;
 }
 
-Tuple get_4_tuple(double x, double y, double z, double w) {
+Tuple Create4DTuple(double x, double y, double z, double w) {
     Tuple p { 4 };
     p[0] = x;
     p[1] = y;

@@ -48,6 +48,6 @@ class Tuple {
 };
 
 // factory method for common tuple size
-Tuple get_4_tuple(double x, double y, double z, double w);
+Tuple Create4DTuple(double x, double y, double z, double w);
 
 #endif

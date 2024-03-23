@@ -11,7 +11,7 @@ Then    p = Tuple(4, -4, 3, 1)
 TEST(SpaceTest, IsAPoint) {
     double x { 4.3 }, y { -4.2 }, z { 3.1 }, w { 1.0 };
     Point p { x, y, z };
-    Tuple t = get_4_tuple(x, y, z, w);
+    Tuple t = Create4DTuple(x, y, z, w);
     ASSERT_EQ(p, t);
     Vector v { x, y, z };
     ASSERT_NE(v, t);
@@ -26,7 +26,7 @@ Then    v = Tuple(4, -4, 3, 0)
 TEST(SpaceTest, IsAVector) {
     double x { 4.3 }, y { -4.2 }, z { 3.1 }, w { 0.0 };
     Vector v { x, y, z };
-    Tuple t = get_4_tuple(x, y, z, w);
+    Tuple t = Create4DTuple(x, y, z, w);
     ASSERT_EQ(v, t);
     Point p { x, y, z };
     ASSERT_NE(p, t);

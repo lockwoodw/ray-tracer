@@ -9,17 +9,17 @@ class Vector {
     Tuple tuple_;
 
     public:
-        enum { x_, y_, z_, w_ };
+        enum { kX, kY, kZ, kW };
         static double DotProduct(const Vector& v1, const Vector& v2);
         static Vector CrossProduct(const Vector& v1, const Vector& v2);
 
         Vector(): tuple_ { 4 } {}
 
         Vector(double x, double y, double z): tuple_ { 4 } {
-            tuple_[x_] = x;
-            tuple_[y_] = y;
-            tuple_[z_] = z;
-            tuple_[w_] = 0.0; // by definition
+            tuple_[kX] = x;
+            tuple_[kY] = y;
+            tuple_[kZ] = z;
+            tuple_[kW] = 0.0; // by definition
         }
 
         Vector(const Tuple& t);
@@ -46,17 +46,17 @@ class Point {
     Tuple tuple_;
 
     public:
-        enum { x_, y_, z_, w_ };
+        enum { kX, kY, kZ, kW };
 
         Point(): tuple_ { 4 } {
-            tuple_[w_] = 1.0;
+            tuple_[kW] = 1.0;
         }
 
         Point(double x, double y, double z): tuple_ { 4 } {
-            tuple_[x_] = x;
-            tuple_[y_] = y;
-            tuple_[z_] = z;
-            tuple_[w_] = 1.0; // by definition
+            tuple_[kX] = x;
+            tuple_[kY] = y;
+            tuple_[kZ] = z;
+            tuple_[kW] = 1.0; // by definition
         }
 
         Point(const Tuple& t);
