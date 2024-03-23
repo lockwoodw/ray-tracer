@@ -157,7 +157,9 @@ TEST(MatrixTest, MultiplyingAMatrixByATuple) {
         { 0, 0, 0, 1 }
     }};
     Matrix ma { a };
-    Tuple b { 1, 2, 3, 1 }, expected { 18, 24, 33, 1 }, product = ma * b;
+    Tuple b = get_4_tuple(1, 2, 3, 1),
+          expected = get_4_tuple(18, 24, 33, 1),
+          product = ma * b;
     ASSERT_EQ(product, expected);
 }
 
@@ -204,7 +206,7 @@ TEST(MatrixTest, MultiplyingAMatrixByTheIdentityMatrix) {
 }
 
 TEST(MatrixTest, MultiplyingTheIdentityMatrixByTuple) {
-    Tuple a { 1, 2, 3, 4 };
+    Tuple a = get_4_tuple(1, 2, 3, 4);
     Matrix id = Matrix::Identity(4);
     ASSERT_EQ(id * a, a);
 }
@@ -484,7 +486,8 @@ TEST(MatrixTest, TransposingAndInvertingAMatrix) {
 TEST(MatrixTest, MultiplyingATupleByAModifiedIdentityMatrix) {
     // Multiplying a tuple by a modified Identity matrix
     // scales the tuple by the modified amount
-    Tuple t { 3, 4, 5, 6 }, expected { 3, 40, 5, -12 };
+    Tuple t = get_4_tuple(3, 4, 5, 6),
+          expected = get_4_tuple(3, 40, 5, -12);
     Matrix id = Matrix::Identity(4);
     id[1][1] = 10;
     id[3][3] = -2;

@@ -1,15 +1,47 @@
 #include <cmath>
 #include <stdexcept>
+#include <cstring> // memset
 #include "tuple.h"
 #include "utils.h"
 
-Tuple::Tuple(double x, double y, double z, double w) : x_ { x }, y_ { y }, z_ { z }, w_ { w } {}
+// Tuple::Tuple(double x, double y, double z, double w) : x_ { x }, y_ { y }, z_ { z }, w_ { w } {}
+
+Tuple::Tuple(std::size_t n, const double* src) : size_ { n } {
+    if (n < 0) {
+        throw std::invalid_argument("Tuple size must be > 0");
+    }
+    elements_ = new double[n];
+    for (int i = 0; i < n; i++) {
+        elements_[i] = src[i];
+    }
+}
+
+Tuple::Tuple(std::size_t n): size_ { n } {
+    if (n < 0) {
+        throw std::invalid_argument("Tuple size must be > 0");
+    }
+    elements_ = new double[n];
+    // initialize all values to zero
+    memset(elements_, 0, n * sizeof(double));
+}
+
+Tuple::Tuple(const Tuple& t): size_ { t.size_ } {
+    elements_ = new double[size_];
+    for (int i = 0; i < size_; i++) {
+        elements_[i] = t.At(i);
+    }
+}
 
 bool Tuple::operator==(const Tuple& t) const {
-    return floating_point_compare(x_, t.x_)
-        && floating_point_compare(y_, t.y_)
-        && floating_point_compare(z_, t.z_)
-        && floating_point_compare(w_, t.w_);
+    if (size_ != t.size_) {
+        return false;
+    }
+    for (int i = 0; i < size_; i++) {
+        if (!floating_point_compare(elements_[i], t.elements_[i])) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool Tuple::operator!=(const Tuple& t) const {
@@ -17,32 +49,96 @@ bool Tuple::operator!=(const Tuple& t) const {
 }
 
 Tuple Tuple::operator+(const Tuple& t) const {
-    Tuple sum { x_ + t.x_, y_ + t.y_, z_ + t.z_, w_ + t.w_ };
+    if (size_ != t.size_) {
+        throw std::invalid_argument("Addition not possible: tuples are not same size");
+    }
+    Tuple sum { size_ };
+    for (int i = 0; i < size_; i++) {
+        sum.elements_[i] = elements_[i] + t.elements_[i];
+    }
     return sum;
 }
 
 Tuple Tuple::operator-(const Tuple& t) const {
-    Tuple difference { x_ - t.x_, y_ - t.y_, z_ - t.z_, w_ - t.w_ };
+    if (size_ != t.size_) {
+        throw std::invalid_argument("Subtraction not possible: tuples are not same size");
+    }
+    Tuple difference { size_ };
+    for (int i = 0; i < size_; i++) {
+        difference.elements_[i] = elements_[i] - t.elements_[i];
+    }
     return difference;
 }
 
 Tuple Tuple::operator-() const {
-    Tuple negated { -x_, -y_, -z_, -w_ };
+    Tuple negated { size_ };
+    for (int i = 0; i < size_; i++) {
+        negated.elements_[i] = -elements_[i];
+    }
     return negated;
 }
 
-Tuple Tuple::operator*(const double& d) const {
-    Tuple scaled { x_ * d, y_ * d, z_ * d, w_ * d };
+Tuple Tuple::operator*(double d) const {
+    Tuple scaled { size_ };
+    for (int i = 0; i < size_; i++) {
+        scaled.elements_[i] = elements_[i] * d;
+    }
     return scaled;
 }
 
-Tuple Tuple::operator/(const double& d) const {
+// Tuple& Tuple::operator*=(double d) {
+//     for (int i = 0; i < size_; i++) {
+//         elements_[i] *= d;
+//     }
+//     return *this;
+// }
+
+Tuple Tuple::operator/(double d) const {
     if (d == 0.0) {
-        throw std::runtime_error("Divide by zero attempted");
+        throw std::invalid_argument("Divide by zero attempted");
     }
-    Tuple scaled { x_ / d, y_ / d, z_ / d, w_ / d };
+    Tuple scaled { size_ };
+    for (int i = 0; i < size_; i++) {
+        scaled.elements_[i] = elements_[i] / d;
+    }
     return scaled;
 }
+
+double& Tuple::operator[](std::size_t index) {
+    if (index < 0 || index >= size_) {
+        throw std::out_of_range("Requested index is out of range");
+    }
+    return elements_[index];
+}
+
+double Tuple::At(std::size_t index) const {
+    if (index < 0 || index >= size_) {
+        throw std::out_of_range("Requested index is out of range");
+    }
+    return elements_[index];
+}
+
+std::ostream& operator<<(std::ostream& os, const Tuple& t) {
+    os << "[ ";
+    for (int i = 0; i < t.size_; i++) {
+        os << (i > 0 ? ", " : "") << t.elements_[i];
+    }
+    os << " ]" << std::endl;
+    return os;
+}
+
+Tuple get_4_tuple(double x, double y, double z, double w) {
+    Tuple p { 4 };
+    p[0] = x;
+    p[1] = y;
+    p[2] = z;
+    p[3] = w;
+    return p;
+}
+/*
+
+
+
 
 double Tuple::Magnitude() const {
     return std::sqrt(x_ * x_ + y_ * y_ + z_ * z_ + w_ * w_);
@@ -114,3 +210,5 @@ Vector Vector::operator+(const Vector& v) const {
     Tuple t = static_cast<Tuple>(*this) + v;
     return Vector { t.x_, t.y_, t.z_ };
 }
+
+*/

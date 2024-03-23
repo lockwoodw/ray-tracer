@@ -18,6 +18,12 @@ Matrix::~Matrix() {
     delete[] m_;
 }
 
+Matrix::Matrix(const Tuple& t): Matrix { t.Size(), 1 } {
+    for (int i = 0; i < nrows_; i++) {
+        m_[i][0] = t.At(i);
+    }
+}
+
 void Matrix::SetProduct(Matrix& product, const Matrix& m1, const Matrix& m2) {
     for (int i = 0; i < m1.nrows_; i++) {
         for (int j = 0; j < m2.ncolumns_; j++) {
@@ -117,7 +123,7 @@ Matrix Matrix::Submatrix(int row, int column) const {
 const Tuple operator*(const Matrix& m, const Tuple& t) {
     Matrix tuple { t }, product { 4, 1 };
     Matrix::SetProduct(product, m, tuple);
-    return Tuple { product[0][0], product[1][0], product[2][0], product[3][0] };
+    return get_4_tuple(product[0][0], product[1][0], product[2][0], product[3][0]);
 }
 
 std::ostream& operator<<(std::ostream& os, const Matrix& m) {

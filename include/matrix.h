@@ -34,12 +34,7 @@ class Matrix {
         ~Matrix();
 
         // conversion constructor
-        Matrix(const Tuple& t): Matrix { 4, 1 } {
-            m_[0][0] = t.x_;
-            m_[1][0] = t.y_;
-            m_[2][0] = t.z_;
-            m_[3][0] = t.w_;
-        }
+        Matrix(const Tuple& t);
 
         int Nrows() const { return nrows_; }
         int Ncolumns() const { return ncolumns_; }
