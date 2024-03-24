@@ -30,6 +30,8 @@ class Matrix {
             }
         }
 
+        Matrix(const Matrix& m);
+
         ~Matrix();
 
         // conversion constructor
@@ -42,6 +44,7 @@ class Matrix {
         bool operator==(const Matrix& m) const;
         bool operator!=(const Matrix& m) const;
         const Matrix operator*(const Matrix& m) const;
+        Matrix& operator=(const Matrix& m);
 
         Matrix Transpose() const;
         Matrix Submatrix(int row, int column) const;

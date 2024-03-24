@@ -2,12 +2,22 @@
 #include <cstring> // memset
 #include "matrix.h"
 
-Matrix::Matrix(int nrows, int ncolumns) : nrows_ { nrows }, ncolumns_ { ncolumns } {
+Matrix::Matrix(int nrows, int ncolumns): nrows_ { nrows }, ncolumns_ { ncolumns } {
     m_ = new double*[nrows_];
     for (int i = 0; i < nrows_; i++) {
         m_[i] = new double[ncolumns_];
         // initialize all values to zero
         memset(m_[i], 0, ncolumns_ * sizeof(double));
+    }
+}
+
+Matrix::Matrix(const Matrix& m): nrows_ { m.nrows_ }, ncolumns_ { m.ncolumns_ } {
+    m_ = new double*[nrows_];
+    for (int i = 0; i < nrows_; i++) {
+        m_[i] = new double[ncolumns_];
+        for (int j = 0; j < ncolumns_; j++) {
+            m_[i][j] = m.m_[i][j];
+        }
     }
 }
 
@@ -74,6 +84,29 @@ Matrix const Matrix::operator*(const Matrix& m) const {
         }
     }
     return product;
+}
+
+Matrix& Matrix::operator=(const Matrix& m) {
+    if (*this == m) {
+        return *this;
+    }
+
+    double** old = m_;
+    m_ = new double*[m.nrows_];
+    for (int i = 0; i < m.nrows_; i++) {
+        m_[i] = new double[m.ncolumns_];
+        for (int j = 0; j < m.ncolumns_; j++) {
+            m_[i][j] = m.m_[i][j];
+        }
+    }
+    for (int i = 0; i < nrows_; i++) {
+        delete[] old[i];
+    }
+    delete[] old;
+    nrows_ = m.nrows_;
+    ncolumns_ = m.ncolumns_;
+
+    return *this;
 }
 
 Matrix Matrix::Transpose() const {

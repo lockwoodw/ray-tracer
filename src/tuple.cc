@@ -115,7 +115,8 @@ Tuple& Tuple::operator=(const Tuple& t) {
     }
     double* old = elements_;
     elements_ = new double[t.size_];
-    for (int i = 0; i < t.size_; i++) {
+    size_ = t.size_;
+    for (int i = 0; i < size_; i++) {
         elements_[i] = t.elements_[i];
     }
     delete[] old;
