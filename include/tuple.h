@@ -40,8 +40,9 @@ class Tuple {
         // Tuple& operator*=(double d);
         Tuple operator/(double d) const;
         double& operator[](std::size_t index);
-        double At(std::size_t index) const;
+        Tuple& operator=(const Tuple& t); // Rule of 3
 
+        double At(std::size_t index) const;
         int Size() const { return size_; }
 
         friend std::ostream& operator<<(std::ostream& os, const Tuple& t);

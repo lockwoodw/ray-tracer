@@ -26,7 +26,7 @@ Tuple::Tuple(std::size_t n): size_ { n } {
 Tuple::Tuple(const Tuple& t): size_ { t.size_ } {
     elements_ = new double[size_];
     for (int i = 0; i < size_; i++) {
-        elements_[i] = t.At(i);
+        elements_[i] = t.elements_[i];
     }
 }
 
@@ -107,6 +107,19 @@ double& Tuple::operator[](std::size_t index) {
         throw std::out_of_range("Requested index is out of range");
     }
     return elements_[index];
+}
+
+Tuple& Tuple::operator=(const Tuple& t) {
+    if (*this == t) {
+        return *this;
+    }
+    double* old = elements_;
+    elements_ = new double[t.size_];
+    for (int i = 0; i < t.size_; i++) {
+        elements_[i] = t.elements_[i];
+    }
+    delete[] old;
+    return *this;
 }
 
 double Tuple::At(std::size_t index) const {

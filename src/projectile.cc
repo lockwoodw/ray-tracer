@@ -1,5 +1,5 @@
-#include "tuple.h"
 #include <iostream>
+#include "space.h"
 
 class Projectile {
     public:
@@ -15,7 +15,7 @@ class Environment {
         Environment(Vector gravity, Vector wind) : gravity { gravity }, wind { wind } {}
 };
 
-Projectile tick(Environment e, Projectile p) {
+Projectile tick(const Environment& e, const Projectile& p) {
     Point position = p.position + p.velocity;
     Vector velocity = p.velocity + e.gravity + e.wind;
     return Projectile { position, velocity };
@@ -32,10 +32,12 @@ int main(int argc, char**argv) {
     Environment e { Vector { 0, -0.1, 0 }, Vector { -0.01, 0, 0 } };
 
     int n_ticks = 0;
-    while (p.position.y_ > 0.0) {
-        std::cout << n_ticks++ << "," << p.position.y_ <<std::endl;
+    while (p.position.Y() > 0.0) {
+        std::cout << n_ticks++ << "," << p.position.Y() <<std::endl;
         p = tick(e, p);
     }
+    // Assume negative Y not possible (the ground is zero)
+    std::cout << n_ticks++ << "," << 0.0 <<std::endl;
 
     return 0;
 }
