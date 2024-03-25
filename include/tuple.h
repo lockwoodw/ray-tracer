@@ -6,8 +6,9 @@
 #include <iostream>
 
 class Tuple {
-    double *elements_;
-    std::size_t size_;
+    protected:
+        double *elements_;
+        std::size_t size_;
 
     public:
         template <std::size_t N>

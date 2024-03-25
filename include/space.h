@@ -3,86 +3,53 @@
 
 #include "tuple.h"
 
-class Point; // friend of Vector
-
-class Vector {
-    Tuple tuple_;
-
+class Vector: public Tuple {
     public:
         enum { kX, kY, kZ, kW };
         static double DotProduct(const Vector& v1, const Vector& v2);
         static Vector CrossProduct(const Vector& v1, const Vector& v2);
 
-        Vector(): tuple_ { 4 } {}
+        Vector(): Tuple { 4 } {
+            elements_[kW] = 0.0; // by definition
+        }
 
-        Vector(double x, double y, double z): tuple_ { 4 } {
-            tuple_[kX] = x;
-            tuple_[kY] = y;
-            tuple_[kZ] = z;
-            tuple_[kW] = 0.0; // by definition
+        Vector(double x, double y, double z): Tuple { 4 } {
+            elements_[kX] = x;
+            elements_[kY] = y;
+            elements_[kZ] = z;
+            elements_[kW] = 0.0;
         }
 
         Vector(const Tuple& t);
 
-        double X() { return tuple_[kX]; }
-        double Y() { return tuple_[kY]; }
-        double Z() { return tuple_[kZ]; }
-
-        Vector operator+(const Vector& v) const;
-        Vector& operator+=(const Vector& v);
-        Vector operator-(const Vector& v) const;
-        Vector operator*(double d) const;
-        Vector operator/(double d) const;
-        double& operator[](int index);
-        double At(int index) const;
-
-        bool operator==(const Tuple& t) const;
-        bool operator!=(const Tuple& t) const;
-        bool operator==(const Vector& v) const;
-        bool operator!=(const Vector& v) const;
+        double X() { return elements_[kX]; }
+        double Y() { return elements_[kY]; }
+        double Z() { return elements_[kZ]; }
 
         double Magnitude() const;
         Vector Normalize() const;
-
-        friend Point;
 };
 
-class Point {
-    Tuple tuple_;
-
+class Point: public Tuple {
     public:
         enum { kX, kY, kZ, kW };
 
-        Point(): tuple_ { 4 } {
-            tuple_[kW] = 1.0;
+        Point(): Tuple { 4 } {
+            elements_[kW] = 1.0; // by definition
         }
 
-        Point(double x, double y, double z): tuple_ { 4 } {
-            tuple_[kX] = x;
-            tuple_[kY] = y;
-            tuple_[kZ] = z;
-            tuple_[kW] = 1.0; // by definition
+        Point(double x, double y, double z): Tuple { 4 } {
+            elements_[kX] = x;
+            elements_[kY] = y;
+            elements_[kZ] = z;
+            elements_[kW] = 1.0;
         }
 
         Point(const Tuple& t);
 
-        double X() { return tuple_[kX]; }
-        double Y() { return tuple_[kY]; }
-        double Z() { return tuple_[kZ]; }
-
-        Point operator+(const Vector& v) const;
-        Point& operator+=(const Vector& v);
-        Point operator-(const Vector& v) const;
-        Vector operator-(const Point& p) const;
-        Point operator*(double d) const;
-        Point operator/(double d) const;
-        double& operator[](int index);
-        double At(int index) const;
-
-        bool operator==(const Tuple& t) const;
-        bool operator!=(const Tuple& t) const;
-        bool operator==(const Point& p) const;
-        bool operator!=(const Point& p) const;
+        double X() { return elements_[kX]; }
+        double Y() { return elements_[kY]; }
+        double Z() { return elements_[kZ]; }
 };
 
 #endif
