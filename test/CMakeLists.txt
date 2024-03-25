@@ -89,5 +89,21 @@ target_link_libraries(
 
 target_include_directories(colour-test PRIVATE ../include/)
 
+add_executable(
+  canvas-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/colour.cc
+  ../src/canvas.cc
+  canvas.cc
+)
+
+target_link_libraries(
+  canvas-test
+  GTest::gtest_main
+)
+
+target_include_directories(canvas-test PRIVATE ../include/)
+
 include(GoogleTest)
-gtest_discover_tests(utils-test tuple-test matrix-test space-test colour-test)
+gtest_discover_tests(utils-test tuple-test matrix-test space-test colour-test canvas-test)
