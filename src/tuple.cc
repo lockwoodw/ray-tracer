@@ -57,6 +57,16 @@ Tuple Tuple::operator+(const Tuple& t) const {
     return sum;
 }
 
+Tuple& Tuple::operator+=(const Tuple& t) {
+    if (size_ != t.size_) {
+        throw std::invalid_argument("Addition not possible: tuples are not same size");
+    }
+    for (int i = 0; i < size_; i++) {
+        elements_[i] = elements_[i] + t.elements_[i];
+    }
+    return *this;
+}
+
 Tuple Tuple::operator-(const Tuple& t) const {
     if (size_ != t.size_) {
         throw std::invalid_argument("Subtraction not possible: tuples are not same size");

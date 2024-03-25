@@ -27,6 +27,11 @@ Vector Vector::operator+(const Vector& v) const {
     return sum;
 }
 
+Vector& Vector::operator+=(const Vector& v) {
+    tuple_ += v.tuple_;
+    return *this;
+}
+
 Vector Vector::operator-(const Vector& v) const {
     Vector difference { tuple_ - v.tuple_ };
     return difference;
@@ -87,6 +92,11 @@ Point::Point(const Tuple& t): tuple_ { t } {
 Point Point::operator+(const Vector& v) const {
     Point p { tuple_ + v.tuple_ };
     return p;
+}
+
+Point& Point::operator+=(const Vector& v) {
+    tuple_ += v.tuple_;
+    return *this;
 }
 
 Point Point::operator-(const Vector& v) const {

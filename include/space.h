@@ -29,6 +29,7 @@ class Vector {
         double Z() { return tuple_[kZ]; }
 
         Vector operator+(const Vector& v) const;
+        Vector& operator+=(const Vector& v);
         Vector operator-(const Vector& v) const;
         Vector operator*(double d) const;
         Vector operator/(double d) const;
@@ -70,6 +71,7 @@ class Point {
         double Z() { return tuple_[kZ]; }
 
         Point operator+(const Vector& v) const;
+        Point& operator+=(const Vector& v);
         Point operator-(const Vector& v) const;
         Vector operator-(const Point& p) const;
         Point operator*(double d) const;

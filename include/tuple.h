@@ -34,6 +34,7 @@ class Tuple {
         bool operator==(const Tuple& t) const;
         bool operator!=(const Tuple& t) const;
         Tuple operator+(const Tuple& t) const;
+        Tuple& operator+=(const Tuple& t);
         Tuple operator-(const Tuple& t) const;
         Tuple operator-() const;
         Tuple operator*(double d) const;

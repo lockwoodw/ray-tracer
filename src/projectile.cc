@@ -15,10 +15,9 @@ class Environment {
         Environment(Vector gravity, Vector wind) : gravity { gravity }, wind { wind } {}
 };
 
-Projectile tick(const Environment& e, const Projectile& p) {
-    Point position = p.position + p.velocity;
-    Vector velocity = p.velocity + e.gravity + e.wind;
-    return Projectile { position, velocity };
+void tick(const Environment& e, Projectile& p) {
+    p.position += p.velocity;
+    p.velocity += e.gravity + e.wind;
 }
 
 int main(int argc, char**argv) {
@@ -34,7 +33,7 @@ int main(int argc, char**argv) {
     int n_ticks = 0;
     while (p.position.Y() > 0.0) {
         std::cout << n_ticks++ << "," << p.position.Y() <<std::endl;
-        p = tick(e, p);
+        tick(e, p);
     }
     // Assume negative Y not possible (the ground is zero)
     std::cout << n_ticks++ << "," << 0.0 <<std::endl;
