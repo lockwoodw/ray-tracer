@@ -201,8 +201,8 @@ TEST(CanvasTest, ConfirmingPPMFileEndsWithNewline) {
     int width { 5 }, height { 3 };
     Canvas c { width, height };
     PPMv3 ppm { c };
-    std::stringstream ss;
-    ss << ppm;
-    std::string ppm_file = ss.str();
+    std::ostringstream os;
+    os << ppm;
+    std::string ppm_file = os.str();
     ASSERT_EQ(ppm_file[ppm_file.length() - 1], '\n');
 }

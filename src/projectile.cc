@@ -1,19 +1,5 @@
 #include <iostream>
-#include "space.h"
-
-class Projectile {
-    public:
-        Point position;
-        Vector velocity;
-        Projectile(Point position, Vector velocity) : position { position }, velocity { velocity } {}
-};
-
-class Environment {
-    public:
-        Vector gravity;
-        Vector wind;
-        Environment(Vector gravity, Vector wind) : gravity { gravity }, wind { wind } {}
-};
+#include "projectile.h"
 
 void tick(const Environment& e, Projectile& p) {
     p.position += p.velocity;
@@ -35,8 +21,6 @@ int main(int argc, char**argv) {
         std::cout << n_ticks++ << "," << p.position.Y() <<std::endl;
         tick(e, p);
     }
-    // Assume negative Y not possible (the ground is zero)
-    std::cout << n_ticks++ << "," << 0.0 <<std::endl;
 
     return 0;
 }
