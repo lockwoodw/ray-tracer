@@ -21,17 +21,17 @@ Canvas::~Canvas() {
 
 Colour* Canvas::operator[](int row) {
     if (row < 0 || row >= height_) {
-        throw std::runtime_error("Row index out of bounds");
+        throw std::out_of_range("Row index out of bounds");
     }
     return pixels_[row];
 }
 
 Colour Canvas::At(int row, int column) const {
     if (row < 0 || row >= height_) {
-        throw std::runtime_error("Row index out of bounds");
+        throw std::out_of_range("Row index out of bounds");
     }
     if (column < 0 || column >= width_) {
-        throw std::runtime_error("Column index out of bounds");
+        throw std::out_of_range("Column index out of bounds");
     }
     return pixels_[row][column];
 }
