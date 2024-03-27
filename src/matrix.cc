@@ -3,6 +3,9 @@
 #include "matrix.h"
 
 Matrix::Matrix(int nrows, int ncolumns): nrows_ { nrows }, ncolumns_ { ncolumns } {
+    if (nrows_ <= 0 || ncolumns_ <= 0) {
+        throw std::invalid_argument("Invalid dimensions for matrix");
+    }
     m_ = new double*[nrows_];
     for (int i = 0; i < nrows_; i++) {
         m_[i] = new double[ncolumns_];
@@ -36,17 +39,17 @@ Matrix::Matrix(const Tuple& t): Matrix { t.Size(), 1 } {
 
 double Matrix::At(int row, int column) const {
     if (row < 0 || row >= nrows_) {
-        throw std::runtime_error("Row index out of bounds");
+        throw std::out_of_range("Row index out of bounds");
     }
     if (column < 0 || column >= ncolumns_) {
-        throw std::runtime_error("Column index out of bounds");
+        throw std::out_of_range("Column index out of bounds");
     }
     return m_[row][column];
 }
 
 double* Matrix::operator[](int row) {
     if (row < 0 || row >= nrows_) {
-        throw std::runtime_error("Row index out of bounds");
+        throw std::out_of_range("Row index out of bounds");
     }
     return m_[row];
 }
@@ -122,13 +125,13 @@ Matrix Matrix::Transpose() const {
 // Returns a copy of the matrix with the given row and column removed
 Matrix Matrix::Submatrix(int row, int column) const {
     if (nrows_ < 2 || ncolumns_ < 2) {
-        throw std::runtime_error("Submatrix does not exist");
+        throw std::invalid_argument("Submatrix does not exist");
     }
     if (row < 0 || row >= nrows_) {
-        throw std::runtime_error("Row index out of bounds");
+        throw std::out_of_range("Row index out of bounds");
     }
     if (column < 0 || column >= ncolumns_) {
-        throw std::runtime_error("Column index out of bounds");
+        throw std::out_of_range("Column index out of bounds");
     }
     Matrix submatrix { nrows_ - 1, ncolumns_ - 1 };
     int r = 0, c;
