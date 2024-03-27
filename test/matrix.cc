@@ -149,6 +149,30 @@ TEST(MatrixTest, MultiplyingTwoMatricesWithoutACommonDimension) {
     ASSERT_ANY_THROW(m2x2 * m3x3);
 }
 
+TEST(MatrixTest, MultiplyingAMatrixInSitu) {
+    std::array<std::array<double, 4>, 4> b4x4 {{
+        { 10, 1, -7, 2 },
+        { 3, 3, -3, 5 },
+        { 1, 1, 1, 1 },
+        { 12, -1, 2, 4 }
+    }};
+
+    std::array<std::array<double, 4>, 3>
+        a3x4 {{
+            { 1, 2, 3, 4 },
+            { 5, 6, 7, 8 },
+            { 9, 10, 11, 12 }
+        }},
+        product {{
+            { 67, 6, -2, 31 },
+            { 171, 22, -30, 79 },
+            { 275, 38, -58, 127 }
+        }};
+    Matrix ma { a3x4 }, mb { b4x4 }, expected { product };
+    ma *= mb;
+    ASSERT_EQ(ma, expected);
+}
+
 TEST(MatrixTest, MultiplyingAMatrixByATuple) {
     std::array<std::array<double, 4>, 4> a {{
         { 1, 2, 3, 4 },

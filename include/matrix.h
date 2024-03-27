@@ -13,6 +13,8 @@ class Matrix {
         int nrows_;
         int ncolumns_;
 
+        void static Multiply(Matrix& product, const Matrix& m1, const Matrix& m2);
+
     public:
         const static Matrix Identity(int size);
 
@@ -30,7 +32,7 @@ class Matrix {
             }
         }
 
-        Matrix(const Matrix& m);
+        Matrix(const Matrix& mx);
 
         ~Matrix();
 
@@ -39,12 +41,16 @@ class Matrix {
 
         int Nrows() const { return nrows_; }
         int Ncolumns() const { return ncolumns_; }
+
+        bool IsSquare() const { return nrows_ == ncolumns_; }
+
         double At(int row, int column) const;
         double* operator[](int row);
-        bool operator==(const Matrix& m) const;
-        bool operator!=(const Matrix& m) const;
-        const Matrix operator*(const Matrix& m) const;
-        Matrix& operator=(const Matrix& m);
+        bool operator==(const Matrix& mx) const;
+        bool operator!=(const Matrix& mx) const;
+        const Matrix operator*(const Matrix& mx) const;
+        Matrix& operator*=(const Matrix& mx);
+        Matrix& operator=(const Matrix& mx);
 
         Matrix Transpose() const;
         Matrix Submatrix(int row, int column) const;
@@ -53,8 +59,8 @@ class Matrix {
         double Determinant() const;
         Matrix Inverse() const;
 
-        friend const Tuple operator*(const Matrix& m, const Tuple& t);
-        friend std::ostream& operator<<(std::ostream& os, const Matrix& m);
+        friend const Tuple operator*(const Matrix& mx, const Tuple& t);
+        friend std::ostream& operator<<(std::ostream& os, const Matrix& mx);
 };
 
 #endif

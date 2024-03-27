@@ -14,12 +14,12 @@ Matrix::Matrix(int nrows, int ncolumns): nrows_ { nrows }, ncolumns_ { ncolumns 
     }
 }
 
-Matrix::Matrix(const Matrix& m): nrows_ { m.nrows_ }, ncolumns_ { m.ncolumns_ } {
+Matrix::Matrix(const Matrix& mx): nrows_ { mx.nrows_ }, ncolumns_ { mx.ncolumns_ } {
     m_ = new double*[nrows_];
     for (int i = 0; i < nrows_; i++) {
         m_[i] = new double[ncolumns_];
         for (int j = 0; j < ncolumns_; j++) {
-            m_[i][j] = m.m_[i][j];
+            m_[i][j] = mx.m_[i][j];
         }
     }
 }
@@ -54,13 +54,13 @@ double* Matrix::operator[](int row) {
     return m_[row];
 }
 
-bool Matrix::operator==(const Matrix& m) const {
-    if (nrows_ != m.nrows_ || ncolumns_ != m.ncolumns_) {
+bool Matrix::operator==(const Matrix& mx) const {
+    if (nrows_ != mx.nrows_ || ncolumns_ != mx.ncolumns_) {
         return false;
     }
     for (int i = 0; i < nrows_; i++) {
         for (int j = 0; j < ncolumns_; j++) {
-            if (!floating_point_compare(m_[i][j], m.m_[i][j])) {
+            if (!floating_point_compare(m_[i][j], mx.m_[i][j])) {
                 return false;
             }
         }
@@ -68,46 +68,59 @@ bool Matrix::operator==(const Matrix& m) const {
     return true;
 }
 
-bool Matrix::operator!=(const Matrix& m) const {
-    return ! operator==(m);
+bool Matrix::operator!=(const Matrix& mx) const {
+    return ! operator==(mx);
 }
 
-Matrix const Matrix::operator*(const Matrix& m) const {
-    if (ncolumns_ != m.nrows_) {
-        throw std::runtime_error("Operand dimensions invalid for Matrix multiplication");
-    }
-    Matrix product { nrows_, m.ncolumns_ };
-    for (int i = 0; i < nrows_; i++) {
-        for (int j = 0; j < m.ncolumns_; j++) {
+void Matrix::Multiply(Matrix& product, const Matrix& m1, const Matrix& m2) {
+    for (int i = 0; i < m1.nrows_; i++) {
+        for (int j = 0; j < m2.ncolumns_; j++) {
             double sum = 0;
-            for (int k = 0; k < ncolumns_; k++) {
-                    sum += m_[i][k] * m.m_[k][j];
+            for (int k = 0; k < m1.ncolumns_; k++) {
+                    sum += m1.m_[i][k] * m2.m_[k][j];
             }
             product.m_[i][j] = sum;
         }
     }
+}
+
+Matrix const Matrix::operator*(const Matrix& mx) const {
+    if (ncolumns_ != mx.nrows_) {
+        throw std::invalid_argument("Operand dimensions invalid for Matrix multiplication");
+    }
+    Matrix product { nrows_, mx.ncolumns_ };
+    Multiply(product, *this, mx);
     return product;
 }
 
-Matrix& Matrix::operator=(const Matrix& m) {
-    if (*this == m) {
+Matrix& Matrix::operator*=(const Matrix& mx) {
+    if (!mx.IsSquare() || ncolumns_ != mx.nrows_) {
+        throw std::invalid_argument("Operand dimensions invalid for Matrix multiplication");
+    }
+    Matrix copy { *this };
+    Multiply(*this, copy, mx);
+    return *this;
+}
+
+Matrix& Matrix::operator=(const Matrix& mx) {
+    if (*this == mx) {
         return *this;
     }
 
     double** old = m_;
-    m_ = new double*[m.nrows_];
-    for (int i = 0; i < m.nrows_; i++) {
-        m_[i] = new double[m.ncolumns_];
-        for (int j = 0; j < m.ncolumns_; j++) {
-            m_[i][j] = m.m_[i][j];
+    m_ = new double*[mx.nrows_];
+    for (int i = 0; i < mx.nrows_; i++) {
+        m_[i] = new double[mx.ncolumns_];
+        for (int j = 0; j < mx.ncolumns_; j++) {
+            m_[i][j] = mx.m_[i][j];
         }
     }
     for (int i = 0; i < nrows_; i++) {
         delete[] old[i];
     }
     delete[] old;
-    nrows_ = m.nrows_;
-    ncolumns_ = m.ncolumns_;
+    nrows_ = mx.nrows_;
+    ncolumns_ = mx.ncolumns_;
 
     return *this;
 }
@@ -152,25 +165,25 @@ Matrix Matrix::Submatrix(int row, int column) const {
     return submatrix;
 }
 
-const Tuple operator*(const Matrix& m, const Tuple& t) {
-    if (m.ncolumns_ != t.Size()) {
-        throw std::runtime_error("Operand dimensions invalid for multiplication");
+const Tuple operator*(const Matrix& mx, const Tuple& t) {
+    if (mx.ncolumns_ != t.Size()) {
+        throw std::invalid_argument("Operand dimensions invalid for multiplication");
     }
-    Tuple product { static_cast<std::size_t>(m.nrows_) };
-    for (int i = 0; i < m.nrows_; i++) {
+    Tuple product { static_cast<std::size_t>(mx.nrows_) };
+    for (int i = 0; i < mx.nrows_; i++) {
         double sum = 0;
-        for (int j = 0; j < m.ncolumns_; j++) {
-            sum += m.m_[i][j] * t.At(j);
+        for (int j = 0; j < mx.ncolumns_; j++) {
+            sum += mx.m_[i][j] * t.At(j);
         }
         product[i] = sum;
     }
     return product;
 }
 
-std::ostream& operator<<(std::ostream& os, const Matrix& m) {
-    for (int i = 0; i < m.nrows_; i++) {
-        for (int j = 0; j < m.ncolumns_; j++) {
-            os << (j > 0 ? "\t" : "") << m.m_[i][j];
+std::ostream& operator<<(std::ostream& os, const Matrix& mx) {
+    for (int i = 0; i < mx.nrows_; i++) {
+        for (int j = 0; j < mx.ncolumns_; j++) {
+            os << (j > 0 ? "\t" : "") << mx.m_[i][j];
         }
         os << std::endl;
     }
