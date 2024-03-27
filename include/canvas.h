@@ -12,6 +12,7 @@ class Canvas {
 
     public:
         Canvas(int width, int height);
+        Canvas(int width, int height, const Colour& default_colour);
         ~Canvas();
 
         Colour* operator[](int row);

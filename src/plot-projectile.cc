@@ -1,9 +1,3 @@
-#include <iostream>
-#include <vector>
-#include <cmath>
-#include "projectile.h"
-#include "canvas.h"
-
 /*
 Plot projectile in PPM format given an initial position and velocity, including
 the effects of gravity and wind resistance.
@@ -14,14 +8,20 @@ To simulate the effect of different initial velocities, you can supply a scaling
 factor from the command line.
 */
 
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include "projectile.h"
+#include "canvas.h"
+
 // Recalculate the projectile position and velocity at each tick of time.
-void tick(const Environment& e, Projectile& p) {
+void Tick(const Environment& e, Projectile& p) {
     p.position += p.velocity;
     p.velocity += e.gravity + e.wind;
 }
 
 // Thicken point to 9-pixels
-void add_point(Canvas& canvas, int x, int y, Colour& point) {
+void AddPoint(Canvas& canvas, int x, int y, Colour& point) {
     for (int row = y - 3; row <= y - 1; row++) {
         for (int column = x - 1; column <= x + 1; column++) {
             canvas[row][column] = point;
@@ -58,7 +58,7 @@ int main(int argc, char**argv) {
         if (y > max_height) {
             max_height = y;
         }
-        tick(e, p);
+        Tick(e, p);
         y = p.position.Y();
     }
 
@@ -68,8 +68,9 @@ int main(int argc, char**argv) {
     int width = location_by_tick.size() * tick_width + padding,
         height = static_cast<int>(std::nearbyint(max_height * y_scale)) + 3;
 
-    Canvas canvas { width, height };
-    Colour point { 1.0, 0, 0 }; // red
+    Colour point { 1, 0, 0 }, // red
+           white { 1, 1, 1 }; // white
+    Canvas canvas { width, height, white };
 
     int x = 0;
     for (int y: location_by_tick) {
@@ -77,7 +78,7 @@ int main(int argc, char**argv) {
         // Because the canvas's Y dimension increases downwards, the highest
         // point is actually in row 0, so we need to subtract each point's y
         // coordinate from the the canvas height.
-        add_point(canvas, x + padding, height - y, point);
+        AddPoint(canvas, x + padding, height - y, point);
         x += tick_width;
     }
 

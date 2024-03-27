@@ -1,7 +1,6 @@
 #define _USE_MATH_DEFINES // for M_PI
 #include <gtest/gtest.h>
 #include <array>
-#include <numbers>
 #include <cmath>
 #include "transformations.h"
 #include "space.h"
