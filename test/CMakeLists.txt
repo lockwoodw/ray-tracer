@@ -122,5 +122,48 @@ target_link_libraries(
 
 target_include_directories(transformations-test PRIVATE ../include/)
 
+add_executable(
+  ray-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/space.cc
+  ../src/matrix.cc
+  ../src/transformations.cc
+  ray.cc
+)
+
+target_link_libraries(
+  ray-test
+  GTest::gtest_main
+)
+
+target_include_directories(ray-test PRIVATE ../include/)
+
+add_executable(
+  sphere-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/space.cc
+  ../src/sphere.cc
+  sphere.cc
+)
+
+target_link_libraries(
+  sphere-test
+  GTest::gtest_main
+)
+
+target_include_directories(sphere-test PRIVATE ../include/)
+
 include(GoogleTest)
-gtest_discover_tests(utils-test tuple-test matrix-test space-test colour-test canvas-test transformations-test)
+gtest_discover_tests(
+  utils-test
+  tuple-test
+  matrix-test
+  space-test
+  colour-test
+  canvas-test
+  transformations-test
+  ray-test
+  sphere-test
+)
