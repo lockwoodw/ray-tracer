@@ -35,10 +35,10 @@ TEST(SphereTest, IntersectingAUnitSphereAtTwoPoints) {
     Vector direction { 0, 0, 1 };
     Ray r { ray_origin, direction };
     Sphere s { sphere_origin, 1.0 };
-    std::vector<double> xs = s.Intersections(r);
-    ASSERT_EQ(xs.size(), 2);
-    ASSERT_DOUBLE_EQ(xs[0], 4.0);
-    ASSERT_DOUBLE_EQ(xs[1], 6.0);
+    IntersectionList xs = s.Intersections(r);
+    ASSERT_EQ(xs.Size(), 2);
+    ASSERT_DOUBLE_EQ(xs[0].Distance(), 4.0);
+    ASSERT_DOUBLE_EQ(xs[1].Distance(), 6.0);
 }
 
 TEST(SphereTest, IntersectingANonUnitSphereAtTwoPoints) {
@@ -48,10 +48,10 @@ TEST(SphereTest, IntersectingANonUnitSphereAtTwoPoints) {
     Ray r { ray_origin, direction };
     double radius { 2.5 };
     Sphere s { sphere_origin, radius };
-    std::vector<double> xs = s.Intersections(r);
-    ASSERT_EQ(xs.size(), 2);
-    ASSERT_DOUBLE_EQ(xs[0], 2.5);
-    ASSERT_DOUBLE_EQ(xs[1], 7.5);
+    IntersectionList xs = s.Intersections(r);
+    ASSERT_EQ(xs.Size(), 2);
+    ASSERT_DOUBLE_EQ(xs[0].Distance(), 2.5);
+    ASSERT_DOUBLE_EQ(xs[1].Distance(), 7.5);
 }
 
 /*
@@ -70,10 +70,10 @@ TEST(SphereTest, IntersectingASphereAtATangent) {
     Vector direction { 0, 0, 1 };
     Ray r { ray_origin, direction };
     Sphere s { sphere_origin, 1.0 };
-    std::vector<double> xs = s.Intersections(r);
-    ASSERT_EQ(xs.size(), 2);
-    ASSERT_DOUBLE_EQ(xs[0], 5.0);
-    ASSERT_DOUBLE_EQ(xs[1], 5.0);
+    IntersectionList xs = s.Intersections(r);
+    ASSERT_EQ(xs.Size(), 2);
+    ASSERT_DOUBLE_EQ(xs[0].Distance(), 5.0);
+    ASSERT_DOUBLE_EQ(xs[1].Distance(), 5.0);
 }
 
 /*
@@ -90,8 +90,8 @@ TEST(SphereTest, NotIntersectingASphere) {
     Vector direction { 0, 0, 1 };
     Ray r { ray_origin, direction };
     Sphere s { sphere_origin, 1.0 };
-    std::vector<double> xs = s.Intersections(r);
-    ASSERT_EQ(xs.size(), 0);
+    IntersectionList xs = s.Intersections(r);
+    ASSERT_EQ(xs.Size(), 0);
 }
 
 /*
@@ -109,10 +109,10 @@ TEST(SphereTest, IntersectingASphereFromInside) {
     Vector direction { 0, 0, 1 };
     Ray r { origin, direction };
     Sphere s { origin, 1.0 };
-    std::vector<double> xs = s.Intersections(r);
-    ASSERT_EQ(xs.size(), 2);
-    ASSERT_DOUBLE_EQ(xs[0], -1.0);
-    ASSERT_DOUBLE_EQ(xs[1], 1.0);
+    IntersectionList xs = s.Intersections(r);
+    ASSERT_EQ(xs.Size(), 2);
+    ASSERT_DOUBLE_EQ(xs[0].Distance(), -1.0);
+    ASSERT_DOUBLE_EQ(xs[1].Distance(), 1.0);
 }
 
 /*
@@ -131,10 +131,10 @@ TEST(SphereTest, IntersectingASphereBehindARay) {
     Vector direction { 0, 0, 1 };
     Ray r { ray_origin, direction };
     Sphere s { sphere_origin, 1.0 };
-    std::vector<double> xs = s.Intersections(r);
-    ASSERT_EQ(xs.size(), 2);
-    ASSERT_DOUBLE_EQ(xs[0], -6.0);
-    ASSERT_DOUBLE_EQ(xs[1], -4.0);
+    IntersectionList xs = s.Intersections(r);
+    ASSERT_EQ(xs.Size(), 2);
+    ASSERT_DOUBLE_EQ(xs[0].Distance(), -6.0);
+    ASSERT_DOUBLE_EQ(xs[1].Distance(), -4.0);
 }
 
 /*
@@ -146,6 +146,18 @@ Scenario: Intersect sets the object on the intersection
     And xs[0].object = s
     And xs[1].object = s
 */
+
+TEST(SphereTest, IncludingTheObjectInTheIntersection) {
+    Point ray_origin { 0, 0, -5 },
+          sphere_origin { 0, 0, 0 };
+    Vector direction { 0, 0, 1 };
+    Ray r { ray_origin, direction };
+    Sphere s { sphere_origin, 1.0 };
+    IntersectionList xs = s.Intersections(r);
+    ASSERT_EQ(xs.Size(), 2);
+    ASSERT_EQ(*xs[0].Object(), s);
+    ASSERT_EQ(*xs[1].Object(), s);
+}
 
 /*
 Scenario: A sphere's default transformation

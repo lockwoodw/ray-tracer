@@ -144,6 +144,7 @@ add_executable(
   ../src/utils.cc
   ../src/tuple.cc
   ../src/space.cc
+  ../src/shape.cc
   ../src/sphere.cc
   sphere.cc
 )
@@ -160,6 +161,7 @@ add_executable(
   ../src/utils.cc
   ../src/tuple.cc
   ../src/space.cc
+  ../src/shape.cc
   ../src/sphere.cc
   intersections.cc
 )

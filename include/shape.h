@@ -6,17 +6,17 @@
 #include "space.h"
 #include "ray.h"
 
+class IntersectionList;
+
 class Shape {
     protected:
-        Point origin;
+        Point origin_;
 
     public:
-        Shape(const Point& p): origin { p } {}
+        Shape(const Point& p): origin_ { p } {}
         ~Shape() {}
-        virtual std::vector<double> Intersections(const Ray& r) {
-            throw std::runtime_error("Not implemented in base class");
-        }
-        const Point Origin() const { return origin; }
+        virtual IntersectionList Intersections(const Ray& r);
+        const Point Origin() const { return origin_; }
         virtual bool operator==(const Shape&) const {
             throw std::runtime_error("Not implemented in base class");
         }
@@ -26,31 +26,36 @@ class Shape {
 };
 
 class Intersection {
-    const Shape& object;
-    double distance;
+    const Shape* object_;
+    double distance_;
 
     public:
-        Intersection(double d, const Shape& s): distance { d }, object { s } {}
-        const Shape& Object() const { return object; }
-        double Distance() const { return distance; }
+        Intersection(double d, const Shape& s): distance_ { d }, object_ { &s } {}
+        const Shape* Object() const { return object_; }
+        double Distance() const { return distance_; }
+        Intersection& operator=(const Intersection& i);
+        bool operator==(const Intersection& i) const {
+            return *object_ == *i.object_ && distance_ == i.distance_;
+        }
+};
+
+class IntersectionComparator {
+    public:
+        bool operator()(const Intersection& a, const Intersection& b) {
+            return a.Distance() < b.Distance();
+        }
 };
 
 class IntersectionList {
-    std::vector<Intersection> list;
+    std::vector<Intersection> list_;
+    const Intersection* hit_;
 
     public:
-        IntersectionList() {}
-        Intersection& operator[](int index) {
-            if (index < 0 || index >= list.size()) {
-                throw std::out_of_range("Index does not exist in list");
-            }
-            return list[index];
-        }
-        int Add(const Intersection& i) {
-            list.push_back(i);
-            return list.size();
-        }
-        int Size() { return list.size(); }
+        IntersectionList(): hit_ { nullptr } {}
+        Intersection& operator[](int index);
+        void Add(const Intersection& i);
+        int Size() const { return list_.size(); }
+        const Intersection* Hit() const;
 };
 
 #endif
