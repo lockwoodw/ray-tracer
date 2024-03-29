@@ -3,6 +3,22 @@
 #include "ray.h"
 #include "sphere.h"
 
+TEST(SphereTest, ComparingSpheresThroughBaseClass) {
+    Point origin1 { 0, 0, -5 },
+          origin2 { 0, 0, 0 };
+    Sphere sphere1 { origin1, 1.0 },
+           sphere2 { origin2, 1.0 },
+           sphere3 { origin1, 2.0 },
+           sphere4 { origin1, 1.0 };
+    Shape* shape1 = &sphere1;
+    Shape* shape2 = &sphere2;
+    Shape* shape3 = &sphere3;
+    Shape* shape4 = &sphere4;
+    ASSERT_NE(*shape1, *shape2);
+    ASSERT_NE(*shape1, *shape3);
+    ASSERT_EQ(*shape1, *shape4);
+}
+
 /*
 Scenario: A ray intersects a sphere at two points
   Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
@@ -55,8 +71,9 @@ TEST(SphereTest, IntersectingASphereAtATangent) {
     Ray r { ray_origin, direction };
     Sphere s { sphere_origin, 1.0 };
     std::vector<double> xs = s.Intersections(r);
-    ASSERT_EQ(xs.size(), 1);
+    ASSERT_EQ(xs.size(), 2);
     ASSERT_DOUBLE_EQ(xs[0], 5.0);
+    ASSERT_DOUBLE_EQ(xs[1], 5.0);
 }
 
 /*

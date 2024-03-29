@@ -155,6 +155,22 @@ target_link_libraries(
 
 target_include_directories(sphere-test PRIVATE ../include/)
 
+add_executable(
+  intersections-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/space.cc
+  ../src/sphere.cc
+  intersections.cc
+)
+
+target_link_libraries(
+  intersections-test
+  GTest::gtest_main
+)
+
+target_include_directories(intersections-test PRIVATE ../include/)
+
 include(GoogleTest)
 gtest_discover_tests(
   utils-test
@@ -166,4 +182,5 @@ gtest_discover_tests(
   transformations-test
   ray-test
   sphere-test
+  intersections-test
 )
