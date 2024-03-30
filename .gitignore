@@ -1,3 +1,5 @@
 test/build/
 git-ignore/
 build/
+.vscode/
+*.ppm
