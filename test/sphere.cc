@@ -2,6 +2,7 @@
 #include <vector>
 #include "ray.h"
 #include "sphere.h"
+#include "transformations.h"
 
 TEST(SphereTest, ComparingSpheresThroughBaseClass) {
     Point origin1 { 0, 0, -5 },
@@ -19,6 +20,22 @@ TEST(SphereTest, ComparingSpheresThroughBaseClass) {
     ASSERT_EQ(*shape1, *shape4);
 }
 
+TEST(SphereTest, ConstructingASphereWithTheDefaultConstructor) {
+    Point origin { 0, 0, 0 };
+    double radius { 1.0 };
+    Sphere s { };
+    ASSERT_EQ(s.Origin(), origin);
+    ASSERT_DOUBLE_EQ(s.Radius(), radius);
+}
+
+TEST(SphereTest, ConstructingASphereWithAlternativeConstructor) {
+    Point origin { 1, 1, 1 };
+    double radius { 10.0 };
+    Sphere s { origin, radius };
+    ASSERT_EQ(s.Origin(), origin);
+    ASSERT_DOUBLE_EQ(s.Radius(), radius);
+}
+
 /*
 Scenario: A ray intersects a sphere at two points
   Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
@@ -30,11 +47,10 @@ Scenario: A ray intersects a sphere at two points
 */
 
 TEST(SphereTest, IntersectingAUnitSphereAtTwoPoints) {
-    Point ray_origin { 0, 0, -5 },
-          sphere_origin { 0, 0, 0 };
+    Point ray_origin { 0, 0, -5 };
     Vector direction { 0, 0, 1 };
     Ray r { ray_origin, direction };
-    Sphere s { sphere_origin, 1.0 };
+    Sphere s { };
     IntersectionList xs = s.Intersections(r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_DOUBLE_EQ(xs[0].Distance(), 4.0);
@@ -65,11 +81,10 @@ Scenario: A ray intersects a sphere at a tangent
 */
 
 TEST(SphereTest, IntersectingASphereAtATangent) {
-    Point ray_origin { 0, 1, -5 },
-          sphere_origin { 0, 0, 0 };
+    Point ray_origin { 0, 1, -5 };
     Vector direction { 0, 0, 1 };
     Ray r { ray_origin, direction };
-    Sphere s { sphere_origin, 1.0 };
+    Sphere s { };
     IntersectionList xs = s.Intersections(r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_DOUBLE_EQ(xs[0].Distance(), 5.0);
@@ -85,11 +100,10 @@ Scenario: A ray misses a sphere
 */
 
 TEST(SphereTest, NotIntersectingASphere) {
-    Point ray_origin { 0, 2, -5 },
-          sphere_origin { 0, 0, 0 };
+    Point ray_origin { 0, 2, -5 };
     Vector direction { 0, 0, 1 };
     Ray r { ray_origin, direction };
-    Sphere s { sphere_origin, 1.0 };
+    Sphere s { };
     IntersectionList xs = s.Intersections(r);
     ASSERT_EQ(xs.Size(), 0);
 }
@@ -108,7 +122,7 @@ TEST(SphereTest, IntersectingASphereFromInside) {
     Point origin { 0, 0, 0 };
     Vector direction { 0, 0, 1 };
     Ray r { origin, direction };
-    Sphere s { origin, 1.0 };
+    Sphere s { };
     IntersectionList xs = s.Intersections(r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_DOUBLE_EQ(xs[0].Distance(), -1.0);
@@ -126,11 +140,10 @@ Scenario: A sphere is behind a ray
 */
 
 TEST(SphereTest, IntersectingASphereBehindARay) {
-    Point ray_origin { 0, 0, 5 },
-          sphere_origin { 0, 0, 0 };
+    Point ray_origin { 0, 0, 5 };
     Vector direction { 0, 0, 1 };
     Ray r { ray_origin, direction };
-    Sphere s { sphere_origin, 1.0 };
+    Sphere s { };
     IntersectionList xs = s.Intersections(r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_DOUBLE_EQ(xs[0].Distance(), -6.0);
@@ -148,11 +161,10 @@ Scenario: Intersect sets the object on the intersection
 */
 
 TEST(SphereTest, IncludingTheObjectInTheIntersection) {
-    Point ray_origin { 0, 0, -5 },
-          sphere_origin { 0, 0, 0 };
+    Point ray_origin { 0, 0, -5 };
     Vector direction { 0, 0, 1 };
     Ray r { ray_origin, direction };
-    Sphere s { sphere_origin, 1.0 };
+    Sphere s { };
     IntersectionList xs = s.Intersections(r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_EQ(*xs[0].Object(), s);
@@ -165,6 +177,11 @@ Scenario: A sphere's default transformation
   Then s.transform = identity_matrix
 */
 
+TEST(SphereTest, ConfirmingDefaultTransformation) {
+    Sphere s { };
+    ASSERT_EQ(s.Transform(), Matrix::Identity(4));
+}
+
 /*
 Scenario: Changing a sphere's transformation
   Given s ← sphere()
@@ -172,6 +189,13 @@ Scenario: Changing a sphere's transformation
   When set_transform(s, t)
   Then s.transform = t
 */
+
+TEST(SphereTest, ChangingTheTransformation) {
+    Sphere s { };
+    Matrix t = Transformation().Translate(2, 3, 4);
+    s.SetTransform(t);
+    ASSERT_EQ(s.Transform(), t);
+}
 
 /*
 Scenario: Intersecting a scaled sphere with a ray
@@ -184,6 +208,19 @@ Scenario: Intersecting a scaled sphere with a ray
     And xs[1].t = 7
 */
 
+TEST(SphereTest, IntersectingASphereWithAScaledRay) {
+    Point ray_origin { 0, 0, -5 };
+    Vector direction { 0, 0, 1 };
+    Ray r { ray_origin, direction };
+    Sphere s { };
+    Matrix t = Transformation().Scale(2, 2, 2);
+    s.SetTransform(t);
+    IntersectionList xs = s.Intersections(r);
+    ASSERT_EQ(xs.Size(), 2);
+    ASSERT_EQ(xs[0].Distance(), 3);
+    ASSERT_EQ(xs[1].Distance(), 7);
+}
+
 /*
 Scenario: Intersecting a translated sphere with a ray
   Given r ← ray(point(0, 0, -5), vector(0, 0, 1))
@@ -192,6 +229,17 @@ Scenario: Intersecting a translated sphere with a ray
     And xs ← intersect(s, r)
   Then xs.count = 0
 */
+
+TEST(SphereTest, IntersectingATranslatedSphereWithARay) {
+    Point ray_origin { 0, 0, -5 };
+    Vector direction { 0, 0, 1 };
+    Ray r { ray_origin, direction };
+    Sphere s { };
+    Matrix t = Transformation().Translate(5, 0, 0);
+    s.SetTransform(t);
+    IntersectionList xs = s.Intersections(r);
+    ASSERT_EQ(xs.Size(), 0);
+}
 
 /*
 Scenario: The normal on a sphere at a point on the x axis

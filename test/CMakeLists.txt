@@ -143,6 +143,8 @@ add_executable(
   sphere-test
   ../src/utils.cc
   ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/transformations.cc
   ../src/space.cc
   ../src/shape.cc
   ../src/sphere.cc
@@ -160,6 +162,8 @@ add_executable(
   intersections-test
   ../src/utils.cc
   ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/transformations.cc
   ../src/space.cc
   ../src/shape.cc
   ../src/sphere.cc

@@ -5,9 +5,11 @@
 IntersectionList Sphere::Intersections(const Ray& r) const {
     IntersectionList list {};
 
-    Vector sphere_to_ray = r.Origin() - origin_;
-    double a = Vector::DotProduct(r.Direction(), r.Direction()),
-           b = 2 * Vector::DotProduct(r.Direction(), sphere_to_ray),
+    Ray local_ray = r.Transform(transform_.Inverse());
+
+    Vector sphere_to_ray = local_ray.Origin() - origin_;
+    double a = Vector::DotProduct(local_ray.Direction(), local_ray.Direction()),
+           b = 2 * Vector::DotProduct(local_ray.Direction(), sphere_to_ray),
            c = Vector::DotProduct(sphere_to_ray, sphere_to_ray) - radius_ * radius_,
            discriminant = b * b - 4 * a * c;
 

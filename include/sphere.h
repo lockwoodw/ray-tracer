@@ -7,6 +7,7 @@ class Sphere: public Shape {
     double radius_;
 
     public:
+        Sphere(): Shape { Point { 0, 0, 0 } }, radius_ { 1.0 } {}
         Sphere(const Point& p, double r): Shape { p }, radius_ { r } {}
         IntersectionList Intersections(const Ray& r) const;
         const double Radius() { return radius_; }

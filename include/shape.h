@@ -5,15 +5,17 @@
 #include <stdexcept>
 #include "space.h"
 #include "ray.h"
+#include "matrix.h"
 
 class IntersectionList;
 
 class Shape {
     protected:
         Point origin_;
+        Matrix transform_;
 
     public:
-        Shape(const Point& p): origin_ { p } {}
+        Shape(const Point& p): origin_ { p }, transform_ { Matrix::Identity(4) } {}
         ~Shape() {}
         virtual IntersectionList Intersections(const Ray& r);
         const Point Origin() const { return origin_; }
@@ -22,6 +24,12 @@ class Shape {
         }
         bool operator!=(const Shape& s) const {
             return !operator==(s);
+        }
+        void SetTransform(const Matrix& m) {
+            transform_ *= m;
+        }
+        const Matrix& Transform() const {
+            return transform_;
         }
 };
 
