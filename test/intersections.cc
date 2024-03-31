@@ -16,7 +16,7 @@ TEST(IntersectionsTest, EncapsulatingADistanceAndAnObject) {
     Point origin { 0, 0, 0 };
     Sphere s { origin, 1.0 };
     double distance { 3.5 };
-    Intersection i { distance, s };
+    Intersection i { distance, &s };
     ASSERT_EQ(i.Distance(), distance);
     ASSERT_EQ(*i.Object(), s);
 }
@@ -103,10 +103,9 @@ TEST(IntersectionsTest, AggregatingIntersections) {
     Point origin { 0, 0, 0 };
     Sphere s { origin, 1.0 };
     double d1 { 1 }, d2 { 2 };
-    Intersection i1 { d1, s }, i2 { d2, s };
-    IntersectionList xs;
-    xs.Add(i1);
-    xs.Add(i2);
+    Intersection i1 { d1, &s }, i2 { d2, &s };
+    IntersectionList xs {};
+    xs << i1 << i2;
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_EQ(xs[0].Distance(), d1);
     ASSERT_EQ(xs[1].Distance(), d2);
@@ -125,8 +124,8 @@ Scenario: The hit, when all intersections have positive t
 TEST(IntersectionsTest, FindingTheHitForPositiveDistances) {
     Point origin { 0, 0, 0 };
     Sphere s { origin, 1.0 };
-    Intersection i1 { 1, s }, i2 { 2, s };
-    IntersectionList xs;
+    Intersection i1 { 1, &s }, i2 { 2, &s };
+    IntersectionList xs {};
     xs.Add(i1);
     xs.Add(i2);
     ASSERT_EQ(*xs.Hit(), i1);
@@ -145,8 +144,8 @@ Scenario: The hit, when some intersections have negative t
 TEST(IntersectionsTest, FindingTheHitForMixedDistances) {
     Point origin { 0, 0, 0 };
     Sphere s { origin, 1.0 };
-    Intersection i1 { -1, s }, i2 { 1, s };
-    IntersectionList xs;
+    Intersection i1 { -1, &s }, i2 { 1, &s };
+    IntersectionList xs {};
     xs.Add(i1);
     xs.Add(i2);
     ASSERT_EQ(*xs.Hit(), i2);
@@ -165,8 +164,8 @@ Scenario: The hit, when all intersections have negative t
 TEST(IntersectionsTest, FindingTheHitForNegativeDistances) {
     Point origin { 0, 0, 0 };
     Sphere s { origin, 1.0 };
-    Intersection i1 { -2, s }, i2 { -1, s };
-    IntersectionList xs;
+    Intersection i1 { -2, &s }, i2 { -1, &s };
+    IntersectionList xs {};
     xs.Add(i1);
     xs.Add(i2);
     ASSERT_TRUE(xs.Hit() == nullptr);
@@ -187,12 +186,9 @@ Then i = i4
 TEST(IntersectionsTest, FindingTheHitForUnorderedMixedDistances) {
     Point origin { 0, 0, 0 };
     Sphere s { origin, 1.0 };
-    Intersection i1 { 5, s }, i2 { 7, s }, i3 { -3, s }, i4 { 2, s };
-    IntersectionList xs;
-    xs.Add(i1);
-    xs.Add(i2);
-    xs.Add(i3);
-    xs.Add(i4);
+    Intersection i1 { 5, &s }, i2 { 7, &s }, i3 { -3, &s }, i4 { 2, &s };
+    IntersectionList xs {};
+    xs << i1 << i2 << i3 << i4;
     ASSERT_EQ(*xs.Hit(), i4);
 }
 

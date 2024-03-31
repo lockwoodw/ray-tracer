@@ -16,8 +16,9 @@ class Shape {
 
     public:
         Shape(const Point& p): origin_ { p }, transform_ { Matrix::Identity(4) } {}
+        Shape(const Shape& s): origin_ { s.origin_ }, transform_ { s.transform_ } {}
         ~Shape() {}
-        virtual IntersectionList Intersections(const Ray& r);
+        virtual void AddIntersections(IntersectionList& list, const Ray& ray) const;
         const Point Origin() const { return origin_; }
         virtual bool operator==(const Shape&) const {
             throw std::runtime_error("Not implemented in base class");
@@ -38,12 +39,13 @@ class Intersection {
     double distance_;
 
     public:
-        Intersection(double d, const Shape& s): distance_ { d }, object_ { &s } {}
+        Intersection(double d, const Shape* s): distance_ { d }, object_ { s } {}
+        Intersection(const Intersection& i): distance_ { i.distance_ }, object_ { i.object_ } {}
         const Shape* Object() const { return object_; }
         double Distance() const { return distance_; }
         Intersection& operator=(const Intersection& i);
         bool operator==(const Intersection& i) const {
-            return *object_ == *i.object_ && distance_ == i.distance_;
+            return object_ == i.object_ && distance_ == i.distance_;
         }
 };
 
@@ -56,14 +58,20 @@ class IntersectionComparator {
 
 class IntersectionList {
     std::vector<Intersection> list_;
-    const Intersection* hit_;
+    Intersection* hit_;
 
     public:
         IntersectionList(): hit_ { nullptr } {}
-        Intersection& operator[](int index);
+        ~IntersectionList() {
+            if (hit_) {
+                delete hit_;
+            }
+        }
+        Intersection& operator[](unsigned int index);
         void Add(const Intersection& i);
         int Size() const { return list_.size(); }
-        const Intersection* Hit() const;
+        Intersection* Hit() const;
+        IntersectionList& operator<<(const Intersection& i);
 };
 
 #endif

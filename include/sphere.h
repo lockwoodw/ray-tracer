@@ -9,7 +9,7 @@ class Sphere: public Shape {
     public:
         Sphere(): Shape { Point { 0, 0, 0 } }, radius_ { 1.0 } {}
         Sphere(const Point& p, double r): Shape { p }, radius_ { r } {}
-        IntersectionList Intersections(const Ray& r) const;
+        void AddIntersections(IntersectionList& i, const Ray& r) const;
         const double Radius() { return radius_; }
         bool operator==(const Shape& s) const;
 };

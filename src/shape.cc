@@ -7,8 +7,8 @@ Intersection& Intersection::operator=(const Intersection& i) {
     return *this;
 }
 
-Intersection& IntersectionList::operator[](int index) {
-    if (index < 0 || index >= list_.size()) {
+Intersection& IntersectionList::operator[](unsigned int index) {
+    if (index >= list_.size()) {
         throw std::out_of_range("Index does not exist in list");
     }
     return list_[index];
@@ -18,16 +18,26 @@ void IntersectionList::Add(const Intersection& i) {
     list_.push_back(i);
     std::sort(list_.begin(), list_.end(), IntersectionComparator());
     if (i.Distance() >= 0) {
-        if ((hit_ == nullptr) || (i.Distance() < hit_->Distance())) {
-            hit_ = &i;
+        if (!hit_) {
+            hit_ = new Intersection(i);
+        }
+        else if (i.Distance() < hit_->Distance()) {
+            Intersection* tmp = hit_;
+            hit_ = new Intersection(i);
+            delete tmp;
         }
     }
 }
 
-const Intersection* IntersectionList::Hit() const {
+IntersectionList& IntersectionList::operator<<(const Intersection& i) {
+    Add(i);
+    return *this;
+}
+
+Intersection* IntersectionList::Hit() const {
     return hit_;
 }
 
-IntersectionList Shape::Intersections(const Ray& r) {
+void Shape::AddIntersections(IntersectionList& list, const Ray& ray) const {
     throw std::runtime_error("Not implemented in base class");
 }

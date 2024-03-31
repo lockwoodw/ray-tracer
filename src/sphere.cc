@@ -2,10 +2,8 @@
 #include "sphere.h"
 #include "utils.h"
 
-IntersectionList Sphere::Intersections(const Ray& r) const {
-    IntersectionList list {};
-
-    Ray local_ray = r.Transform(transform_.Inverse());
+void Sphere::AddIntersections(IntersectionList& list, const Ray& ray) const {
+    Ray local_ray = ray.Transform(transform_.Inverse());
 
     Vector sphere_to_ray = local_ray.Origin() - origin_;
     double a = Vector::DotProduct(local_ray.Direction(), local_ray.Direction()),
@@ -14,7 +12,7 @@ IntersectionList Sphere::Intersections(const Ray& r) const {
            discriminant = b * b - 4 * a * c;
 
     if (discriminant < 0) {
-        return list;
+        return;
     }
 
     // Use alternate approach from www.scratchapixel.com to avoid "catastrophic cancellation"
@@ -30,10 +28,8 @@ IntersectionList Sphere::Intersections(const Ray& r) const {
         t2 = c / q;
     }
 
-    Intersection i1 { t1, *this }, i2 { t2, *this };
-    list.Add(i1);
-    list.Add(i2);
-    return list;
+    Intersection i1 { t1, this }, i2 { t2, this };
+    list << i1 << i2;
 }
 
 bool Sphere::operator==(const Shape& s) const {

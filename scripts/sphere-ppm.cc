@@ -50,8 +50,9 @@ int main(int argc, char** argv) {
             // Create ray pointing from ray_origin to point (x, y)
             Ray ray { ray_origin, v };
             // Confirm hit
-            IntersectionList xs1 = sphere.Intersections(ray);
-            const Intersection* i = xs1.Hit();
+            IntersectionList xs {};
+            sphere.AddIntersections(xs, ray);
+            const Intersection* i = xs.Hit();
             canvas[row][column] = (i != nullptr) ? sphere_colour : background;
         }
     }
