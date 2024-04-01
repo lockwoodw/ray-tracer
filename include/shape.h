@@ -51,7 +51,7 @@ class Shape {
             material_ = m;
         }
 
-        const Material& ShapeMaterial() {
+        const Material& ShapeMaterial() const {
             return material_;
         }
 };
