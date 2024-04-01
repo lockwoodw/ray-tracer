@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
            sphere1_colour { 1, 0, 0 },
            sphere2_colour { 0, 0, 1 },
            sphere3_colour { 1, 1, 0 },
-           default_colour { 0, 0, 0 };
+           default_colour { 1, 1, 1 };
     double quad_dimension { radius * 1.5 };
     int canvas_dimension { static_cast<int>(2 * quad_dimension) };
     Canvas canvas { canvas_dimension, canvas_dimension, default_colour };
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
     sphere2.SetTransform(transform2);
     sphere3.SetTransform(transform3);
 
-    // From the ray origin, create a ray directed to each pixel in the canvas
+    // From the ray origin, create a ray directed at each pixel in the canvas
     // and then confirm if it hits the spheres
     for (int row = 0; row < canvas_dimension; row++) {
         for (int column = 0; column < canvas_dimension; column++) {
