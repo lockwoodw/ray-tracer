@@ -40,3 +40,14 @@ bool Sphere::operator==(const Shape& s) const {
     }
     return origin_ == other->origin_ && floating_point_compare(radius_, other->radius_);
 }
+
+Vector Sphere::NormalAt(const Point &world_point) const {
+    // convert world_point into point in object space
+    Point object_point = transform_.Inverse() * world_point;
+    Vector object_normal = object_point - origin_;
+    // convert normal back to world space
+    Vector world_normal = transform_.Inverse().Transpose() * object_normal;
+    // hack to mitigate the effect of any translation operation on the w element
+    world_normal[world_normal.kW] = 0.0;
+    return world_normal.Normalize();
+}

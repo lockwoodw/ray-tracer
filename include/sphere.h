@@ -12,6 +12,7 @@ class Sphere: public Shape {
         void AddIntersections(IntersectionList& i, const Ray& r) const override;
         const double Radius() { return radius_; }
         bool operator==(const Shape& s) const override;
+        Vector NormalAt(const Point &world_point) const override;
 };
 
 #endif

@@ -1,5 +1,6 @@
+#define _USE_MATH_DEFINES // for M_PI
 #include <gtest/gtest.h>
-#include <vector>
+#include <cmath>
 #include "ray.h"
 #include "sphere.h"
 #include "transformations.h"
@@ -257,12 +258,28 @@ Scenario: The normal on a sphere at a point on the x axis
   Then n = vector(1, 0, 0)
 */
 
+TEST(SphereTest, FindingTheNormalOfASphereAtAPointOnTheXAxis) {
+    Sphere s {};
+    Point px { 1, 0, 0 };
+    Vector expected { 1, 0, 0 },
+           n = s.NormalAt(px);
+    ASSERT_EQ(n, expected);
+}
+
 /*
 Scenario: The normal on a sphere at a point on the y axis
   Given s ← sphere()
   When n ← normal_at(s, point(0, 1, 0))
   Then n = vector(0, 1, 0)
 */
+
+TEST(SphereTest, FindingTheNormalOfASphereAtAPointOnTheYAxis) {
+    Sphere s {};
+    Point py { 0, 1, 0 };
+    Vector expected { 0, 1, 0 },
+           n = s.NormalAt(py);
+    ASSERT_EQ(n, expected);
+}
 
 /*
 Scenario: The normal on a sphere at a point on the z axis
@@ -271,6 +288,14 @@ Scenario: The normal on a sphere at a point on the z axis
   Then n = vector(0, 0, 1)
 */
 
+TEST(SphereTest, FindingTheNormalOfASphereAtAPointOnTheZAxis) {
+    Sphere s {};
+    Point pz { 0, 0, 1 };
+    Vector expected { 0, 0, 1 },
+           n = s.NormalAt(pz);
+    ASSERT_EQ(n, expected);
+}
+
 /*
 Scenario: The normal on a sphere at a nonaxial point
   Given s ← sphere()
@@ -278,12 +303,29 @@ Scenario: The normal on a sphere at a nonaxial point
   Then n = vector(√3/3, √3/3, √3/3)
 */
 
+TEST(SphereTest, FindingTheNormalOfASphereAtANonaxialPoint) {
+    Sphere s {};
+    double d { std::sqrt(3) /  3 };
+    Point p { d, d, d };
+    Vector expected { d, d, d },
+           n = s.NormalAt(p);
+    ASSERT_EQ(n, expected);
+}
+
 /*
 Scenario: The normal is a normalized vector
   Given s ← sphere()
   When n ← normal_at(s, point(√3/3, √3/3, √3/3))
   Then n = normalize(n)
 */
+
+TEST(SphereTest, ConfirmingTheNormalIsANormalizedVector) {
+    Sphere s {};
+    double d { std::sqrt(3) /  3 };
+    Point p { d, d, d };
+    Vector n = s.NormalAt(p);
+    ASSERT_EQ(n, n.Normalize());
+}
 
 /*
 Scenario: Computing the normal on a translated sphere
@@ -293,6 +335,20 @@ Scenario: Computing the normal on a translated sphere
   Then n = vector(0, 0.70711, -0.70711)
 */
 
+TEST(SphereTest, ConfirmingTheNormalOnATranslatedSphere) {
+    Sphere s {};
+    Matrix transform = Transformation().Translate(0, 1, 0);
+    s.SetTransform(transform);
+    Point p { 0, 1.70711, -0.70711 };
+    Vector expected { 0, 0.70711, -0.70711 },
+           n = s.NormalAt(p);
+    // Compare elements individually using a comparator with smaller Epsilon
+    ASSERT_EQ(expected.Size(), n.Size());
+    for (int i = 0; i < expected.Size(); i++) {
+        ASSERT_TRUE(simple_floating_point_compare(expected[i], n[i]));
+    }
+}
+
 /*
 Scenario: Computing the normal on a transformed sphere
   Given s ← sphere()
@@ -301,6 +357,21 @@ Scenario: Computing the normal on a transformed sphere
   When n ← normal_at(s, point(0, √2/2, -√2/2))
   Then n = vector(0, 0.97014, -0.24254)
 */
+
+TEST(SphereTest, ConfirmingTheNormalOnATransformedSphere) {
+    Sphere s {};
+    Matrix transform = Transformation().RotateZ(M_PI / 5).Scale(1, 0.5, 1);
+    s.SetTransform(transform);
+    double d = sqrt(2) / 2;
+    Point p { 0, d, -d };
+    Vector expected { 0, 0.97014, -0.24254 },
+           n = s.NormalAt(p);
+    // Compare elements individually using a comparator with smaller Epsilon
+    ASSERT_EQ(expected.Size(), n.Size());
+    for (int i = 0; i < expected.Size(); i++) {
+        ASSERT_TRUE(simple_floating_point_compare(expected[i], n[i]));
+    }
+}
 
 /*
 Scenario: A sphere has a default material

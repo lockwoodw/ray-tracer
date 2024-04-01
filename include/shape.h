@@ -30,6 +30,7 @@ class Shape {
         const Matrix& Transform() const {
             return transform_;
         }
+        virtual Vector NormalAt(const Point &world_point) const = 0;
 };
 
 class Intersection {

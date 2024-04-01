@@ -43,7 +43,3 @@ IntersectionList& IntersectionList::operator<<(const Intersection* i) {
 const Intersection* IntersectionList::Hit() const {
     return hit_;
 }
-
-// void Shape::AddIntersections(IntersectionList& list, const Ray& ray) const {
-//     throw std::runtime_error("Not implemented in base class");
-// }
