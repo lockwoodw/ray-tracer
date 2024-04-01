@@ -1,7 +1,7 @@
 #ifndef RAY_TRACER_SHAPE_H
 #define RAY_TRACER_SHAPE_H
 
-#include <vector>
+#include <list>
 #include <stdexcept>
 #include "space.h"
 #include "ray.h"
@@ -47,7 +47,12 @@ class Intersection {
         bool operator==(const Intersection& i) const {
             return object_ == i.object_ && distance_ == i.distance_;
         }
+        bool operator==(const Intersection* i) const {
+            return object_ == i->object_ && distance_ == i->distance_;
+        }
 };
+
+using IntersectionPtr = Intersection*;
 
 class IntersectionComparator {
     public:
@@ -57,16 +62,12 @@ class IntersectionComparator {
 };
 
 class IntersectionList {
-    std::vector<const Intersection*> list_;
+    std::list<const Intersection*> list_;
     const Intersection* hit_;
 
     public:
         IntersectionList(): hit_ { nullptr } {}
-        ~IntersectionList(); /* {
-            if (hit_) {
-                delete hit_;
-            }
-        }*/
+        ~IntersectionList();
         const Intersection* operator[](unsigned int index);
         void Add(const Intersection* i);
         int Size() const { return list_.size(); }

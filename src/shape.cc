@@ -1,4 +1,3 @@
-#include <algorithm>
 #include "shape.h"
 
 Intersection& Intersection::operator=(const Intersection& i) {
@@ -13,26 +12,25 @@ IntersectionList::~IntersectionList() {
     }
 }
 
+// Only for testing: this is an expensive operation
 const Intersection* IntersectionList::operator[](unsigned int index) {
     if (index >= list_.size()) {
         throw std::out_of_range("Index does not exist in list");
     }
-    return list_[index];
+    unsigned int n = 0;
+    std::list<const Intersection*>::const_iterator it = list_.begin();
+    while (n++ != index && it != list_.end()) {
+        it++;
+    }
+    return *it;
 }
 
 void IntersectionList::Add(const Intersection* i) {
     list_.push_back(i);
-    std::sort(list_.begin(), list_.end(), IntersectionComparator());
+    list_.sort(IntersectionComparator());
     if (i->Distance() >= 0) {
-        if (!hit_) {
+        if (!hit_ || i->Distance() < hit_->Distance()) {
             hit_ = i;
-            // hit_ = new Intersection(i);
-        }
-        else if (i->Distance() < hit_->Distance()) {
-            hit_ = i;
-            // Intersection* tmp = hit_;
-            // hit_ = new Intersection(i);
-            // delete tmp;
         }
     }
 }
