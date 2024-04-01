@@ -2,11 +2,10 @@
 #include <stdexcept>
 #include "space.h"
 
-Vector::Vector(const Tuple& t): Tuple { t } {
+SpatialTuple::SpatialTuple(const Tuple& t): Tuple { t } {
     if (t.Size() != 4) {
-        throw std::invalid_argument("Incorrect tuple size for Vector");
+        throw std::invalid_argument("Incorrect tuple size for SpatialTuple");
     }
-    elements_[kW] = 0.0;
 }
 
 double Vector::DotProduct(const Vector& v1, const Vector& v2) {
@@ -31,11 +30,4 @@ double Vector::Magnitude() const {
 
 Vector Vector::Normalize() const {
     return *this / this->Magnitude();
-}
-
-Point::Point(const Tuple& t): Tuple { t } {
-    if (t.Size() != 4) {
-        throw std::invalid_argument("Incorrect tuple size for Point");
-    }
-    elements_[kW] = 1.0;
 }
