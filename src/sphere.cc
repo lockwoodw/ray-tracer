@@ -28,8 +28,8 @@ void Sphere::AddIntersections(IntersectionList& list, const Ray& ray) const {
         t2 = c / q;
     }
 
-    Intersection* i1 = new Intersection(t1, this);
-    Intersection* i2 = new Intersection(t2, this);
+    IntersectionPtr i1 = new Intersection(t1, this),
+                    i2 = new Intersection(t2, this);
     list << i1 << i2;
 }
 

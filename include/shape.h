@@ -18,11 +18,9 @@ class Shape {
         Shape(const Point& p): origin_ { p }, transform_ { Matrix::Identity(4) } {}
         Shape(const Shape& s): origin_ { s.origin_ }, transform_ { s.transform_ } {}
         ~Shape() {}
-        virtual void AddIntersections(IntersectionList& list, const Ray& ray) const;
+        virtual void AddIntersections(IntersectionList& list, const Ray& ray) const = 0;
         const Point Origin() const { return origin_; }
-        virtual bool operator==(const Shape&) const {
-            throw std::runtime_error("Not implemented in base class");
-        }
+        virtual bool operator==(const Shape&) const  = 0;
         bool operator!=(const Shape& s) const {
             return !operator==(s);
         }

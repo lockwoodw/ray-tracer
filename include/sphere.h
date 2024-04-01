@@ -9,9 +9,9 @@ class Sphere: public Shape {
     public:
         Sphere(): Shape { Point { 0, 0, 0 } }, radius_ { 1.0 } {}
         Sphere(const Point& p, double r): Shape { p }, radius_ { r } {}
-        void AddIntersections(IntersectionList& i, const Ray& r) const;
+        void AddIntersections(IntersectionList& i, const Ray& r) const override;
         const double Radius() { return radius_; }
-        bool operator==(const Shape& s) const;
+        bool operator==(const Shape& s) const override;
 };
 
 #endif
