@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
     Point ray_origin { 0, 0, -radius * 2 };
 
     // Configure canvas large enough to hold spheres with padding around them
-    Colour background { 1, 1, 1 },
+    Colour background { 0, 0, 0 },
            sphere1_colour { 1, 0, 0 },
            sphere2_colour { 0, 0, 1 },
            sphere3_colour { 1, 1, 0 },
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
     // ray origin; move sphere 1 further away. Make sphere2 an ellipsoid.
     Matrix transform1 = Transformation().Translate(-25, 0, 20),
            transform2 = Transformation().Scale(2, 0.5, 0.5).Translate(50, 0, -50).RotateY(DegreesToRadians(35)),
-           transform3 = Transformation().Translate(-50, 40, -60);
+           transform3 = Transformation().Translate(-60, 40, -60);
     sphere1.SetTransform(transform1);
     sphere2.SetTransform(transform2);
     sphere3.SetTransform(transform3);

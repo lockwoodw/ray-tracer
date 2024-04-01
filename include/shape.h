@@ -51,27 +51,27 @@ class Intersection {
 
 class IntersectionComparator {
     public:
-        bool operator()(const Intersection& a, const Intersection& b) {
-            return a.Distance() < b.Distance();
+        bool operator()(const Intersection* a, const Intersection* b) {
+            return a->Distance() < b->Distance();
         }
 };
 
 class IntersectionList {
-    std::vector<Intersection> list_;
-    Intersection* hit_;
+    std::vector<const Intersection*> list_;
+    const Intersection* hit_;
 
     public:
         IntersectionList(): hit_ { nullptr } {}
-        ~IntersectionList() {
+        ~IntersectionList(); /* {
             if (hit_) {
                 delete hit_;
             }
-        }
-        Intersection& operator[](unsigned int index);
-        void Add(const Intersection& i);
+        }*/
+        const Intersection* operator[](unsigned int index);
+        void Add(const Intersection* i);
         int Size() const { return list_.size(); }
-        Intersection* Hit() const;
-        IntersectionList& operator<<(const Intersection& i);
+        const Intersection* Hit() const;
+        IntersectionList& operator<<(const Intersection* i);
 };
 
 #endif
