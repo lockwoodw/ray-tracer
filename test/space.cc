@@ -104,7 +104,7 @@ Scenario: Computing the magnitude of vector(-1, -2, -3)
   Then magnitude(v) = √14
 */
 
-TEST(TupleTest, ComputingMagnitudeOfVectors) {
+TEST(SpaceTest, ComputingMagnitudeOfVectors) {
     Vector v1 { 1, 0, 0 };
     double expected { 1.0 };
     ASSERT_EQ(v1.Magnitude(), expected);
@@ -130,7 +130,7 @@ Scenario: Normalizing vector(1, 2, 3)
   Then normalize(v) = approximately vector(0.26726, 0.53452, 0.80178)
 */
 
-TEST(TupleTest, NormalizingVectors) {
+TEST(SpaceTest, NormalizingVectors) {
     Vector v1 { 4, 0, 0 }, n1 { 1, 0, 0 };
     ASSERT_EQ(v1.Normalize(), n1);
     Vector v2 { 1, 2, 3 };
@@ -146,7 +146,7 @@ Scenario: The magnitude of a normalized vector
   Then magnitude(norm) = 1
 */
 
-TEST(TupleTest, ComputingMagnitudeOfNormalizedVector) {
+TEST(SpaceTest, ComputingMagnitudeOfNormalizedVector) {
     Vector v { 1, 2, 3 }, normalized = v.Normalize();
     ASSERT_EQ(normalized.Magnitude(), 1.0);
 }
@@ -158,7 +158,7 @@ Scenario: The dot product of two tuples
   Then dot(a, b) = 20
 */
 
-TEST(TupleTest, ComputingDotProductOfVectors) {
+TEST(SpaceTest, ComputingDotProductOfVectors) {
     Vector a { 1, 2, 3 }, b { 2, 3, 4 };
     ASSERT_EQ(Vector::DotProduct(a, b), 20.0);
 }
@@ -171,8 +171,35 @@ Scenario: The cross product of two vectors
     And cross(b, a) = vector(1, -2, 1)
 */
 
-TEST(TupleTest, ComputingCrossProductOfVectors) {
+TEST(SpaceTest, ComputingCrossProductOfVectors) {
     Vector a { 1, 2, 3 }, b { 2, 3, 4 }, ab_product { -1, 2, -1 }, ba_product { 1, -2, 1 };
     ASSERT_EQ(Vector::CrossProduct(a, b), ab_product);
     ASSERT_EQ(Vector::CrossProduct(b, a), ba_product);
+}
+
+/*
+Scenario: Reflecting a vector approaching at 45°
+  Given v ← vector(1, -1, 0)
+    And n ← vector(0, 1, 0)
+  When r ← reflect(v, n)
+  Then r = vector(1, 1, 0)
+*/
+
+TEST(SpaceTest, ReflectingAVectorApproachingAt45Degrees) {
+    Vector v { 1, -1, 0 }, n { 0, 1, 0 }, expected { 1, 1, 0 };
+    ASSERT_EQ(Vector::Reflect(v, n), expected);
+}
+
+/*
+Scenario: Reflecting a vector off a slanted surface
+  Given v ← vector(0, -1, 0)
+    And n ← vector(√2/2, √2/2, 0)
+  When r ← reflect(v, n)
+  Then r = vector(1, 0, 0)
+*/
+
+TEST(SpaceTest, ReflectingAVectorOffASlantedSurface) {
+    double d { sqrt(2) /  2 }; // ground is slanted 45 degrees
+    Vector v { 0, -1, 0 }, n { d, d, 0 }, expected { 1, 0, 0 };
+    ASSERT_EQ(Vector::Reflect(v, n), expected);
 }

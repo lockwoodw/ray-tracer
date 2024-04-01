@@ -380,6 +380,12 @@ Scenario: A sphere has a default material
   Then m = material()
 */
 
+TEST(SphereTest, ConfirmingTheDefaultMaterialOfASphere) {
+    Sphere s {};
+    Material m = s.ShapeMaterial();
+    ASSERT_EQ(m, Material());
+}
+
 /*
 Scenario: A sphere may be assigned a material
   Given s ← sphere()
@@ -388,6 +394,15 @@ Scenario: A sphere may be assigned a material
   When s.material ← m
   Then s.material = m
 */
+
+TEST(SphereTest, AssigningAMaterialToASphere) {
+    Sphere s {};
+    Material m {};
+    m.SetAmbient(1);
+    s.SetMaterial(m);
+    ASSERT_DOUBLE_EQ(s.ShapeMaterial().Ambient(), 1);
+    ASSERT_EQ(m, s.ShapeMaterial());
+}
 
 /*
 Scenario: A helper for producing a sphere with a glassy material

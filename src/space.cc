@@ -21,6 +21,10 @@ Vector Vector::CrossProduct(const Vector& v1, const Vector& v2) {
     return product;
 }
 
+Vector Vector::Reflect(const Vector& in, const Vector& normal) {
+    return in - normal * 2 * DotProduct(in, normal);
+}
+
 double Vector::Magnitude() const {
     return std::sqrt(elements_[kX] * elements_[kX]
         + elements_[kY] * elements_[kY]

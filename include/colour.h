@@ -1,6 +1,7 @@
 #ifndef RAY_TRACER_COLOUR_H
 #define RAY_TRACER_COLOUR_H
 
+#include <iostream>
 #include "tuple.h"
 
 class Colour {
@@ -29,6 +30,9 @@ class Colour {
         Colour operator*(const Colour& c) const; // Hadamard or Schur product
         bool operator==(const Colour& c) const;
         bool operator!=(const Colour& c) const;
+        Colour& operator=(const Colour& c);
+
+        friend std::ostream& operator<<(std::ostream& os, const Colour& c);
 };
 
 #endif

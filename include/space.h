@@ -17,6 +17,7 @@ class Vector: public SpatialTuple {
     public:
         static double DotProduct(const Vector& v1, const Vector& v2);
         static Vector CrossProduct(const Vector& v1, const Vector& v2);
+        static Vector Reflect(const Vector& in, const Vector& normal);
 
         Vector() {
             elements_[kW] = 0.0; // by definition

@@ -146,6 +146,8 @@ add_executable(
   ../src/matrix.cc
   ../src/transformations.cc
   ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
   ../src/shape.cc
   ../src/sphere.cc
   sphere.cc
@@ -165,6 +167,8 @@ add_executable(
   ../src/matrix.cc
   ../src/transformations.cc
   ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
   ../src/shape.cc
   ../src/sphere.cc
   intersections.cc
@@ -176,6 +180,23 @@ target_link_libraries(
 )
 
 target_include_directories(intersections-test PRIVATE ../include/)
+
+add_executable(
+  material-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  material.cc
+)
+
+target_link_libraries(
+  material-test
+  GTest::gtest_main
+)
+
+target_include_directories(material-test PRIVATE ../include/)
 
 include(GoogleTest)
 gtest_discover_tests(
@@ -189,4 +210,5 @@ gtest_discover_tests(
   ray-test
   sphere-test
   intersections-test
+  material-test
 )

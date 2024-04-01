@@ -6,6 +6,7 @@
 #include "space.h"
 #include "ray.h"
 #include "matrix.h"
+#include "material.h"
 
 class IntersectionList;
 
@@ -13,24 +14,46 @@ class Shape {
     protected:
         Point origin_;
         Matrix transform_;
+        Material material_;
 
     public:
-        Shape(const Point& p): origin_ { p }, transform_ { Matrix::Identity(4) } {}
-        Shape(const Shape& s): origin_ { s.origin_ }, transform_ { s.transform_ } {}
+        Shape(const Point& p):
+            origin_ { p },
+            transform_ { Matrix::Identity(4) },
+            material_ { Material() } {}
+
+        Shape(const Shape& s):
+            origin_ { s.origin_ },
+            transform_ { s.transform_ },
+            material_ { s.material_ } {}
+
         ~Shape() {}
+
         virtual void AddIntersections(IntersectionList& list, const Ray& ray) const = 0;
-        const Point Origin() const { return origin_; }
         virtual bool operator==(const Shape&) const  = 0;
+        virtual Vector NormalAt(const Point &world_point) const = 0;
+
+        const Point Origin() const { return origin_; }
+
         bool operator!=(const Shape& s) const {
             return !operator==(s);
         }
+
         void SetTransform(const Matrix& m) {
             transform_ *= m;
         }
+
         const Matrix& Transform() const {
             return transform_;
         }
-        virtual Vector NormalAt(const Point &world_point) const = 0;
+
+        void SetMaterial(const Material& m) {
+            material_ = m;
+        }
+
+        const Material& ShapeMaterial() {
+            return material_;
+        }
 };
 
 class Intersection {

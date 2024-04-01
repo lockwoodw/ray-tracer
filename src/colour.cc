@@ -33,3 +33,15 @@ bool Colour::operator==(const Colour& c) const {
 bool Colour::operator!=(const Colour& c) const {
     return tuple_ != c.tuple_;
 }
+
+Colour& Colour::operator=(const Colour& c) {
+    for (int i = 0; i < tuple_.Size(); i++) {
+        tuple_[i] = c.tuple_.At(i);
+    }
+    return *this;
+}
+
+std::ostream& operator<<(std::ostream& os, const Colour& c) {
+    os << c.tuple_;
+    return os;
+}
