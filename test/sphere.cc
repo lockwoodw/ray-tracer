@@ -54,8 +54,8 @@ TEST(SphereTest, IntersectingAUnitSphereAtTwoPoints) {
     IntersectionList xs {};
     s.AddIntersections(xs, r);
     ASSERT_EQ(xs.Size(), 2);
-    ASSERT_DOUBLE_EQ(xs[0].Distance(), 4.0);
-    ASSERT_DOUBLE_EQ(xs[1].Distance(), 6.0);
+    ASSERT_DOUBLE_EQ(xs[0]->Distance(), 4.0);
+    ASSERT_DOUBLE_EQ(xs[1]->Distance(), 6.0);
 }
 
 TEST(SphereTest, IntersectingANonUnitSphereAtTwoPoints) {
@@ -68,8 +68,8 @@ TEST(SphereTest, IntersectingANonUnitSphereAtTwoPoints) {
     IntersectionList xs {};
     s.AddIntersections(xs, r);
     ASSERT_EQ(xs.Size(), 2);
-    ASSERT_DOUBLE_EQ(xs[0].Distance(), 2.5);
-    ASSERT_DOUBLE_EQ(xs[1].Distance(), 7.5);
+    ASSERT_DOUBLE_EQ(xs[0]->Distance(), 2.5);
+    ASSERT_DOUBLE_EQ(xs[1]->Distance(), 7.5);
 }
 
 /*
@@ -90,8 +90,8 @@ TEST(SphereTest, IntersectingASphereAtATangent) {
     IntersectionList xs {};
     s.AddIntersections(xs, r);
     ASSERT_EQ(xs.Size(), 2);
-    ASSERT_DOUBLE_EQ(xs[0].Distance(), 5.0);
-    ASSERT_DOUBLE_EQ(xs[1].Distance(), 5.0);
+    ASSERT_DOUBLE_EQ(xs[0]->Distance(), 5.0);
+    ASSERT_DOUBLE_EQ(xs[1]->Distance(), 5.0);
 }
 
 /*
@@ -130,8 +130,8 @@ TEST(SphereTest, IntersectingASphereFromInside) {
     IntersectionList xs {};
     s.AddIntersections(xs, r);
     ASSERT_EQ(xs.Size(), 2);
-    ASSERT_DOUBLE_EQ(xs[0].Distance(), -1.0);
-    ASSERT_DOUBLE_EQ(xs[1].Distance(), 1.0);
+    ASSERT_DOUBLE_EQ(xs[0]->Distance(), -1.0);
+    ASSERT_DOUBLE_EQ(xs[1]->Distance(), 1.0);
 }
 
 /*
@@ -152,8 +152,8 @@ TEST(SphereTest, IntersectingASphereBehindARay) {
     IntersectionList xs {};
     s.AddIntersections(xs, r);
     ASSERT_EQ(xs.Size(), 2);
-    ASSERT_DOUBLE_EQ(xs[0].Distance(), -6.0);
-    ASSERT_DOUBLE_EQ(xs[1].Distance(), -4.0);
+    ASSERT_DOUBLE_EQ(xs[0]->Distance(), -6.0);
+    ASSERT_DOUBLE_EQ(xs[1]->Distance(), -4.0);
 }
 
 /*
@@ -174,8 +174,8 @@ TEST(SphereTest, IncludingTheObjectInTheIntersection) {
     IntersectionList xs {};
     s.AddIntersections(xs, r);
     ASSERT_EQ(xs.Size(), 2);
-    ASSERT_EQ(*xs[0].Object(), s);
-    ASSERT_EQ(*xs[1].Object(), s);
+    ASSERT_EQ(*xs[0]->Object(), s);
+    ASSERT_EQ(*xs[1]->Object(), s);
 }
 
 /*
@@ -225,8 +225,8 @@ TEST(SphereTest, IntersectingASphereWithAScaledRay) {
     IntersectionList xs {};
     s.AddIntersections(xs, r);
     ASSERT_EQ(xs.Size(), 2);
-    ASSERT_EQ(xs[0].Distance(), 3);
-    ASSERT_EQ(xs[1].Distance(), 7);
+    ASSERT_EQ(xs[0]->Distance(), 3);
+    ASSERT_EQ(xs[1]->Distance(), 7);
 }
 
 /*
