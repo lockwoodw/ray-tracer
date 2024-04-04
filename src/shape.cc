@@ -35,7 +35,20 @@ void IntersectionList::Add(const Intersection* i) {
     }
 }
 
+void IntersectionList::Add(double d, const Shape* s) {
+    Add(new Intersection(d, s));
+}
+
+void IntersectionList::Add(const Intersection& i) {
+    Add(new Intersection(i.Distance(), i.Object()));
+}
+
 IntersectionList& IntersectionList::operator<<(const Intersection* i) {
+    Add(i);
+    return *this;
+}
+
+IntersectionList& IntersectionList::operator<<(const Intersection& i) {
     Add(i);
     return *this;
 }

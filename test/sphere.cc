@@ -398,7 +398,7 @@ Scenario: A sphere may be assigned a material
 TEST(SphereTest, AssigningAMaterialToASphere) {
     Sphere s {};
     Material m {};
-    m.SetAmbient(1);
+    m.Ambient(1);
     s.SetMaterial(m);
     ASSERT_DOUBLE_EQ(s.ShapeMaterial().Ambient(), 1);
     ASSERT_EQ(m, s.ShapeMaterial());

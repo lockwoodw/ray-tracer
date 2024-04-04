@@ -27,7 +27,7 @@ class Shape {
             transform_ { s.transform_ },
             material_ { s.material_ } {}
 
-        ~Shape() {}
+        ~Shape() {} // required for abstract base class
 
         virtual void AddIntersections(IntersectionList& list, const Ray& ray) const = 0;
         virtual bool operator==(const Shape&) const  = 0;
@@ -92,9 +92,12 @@ class IntersectionList {
         ~IntersectionList();
         const Intersection* operator[](unsigned int index);
         void Add(const Intersection* i);
+        void Add(double d, const Shape* s);
+        void Add(const Intersection& i);
         int Size() const { return list_.size(); }
         const Intersection* Hit() const;
         IntersectionList& operator<<(const Intersection* i);
+        IntersectionList& operator<<(const Intersection& i);
 };
 
 #endif
