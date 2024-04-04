@@ -33,7 +33,7 @@ Scenario: The default material
 TEST(MaterialTest, ConfirmingTheDefaultMaterial) {
     Material m {};
     Colour expected { 1, 1, 1 };
-    ASSERT_EQ(m.MaterialColour(), expected);
+    ASSERT_EQ(m.Surface(), expected);
     ASSERT_DOUBLE_EQ(m.Ambient(), 0.1);
     ASSERT_DOUBLE_EQ(m.Diffuse(), 0.9);
     ASSERT_DOUBLE_EQ(m.Specular(), 0.9);

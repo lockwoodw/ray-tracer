@@ -3,7 +3,7 @@
 #include "utils.h"
 
 bool Material::operator==(const Material& m) const {
-    return colour_ == m.colour_ &&
+    return surface_ == m.surface_ &&
         floating_point_compare(ambient_, m.ambient_) &&
         floating_point_compare(diffuse_, m.diffuse_) &&
         floating_point_compare(specular_, m.specular_) &&
@@ -14,7 +14,7 @@ Colour Material::ApplyLightAt(const Light& light, const Point& point,
         const Vector& eye_vector, const Vector& normal_vector) const
 {
     // Combine the surface colour with the light's colour/intensity
-    Colour effective = colour_ * light.Intensity();
+    Colour effective = surface_ * light.Intensity();
 
     // Find the direction of the light
     Vector light_vector = (Vector { light.Position() - point } ).Normalize();
