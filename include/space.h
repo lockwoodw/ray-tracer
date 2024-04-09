@@ -8,9 +8,9 @@ class SpatialTuple: public Tuple {
         enum { kX, kY, kZ, kW };
         SpatialTuple(): Tuple { 4 } {}
         SpatialTuple(const Tuple& t);
-        double X() { return elements_[kX]; }
-        double Y() { return elements_[kY]; }
-        double Z() { return elements_[kZ]; }
+        double X() const { return At(kX); }
+        double Y() const { return At(kY); }
+        double Z() const { return At(kZ); }
 };
 
 class Vector: public SpatialTuple {

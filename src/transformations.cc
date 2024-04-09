@@ -108,3 +108,22 @@ Transformation& Transformation::Shear(double xy, double xz, double yx, double yz
     Shearing transform { xy, xz, yx, yz, zx, zy };
     return *this *= transform;
 }
+
+ViewTransform::ViewTransform(const Point& from, const Point& to, const Vector& up): Matrix { 4, 4 } {
+    Vector to_from { to - from },
+           forward = to_from.Normalize(),
+           normal_up = up.Normalize(),
+           left = Vector::CrossProduct(forward, normal_up),
+           true_up = Vector::CrossProduct(left, forward);
+
+    Vector data[] { left, true_up, -forward };
+    std::size_t size = sizeof(data) / sizeof(Vector);
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            m_[i][j] = data[i][j];
+        }
+    }
+    m_[nrows_ - 1][ncolumns_ - 1] = 1;
+    Matrix translation = Transformation().Translate(-from.X(), -from.Y(), -from.Z());
+    *this *= translation;
+}

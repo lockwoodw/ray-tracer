@@ -346,6 +346,14 @@ Scenario: The transformation matrix for the default orientation
   Then t = identity_matrix
 */
 
+TEST(TransformationsTest, DefiningTheDefaultViewTransformation) {
+    Point from { 0, 0, 0 },
+          to { 0, 0, -1 };
+    Vector up { 0, 1, 0 };
+    ViewTransform vt { from, to, up };
+    ASSERT_EQ(vt, Matrix::Identity(4));
+}
+
 /*
 Scenario: A view transformation matrix looking in positive z direction
   Given from ← point(0, 0, 0)
@@ -355,6 +363,15 @@ Scenario: A view transformation matrix looking in positive z direction
   Then t = scaling(-1, 1, -1)
 */
 
+TEST(TransformationsTest, ConfirmingAViewTransformLookingInThePositiveDirection) {
+    Point from { 0, 0, 0 },
+          to { 0, 0, 1 };
+    Vector up { 0, 1, 0 };
+    ViewTransform vt { from, to, up };
+    Matrix scaling = Transformation().Scale(-1, 1, -1);
+    ASSERT_EQ(vt, scaling);
+}
+
 /*
 Scenario: The view transformation moves the world
   Given from ← point(0, 0, 8)
@@ -363,6 +380,15 @@ Scenario: The view transformation moves the world
   When t ← view_transform(from, to, up)
   Then t = translation(0, 0, -8)
 */
+
+TEST(TransformationsTest, ConfirmingTheViewTransformMovesTheWorld) {
+    Point from { 0, 0, 8 },
+          to { 0, 0, 0 };
+    Vector up { 0, 1, 0 };
+    ViewTransform vt { from, to, up };
+    Matrix translation = Transformation().Translate(0, 0, -8);
+    ASSERT_EQ(vt, translation);
+}
 
 /*
 Scenario: An arbitrary view transformation
@@ -376,3 +402,24 @@ Scenario: An arbitrary view transformation
       | -0.35857 | 0.59761 | -0.71714 |  0.00000 |
       |  0.00000 | 0.00000 |  0.00000 |  1.00000 |
 */
+
+TEST(TransformationsTest, ConfirmingAnArbitraryViewTransform) {
+    Point from { 1, 3, 2 },
+          to { 4, -2, 8 };
+    Vector up { 1, 1, 0 };
+    ViewTransform vt { from, to, up };
+
+    std::array<std::array<double, 4>, 4> data {{
+        { -0.50709, 0.50709,  0.67612, -2.36643 },
+        {  0.76772, 0.60609,  0.12122, -2.82843 },
+        { -0.35857, 0.59761, -0.71714,  0.00000 },
+        {  0.00000, 0.00000,  0.00000,  1.00000 }
+    }};
+    Matrix m { data };
+
+    for (int i = 0; i < m.Nrows(); i++) {
+        for (int j = 0; j < m.Ncolumns(); j++) {
+            ASSERT_TRUE(simple_floating_point_compare(vt[i][j], m[i][j]));
+        }
+    }
+}

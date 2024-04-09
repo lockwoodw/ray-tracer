@@ -2,6 +2,7 @@
 #define RAY_TRACER_TRANSFORMATIONS_H
 
 #include "matrix.h"
+#include "space.h"
 
 class Translation: public Matrix {
     public:
@@ -65,6 +66,11 @@ class Transformation: public Matrix {
         Transformation& Scale(double x, double y, double z);
         Transformation& Translate(double x, double y, double z);
         Transformation& Shear(double xy, double xz, double yx, double yz, double zx, double zy);
+};
+
+class ViewTransform: public Matrix {
+    public:
+        ViewTransform(const Point& from, const Point& to, const Vector& up);
 };
 
 #endif
