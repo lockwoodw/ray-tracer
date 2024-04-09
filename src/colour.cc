@@ -10,6 +10,11 @@ Colour Colour::operator+(const Colour& c) const {
     return Colour { tuple_ + c.tuple_ };
 }
 
+Colour& Colour::operator+=(const Colour& c) {
+    tuple_ += c.tuple_;
+    return *this;
+}
+
 Colour Colour::operator-(const Colour& c) const {
     return Colour { tuple_ - c.tuple_ };
 }

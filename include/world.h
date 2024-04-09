@@ -5,6 +5,7 @@
 #include "shape.h"
 #include "ray.h"
 #include "material.h"
+#include "colour.h"
 
 class World {
     std::set<const Shape*> objects_;
@@ -14,11 +15,15 @@ class World {
         World(): objects_ {}, lights_ {} {}
         void Add(const Shape* object);
         void Add(const Light* light);
+        std::size_t Remove(const Shape* object);
+        std::size_t Remove(const Light* light);
         bool Contains(const Shape* object) const;
         bool Contains(const Light* light) const;
         IntersectionList Intersect(const Ray& ray) const;
-        std::size_t NObjects() { return objects_.size(); }
-        std::size_t NLights() { return lights_.size(); }
+        std::size_t NObjects() const { return objects_.size(); }
+        std::size_t NLights() const { return lights_.size(); }
+        const Colour ColourAt(const IntersectionComputation& ic) const;
+        const Colour ColourAt(const Ray& ray) const;
 };
 
 #endif

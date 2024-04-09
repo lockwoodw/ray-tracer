@@ -3,6 +3,7 @@
 #include "space.h"
 #include "shape.h"
 #include "sphere.h"
+#include "ray.h"
 
 /*
 Scenario: An intersection encapsulates t and object
@@ -34,6 +35,23 @@ Scenario: Precomputing the state of an intersection
     And comps.normalv = vector(0, 0, -1)
 */
 
+TEST(IntersectionsTest, PrecomputingTheStateOfAnIntersection) {
+    Point point { 0, 0, -5 };
+    Vector vector { 0, 0, 1 };
+    Ray r { point, vector };
+    Sphere sphere {};
+    Intersection i { 4, &sphere };
+    IntersectionComputation comps { i, r };
+    ASSERT_DOUBLE_EQ(comps.Distance(), i.Distance());
+    ASSERT_EQ(comps.Object(), i.Object());
+    Point expected_point { 0, 0, -1 };
+    ASSERT_EQ(comps.WorldPoint(), expected_point);
+    Vector expected_eye_vector { 0, 0, -1 };
+    ASSERT_EQ(comps.EyeVector(), expected_eye_vector);
+    Vector expected_normal_vector { 0, 0, -1 };
+    ASSERT_EQ(comps.NormalVector(), expected_normal_vector);
+}
+
 /*
 Scenario: Precomputing the reflection vector
   Given shape ← plane()
@@ -52,6 +70,16 @@ Scenario: The hit, when an intersection occurs on the outside
   Then comps.inside = false
 */
 
+TEST(IntersectionsTest, PrecomputingTheStateOfAnIntersectionOnTheOutside) {
+    Point point { 0, 0, -5 };
+    Vector vector { 0, 0, 1 };
+    Ray r { point, vector };
+    Sphere sphere {};
+    Intersection i { 4, &sphere };
+    IntersectionComputation comps { i, r };
+    ASSERT_FALSE(comps.Inside());
+}
+
 /*
 Scenario: The hit, when an intersection occurs on the inside
   Given r ← ray(point(0, 0, 0), vector(0, 0, 1))
@@ -64,6 +92,22 @@ Scenario: The hit, when an intersection occurs on the inside
       # normal would have been (0, 0, 1), but is inverted!
     And comps.normalv = vector(0, 0, -1)
 */
+
+TEST(IntersectionsTest, PrecomputingTheStateOfAnIntersectionOnTheInside) {
+    Point point { 0, 0, 0 };
+    Vector vector { 0, 0, 1 };
+    Ray r { point, vector };
+    Sphere sphere {};
+    Intersection i { 1, &sphere };
+    IntersectionComputation comps { i, r };
+    Point expected_point { 0, 0, 1 };
+    ASSERT_EQ(comps.WorldPoint(), expected_point);
+    Vector expected_eye_vector { 0, 0, -1 };
+    ASSERT_EQ(comps.EyeVector(), expected_eye_vector);
+    ASSERT_TRUE(comps.Inside());
+    Vector expected_normal_vector { 0, 0, -1 };
+    ASSERT_EQ(comps.NormalVector(), expected_normal_vector);
+}
 
 /*
 Scenario: The hit should offset the point

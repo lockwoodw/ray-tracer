@@ -25,6 +25,7 @@ class Colour {
         double Blue() { return tuple_[kBlue]; }
 
         Colour operator+(const Colour& c) const;
+        Colour& operator+=(const Colour& c);
         Colour operator-(const Colour& c) const;
         Colour operator*(double d) const;
         Colour operator*(const Colour& c) const; // Hadamard or Schur product

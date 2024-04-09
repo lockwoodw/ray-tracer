@@ -45,11 +45,11 @@ class Material {
         double Specular() const { return specular_; }
         double Shininess() const { return shininess_; }
 
-        void Surface(const Colour& c) { surface_ = c; }
-        void Ambient(double a) { ambient_ = a; }
-        void Diffuse(double d) { diffuse_ = d; }
-        void Specular(double s) { specular_ = s; }
-        void Shininess(double s) { shininess_ = s; }
+        Material& Surface(const Colour& c) { surface_ = c; return *this; }
+        Material& Ambient(double a) { ambient_ = a; return *this; }
+        Material& Diffuse(double d) { diffuse_ = d; return *this; }
+        Material& Specular(double s) { specular_ = s; return *this; }
+        Material& Shininess(double s) { shininess_ = s; return *this; }
 
         Colour ApplyLightAt(const Light& light, const Point& point,
             const Vector& eye_vector, const Vector& normal_vector) const;

@@ -25,6 +25,8 @@ class DefaultWorldTest: public testing::Test {
         Light* light_;
         Shape* sphere1_;
         Shape* sphere2_;
+        Material material1_;
+        Material material2_;
 
         void SetUp() override {
             Point position { -10, 10, -10 };
@@ -34,11 +36,12 @@ class DefaultWorldTest: public testing::Test {
 
             sphere1_ = new Sphere();
             Colour c1 { 0.8, 1.0, 0.6 };
-            Material m1 { c1, 0.1, 0.7, 0.2, 200.0 };
-            sphere1_->SetMaterial(m1);
+            material1_.Surface(c1).Ambient(0.1).Diffuse(0.7).Specular(0.2).Shininess(200.0);
+            sphere1_->SetMaterial(material1_);
             default_world_.Add(sphere1_);
 
             sphere2_ = new Sphere();
+            sphere2_->SetMaterial(material2_);
             Matrix t2 = Transformation().Scale(0.5, 0.5, 0.5);
             sphere2_->SetTransform(t2);
             default_world_.Add(sphere2_);
@@ -110,6 +113,19 @@ Scenario: Shading an intersection
   Then c = color(0.38066, 0.47583, 0.2855)
 */
 
+TEST_F(DefaultWorldTest, ShadingAnIntersection) {
+    Point origin { 0, 0, -5 };
+    Vector direction { 0, 0, 1 };
+    Ray ray { origin, direction };
+    Intersection i { 4, sphere1_ };
+    IntersectionComputation ic { i, ray };
+    Colour expected { 0.38066, 0.47583, 0.2855 },
+           shade = default_world_.ColourAt(ic);
+    ASSERT_TRUE(simple_floating_point_compare(expected.Red(), shade.Red()));
+    ASSERT_TRUE(simple_floating_point_compare(expected.Green(), shade.Green()));
+    ASSERT_TRUE(simple_floating_point_compare(expected.Blue(), shade.Blue()));
+}
+
 /*
 Scenario: Shading an intersection from the inside
   Given w ← default_world()
@@ -122,6 +138,24 @@ Scenario: Shading an intersection from the inside
   Then c = color(0.90498, 0.90498, 0.90498)
 */
 
+TEST_F(DefaultWorldTest, ShadingAnIntersectionFromTheInside) {
+    Point origin { 0, 0, 0 }, light_origin { 0, 0.25, 0 };
+    Vector direction { 0, 0, 1 };
+    Ray ray { origin, direction };
+    // Replace light
+    ASSERT_EQ(default_world_.Remove(light_), 1);
+    Colour light_colour { 1, 1, 1 };
+    Light light { light_origin, light_colour };
+    default_world_.Add(&light);
+    Intersection i { 0.5, sphere2_ };
+    IntersectionComputation ic { i, ray };
+    Colour expected { 0.90498, 0.90498, 0.90498 },
+           shade = default_world_.ColourAt(ic);
+    ASSERT_TRUE(simple_floating_point_compare(expected.Red(), shade.Red()));
+    ASSERT_TRUE(simple_floating_point_compare(expected.Green(), shade.Green()));
+    ASSERT_TRUE(simple_floating_point_compare(expected.Blue(), shade.Blue()));
+}
+
 /*
 Scenario: The color when a ray misses
   Given w ← default_world()
@@ -130,6 +164,14 @@ Scenario: The color when a ray misses
   Then c = color(0, 0, 0)
 */
 
+TEST_F(DefaultWorldTest, FindingTheColourWhenTheRayMisses) {
+    Point origin { 0, 0, -5 };
+    Vector direction { 0, 1, 0 };
+    Ray ray { origin, direction };
+    Colour expected  { 0, 0, 0 }, actual = default_world_.ColourAt(ray);
+    ASSERT_EQ(expected, actual);
+}
+
 /*
 Scenario: The color when a ray hits
   Given w ← default_world()
@@ -137,6 +179,16 @@ Scenario: The color when a ray hits
   When c ← color_at(w, r)
   Then c = color(0.38066, 0.47583, 0.2855)
 */
+
+TEST_F(DefaultWorldTest, FindingTheColourWhenTheRayHits) {
+    Point origin { 0, 0, -5 };
+    Vector direction { 0, 0, 1 };
+    Ray ray { origin, direction };
+    Colour expected  { 0.38066, 0.47583, 0.2855 }, actual = default_world_.ColourAt(ray);
+    ASSERT_TRUE(simple_floating_point_compare(expected.Red(), actual.Red()));
+    ASSERT_TRUE(simple_floating_point_compare(expected.Green(), actual.Green()));
+    ASSERT_TRUE(simple_floating_point_compare(expected.Blue(), actual.Blue()));
+}
 
 /*
 Scenario: The color with an intersection behind the ray
@@ -149,6 +201,21 @@ Scenario: The color with an intersection behind the ray
   When c ← color_at(w, r)
   Then c = inner.material.color
 */
+
+TEST_F(DefaultWorldTest, FindingTheColourForAnIntersectionBehindTheRay) {
+    Point origin { 0, 0, 0.75 };
+    Vector direction { 0, 0, -1 };
+    Ray ray { origin, direction };
+    // Adjust objects in world
+    material1_.Ambient(1.0);
+    sphere1_->SetMaterial(material1_);
+    material2_.Ambient(1.0);
+    sphere2_->SetMaterial(material2_);
+    Colour actual = default_world_.ColourAt(ray), expected = sphere2_->ShapeMaterial().Surface();
+    ASSERT_TRUE(simple_floating_point_compare(expected.Red(), actual.Red()));
+    ASSERT_TRUE(simple_floating_point_compare(expected.Green(), actual.Green()));
+    ASSERT_TRUE(simple_floating_point_compare(expected.Blue(), actual.Blue()));
+}
 
 /*
 Scenario: There is no shadow when nothing is collinear with point and light

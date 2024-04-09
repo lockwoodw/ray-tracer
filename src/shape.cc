@@ -6,6 +6,20 @@ Intersection& Intersection::operator=(const Intersection& i) {
     return *this;
 }
 
+IntersectionComputation::IntersectionComputation(const Intersection& i, const Ray& r):
+    object_ { i.Object() },
+    distance_ { i.Distance() },
+    point_ { r.Position(i.Distance()) },
+    eye_vector_ { -r.Direction() },
+    normal_vector_ { i.Object()->NormalAt(point_) },
+    inside_ { false }
+{
+    if (Vector::DotProduct(normal_vector_, eye_vector_) < 0) {
+        inside_ = true;
+        normal_vector_ = -normal_vector_;
+    }
+}
+
 IntersectionList::~IntersectionList() {
     for(auto i: list_) {
         delete i;

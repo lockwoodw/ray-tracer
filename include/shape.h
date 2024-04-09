@@ -27,7 +27,7 @@ class Shape {
             transform_ { s.transform_ },
             material_ { s.material_ } {}
 
-        ~Shape() {} // required for abstract base class
+        virtual ~Shape() {} // required for abstract base class
 
         virtual void AddIntersections(IntersectionList& list, const Ray& ray) const = 0;
         virtual bool operator==(const Shape&) const  = 0;
@@ -76,12 +76,31 @@ class Intersection {
 
 using IntersectionPtr = Intersection*;
 
+class IntersectionComputation {
+    const Shape* object_;
+    double distance_;
+    Point point_;
+    Vector eye_vector_;
+    Vector normal_vector_;
+    bool inside_;
+
+    public:
+        IntersectionComputation(const Intersection& i, const Ray& r);
+        const Shape* Object() const { return object_; }
+        double Distance() const { return distance_; }
+        const Point WorldPoint() const { return point_; }
+        const Vector EyeVector() const { return eye_vector_; }
+        const Vector NormalVector() const { return normal_vector_; }
+        bool Inside() const { return inside_; }
+};
+
 class IntersectionComparator {
     public:
         bool operator()(const Intersection* a, const Intersection* b) {
             return a->Distance() < b->Distance();
         }
 };
+
 
 class IntersectionList {
     std::list<const Intersection*> list_;
