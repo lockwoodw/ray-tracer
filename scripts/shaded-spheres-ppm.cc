@@ -33,9 +33,9 @@ int main(int argc, char** argv) {
            sphere3_colour { 1, 1, 0 },
            light_colour { 1, 1, 1 };
     Material material1 {}, material2 {}, material3 {};
-    material1.SetColour(sphere1_colour);
-    material2.SetColour(sphere2_colour);
-    material3.SetColour(sphere3_colour);
+    material1.Surface(sphere1_colour);
+    material2.Surface(sphere2_colour);
+    material3.Surface(sphere3_colour);
     sphere1.SetMaterial(material1);
     sphere2.SetMaterial(material2);
     sphere3.SetMaterial(material3);
