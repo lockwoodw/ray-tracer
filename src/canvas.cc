@@ -22,6 +22,16 @@ Canvas::Canvas(int width, int height, const Colour& default_colour): width_ { wi
     }
 }
 
+Canvas::Canvas(const Canvas& canvas): width_ { canvas.width_ }, height_ { canvas.height_ } {
+    pixels_ = new Colour*[height_];
+    for (int i = 0; i < height_; i++) {
+        pixels_[i] = new Colour[width_];
+        for (int j = 0; j < width_; j++) {
+            pixels_[i][j] = canvas.pixels_[i][j];
+        }
+    }
+}
+
 Canvas::~Canvas() {
     for (int i = 0; i < height_; i++) {
         delete[] pixels_[i];
