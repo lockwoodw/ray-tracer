@@ -220,6 +220,30 @@ target_link_libraries(
 
 target_include_directories(world-test PRIVATE ../include/)
 
+add_executable(
+  camera-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/transformations.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/sphere.cc
+  ../src/world.cc
+  ../src/camera.cc
+  ../src/canvas.cc
+  camera.cc
+)
+
+target_link_libraries(
+  camera-test
+  GTest::gtest_main
+)
+
+target_include_directories(camera-test PRIVATE ../include/)
+
 include(GoogleTest)
 gtest_discover_tests(
   utils-test
@@ -234,4 +258,5 @@ gtest_discover_tests(
   intersections-test
   material-test
   world-test
+  camera-test
 )
