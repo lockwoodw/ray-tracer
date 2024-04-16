@@ -10,6 +10,7 @@ class Light {
 
     public:
         Light(const Point& p, const Colour& c): position_ { p }, intensity_ { c } {}
+        Light(const Light& light): position_ { light.position_ }, intensity_ { light.intensity_} {}
         const Point Position() const { return position_; }
         const Colour Intensity() const { return intensity_; }
 };
@@ -36,6 +37,13 @@ class Material {
             diffuse_ { diffuse },
             specular_ { specular },
             shininess_ { shininess} {}
+
+        Material(const Material& m):
+            surface_ { m.surface_ },
+            ambient_ { m.ambient_ },
+            diffuse_ { m.diffuse_ },
+            specular_ { m.specular_ },
+            shininess_ { m.shininess_ } {}
 
         bool operator==(const Material& m) const;
 

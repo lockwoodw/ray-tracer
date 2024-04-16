@@ -20,6 +20,8 @@ class Colour {
 
         Colour(const Tuple& t);
 
+        Colour(const Colour& c): tuple_ { c.tuple_ } {}
+
         double Red() { return tuple_[kRed]; }
         double Green() { return tuple_[kGreen]; }
         double Blue() { return tuple_[kBlue]; }
