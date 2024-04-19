@@ -34,6 +34,8 @@ class Vector: public SpatialTuple {
             elements_[kW] = 0.0;
         }
 
+        Vector(const Vector& v): SpatialTuple { v } {}
+
         double Magnitude() const;
         Vector Normalize() const;
 };
@@ -54,6 +56,8 @@ class Point: public SpatialTuple {
         Point(const Tuple& t): SpatialTuple { t } {
             elements_[kW] = 1.0;
         }
+
+        Point(const Point& p): SpatialTuple { p } {}
 };
 
 #endif

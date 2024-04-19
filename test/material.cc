@@ -168,6 +168,17 @@ Scenario: Lighting with the surface in shadow
   Then result = color(0.1, 0.1, 0.1)
 */
 
+TEST(MaterialTest, LightingWithTheSurfaceInShadow) {
+    Material m {};
+    Point position { 0, 0, 0 };
+    Vector eye_vector { 0, 0, -1 },
+           normal_vector { 0, 0, -1 };
+    Light light { Point { 0, 0, -10 }, Colour { 1, 1, 1 }};
+    bool in_shadow { true };
+    Colour expected { 0.1, 0.1, 0.1 };
+    ASSERT_EQ(m.ApplyLightAt(light, position, eye_vector, normal_vector, in_shadow), expected);
+}
+
 /*
 Scenario: Lighting with a pattern applied
   Given m.pattern ← stripe_pattern(color(1, 1, 1), color(0, 0, 0))

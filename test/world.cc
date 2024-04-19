@@ -224,12 +224,22 @@ Scenario: There is no shadow when nothing is collinear with point and light
    Then is_shadowed(w, p) is false
 */
 
+TEST_F(DefaultWorldTest, FindingNoShadowWhenNothingIsCollinearWithPointAndLight) {
+    Point point { 0, 10, 0 };
+    ASSERT_FALSE(default_world_.InShadow(point));
+}
+
 /*
 Scenario: The shadow when an object is between the point and the light
   Given w ← default_world()
     And p ← point(10, -10, 10)
    Then is_shadowed(w, p) is true
 */
+
+TEST_F(DefaultWorldTest, FindingAShadowWhenAnObjectIsBetweenThePointAndLight) {
+    Point point { 10, -10, 10 };
+    ASSERT_TRUE(default_world_.InShadow(point));
+}
 
 /*
 Scenario: There is no shadow when an object is behind the light
@@ -238,12 +248,22 @@ Scenario: There is no shadow when an object is behind the light
    Then is_shadowed(w, p) is false
 */
 
+TEST_F(DefaultWorldTest, FindingNoShadowWhenAnObjectIsBehindTheLight) {
+    Point point { -20, 20, -20 };
+    ASSERT_FALSE(default_world_.InShadow(point));
+}
+
 /*
 Scenario: There is no shadow when an object is behind the point
   Given w ← default_world()
     And p ← point(-2, 2, -2)
    Then is_shadowed(w, p) is false
 */
+
+TEST_F(DefaultWorldTest, FindingNoShadowWhenAnObjectIsBehindThePoint) {
+    Point point { -2, 2, -2 };
+    ASSERT_FALSE(default_world_.InShadow(point));
+}
 
 /*
 Scenario: shade_hit() is given an intersection in shadow
@@ -260,6 +280,27 @@ Scenario: shade_hit() is given an intersection in shadow
     And c ← shade_hit(w, comps)
   Then c = color(0.1, 0.1, 0.1)
 */
+
+TEST(WorldTest, FindingAnIntersectionInShadow) {
+    World w {};
+    Point light_origin { 0, 0, -10 };
+    Colour light_colour { 1, 1, 1 };
+    Light light { light_origin, light_colour };
+    w.Add(&light);
+    Sphere s1 {};
+    w.Add(&s1);
+    Sphere s2 {};
+    Matrix transform = Transformation().Translate(0, 0, 10);
+    s2.SetTransform(transform);
+    w.Add(&s2);
+    Point origin { 0, 0, 5 };
+    Vector direction { 0, 0, 1 };
+    Ray r { origin, direction };
+    Intersection i { 4, &s2 };
+    IntersectionComputation ic { i, r };
+    Colour expected { 0.1, 0.1, 0.1 }, actual = w.ColourAt(ic);
+    ASSERT_EQ(expected, actual);
+}
 
 /*
 Scenario: The reflected color for a nonreflective material

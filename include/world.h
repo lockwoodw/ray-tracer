@@ -6,10 +6,12 @@
 #include "ray.h"
 #include "material.h"
 #include "colour.h"
+#include "space.h"
 
 class World {
     std::set<const Shape*> objects_;
     std::set<const Light*> lights_;
+    bool InShadow(const Point& point, const Light* light) const;
 
     public:
         World(): objects_ {}, lights_ {} {}
@@ -24,6 +26,7 @@ class World {
         std::size_t NLights() const { return lights_.size(); }
         const Colour ColourAt(const IntersectionComputation& ic) const;
         const Colour ColourAt(const Ray& ray) const;
+        bool InShadow(const Point& point) const;
 };
 
 #endif

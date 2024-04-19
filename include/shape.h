@@ -74,8 +74,6 @@ class Intersection {
         }
 };
 
-using IntersectionPtr = Intersection*;
-
 class IntersectionComputation {
     const Shape* object_;
     double distance_;
@@ -83,8 +81,10 @@ class IntersectionComputation {
     Vector eye_vector_;
     Vector normal_vector_;
     bool inside_;
+    Point over_point_;
 
     public:
+        static double kEpsilon;
         IntersectionComputation(const Intersection& i, const Ray& r);
         const Shape* Object() const { return object_; }
         double Distance() const { return distance_; }
@@ -92,6 +92,7 @@ class IntersectionComputation {
         const Vector EyeVector() const { return eye_vector_; }
         const Vector NormalVector() const { return normal_vector_; }
         bool Inside() const { return inside_; }
+        const Point OverPoint() const { return over_point_; }
 };
 
 class IntersectionComparator {
@@ -100,7 +101,6 @@ class IntersectionComparator {
             return a->Distance() < b->Distance();
         }
 };
-
 
 class IntersectionList {
     std::list<const Intersection*> list_;

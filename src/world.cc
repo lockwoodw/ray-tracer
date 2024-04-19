@@ -40,8 +40,10 @@ IntersectionList World::Intersect(const Ray& ray) const {
 const Colour World::ColourAt(const IntersectionComputation& ic) const {
     Colour colour {};
     for (const Light* light: lights_) {
-        colour += ic.Object()->ShapeMaterial().ApplyLightAt(*light, ic.WorldPoint(),
-            ic.EyeVector(), ic.NormalVector());
+        Point point = ic.OverPoint();
+        bool in_shadow = InShadow(point, light);
+        colour += ic.Object()->ShapeMaterial().ApplyLightAt(*light, point,
+            ic.EyeVector(), ic.NormalVector(), in_shadow);
     }
     return colour;
 }
@@ -55,4 +57,28 @@ const Colour World::ColourAt(const Ray& ray) const {
         colour += ColourAt(ic);
     }
     return colour;
+}
+
+bool World::InShadow(const Point& point, const Light* light) const {
+    Vector v = light->Position() - point;
+    double distance = v.Magnitude();
+    Vector direction = v.Normalize();
+
+    Ray ray { point, direction };
+    IntersectionList xs = Intersect(ray);
+    const Intersection* hit = xs.Hit();
+    return hit && hit->Distance() < distance;
+}
+
+bool World::InShadow(const Point& point) const {
+    // The point is shaded only if it is in the shadow for all lights
+    bool result { true };
+    for (const Light* light: lights_) {
+        result = result && InShadow(point, light);
+        if (!result) {
+            // Short circuit if the point is not in the shadow of any light
+            break;
+        }
+    }
+    return result;
 }

@@ -4,6 +4,7 @@
 #include "shape.h"
 #include "sphere.h"
 #include "ray.h"
+#include "transformations.h"
 
 /*
 Scenario: An intersection encapsulates t and object
@@ -119,6 +120,19 @@ Scenario: The hit should offset the point
   Then comps.over_point.z < -EPSILON/2
     And comps.point.z > comps.over_point.z
 */
+
+TEST(IntersectionsTest, ConfirmingTheHitOffsetsThePoint) {
+    Point point { 0, 0, -5 };
+    Vector vector { 0, 0, 1 };
+    Ray r { point, vector };
+    Sphere sphere {};
+    sphere.SetTransform(Transformation().Translate(0, 0, 1));
+    Intersection i { 5, &sphere };
+    IntersectionComputation comps { i, r };
+    double over_point_z = comps.OverPoint().Z();
+    ASSERT_LT(over_point_z, -IntersectionComputation::kEpsilon / 2);
+    ASSERT_GT(comps.WorldPoint().Z(), over_point_z);
+}
 
 /*
 Scenario: The under point is offset below the surface

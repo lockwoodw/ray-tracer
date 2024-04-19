@@ -60,7 +60,7 @@ class Material {
         Material& Shininess(double s) { shininess_ = s; return *this; }
 
         Colour ApplyLightAt(const Light& light, const Point& point,
-            const Vector& eye_vector, const Vector& normal_vector) const;
+            const Vector& eye_vector, const Vector& normal_vector, bool in_shadow = false) const;
 };
 
 #endif

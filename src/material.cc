@@ -11,16 +11,21 @@ bool Material::operator==(const Material& m) const {
 }
 
 Colour Material::ApplyLightAt(const Light& light, const Point& point,
-        const Vector& eye_vector, const Vector& normal_vector) const
+        const Vector& eye_vector, const Vector& normal_vector, bool in_shadow) const
 {
     // Combine the surface colour with the light's colour/intensity
     Colour effective = surface_ * light.Intensity();
 
-    // Find the direction of the light
-    Vector light_vector = (Vector { light.Position() - point } ).Normalize();
-
     // Effective ambient colour
     Colour ambient = effective * ambient_;
+
+    // Ignore diffuse and specular contributions if the point is in shadow
+    if (in_shadow) {
+        return ambient;
+    }
+
+    // Find the direction of the light
+    Vector light_vector = (Vector { light.Position() - point } ).Normalize();
 
     // The dot-product of the light and normal vectors represents the cosine of the
     // angle between them.
