@@ -1,5 +1,23 @@
 #include "shape.h"
 
+const Ray Shape::AddIntersections(IntersectionList& list, const Ray& ray) const {
+    Ray local_ray = ray.Transform(transform_.Inverse());
+    Intersect(list, ray, local_ray);
+    return local_ray; // return value used for testing only
+}
+
+Vector Shape::NormalAt(const Point &world_point) const {
+    // convert world_point into point in object space
+    Point object_point = transform_.Inverse() * world_point;
+    // get local normal
+    Vector object_normal = LocalNormalAt(object_point);
+    // convert local normal back to world space
+    Vector world_normal = transform_.Inverse().Transpose() * object_normal;
+    // hack to mitigate the effect of any translation operation on the w element
+    world_normal[world_normal.kW] = 0.0;
+    return world_normal.Normalize();
+}
+
 Intersection& Intersection::operator=(const Intersection& i) {
     object_ = i.object_;
     distance_ = i.distance_;

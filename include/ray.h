@@ -10,6 +10,7 @@ class Ray {
 
     public:
         Ray(const Point& p, const Vector& v): origin { p }, direction { v } {}
+        Ray(const Ray& r): origin { r.origin }, direction { r.direction } {}
         const Point Origin() const {  return origin; }
         const Vector Direction() const { return direction; }
         const Point Position(double t) const {
@@ -19,6 +20,11 @@ class Ray {
             Point p = transform * origin;
             Vector v = transform * direction;
             return Ray { p, v };
+        }
+        Ray& operator=(const Ray& r) {
+            origin = r.origin;
+            direction = r.direction;
+            return *this;
         }
 };
 

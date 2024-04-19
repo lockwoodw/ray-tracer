@@ -18,7 +18,7 @@ Material FloorMaterial() {
     Colour colour { 1, 0.9, 0.9 };
     material.Surface(colour);
     material.Specular(0);
-    return material;    
+    return material;
 }
 
 Sphere Floor(const Material& material, double scale) {

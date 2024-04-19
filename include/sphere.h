@@ -5,15 +5,15 @@
 
 class Sphere: public Shape {
     double radius_;
+    void Intersect(IntersectionList& list, const Ray& ray, const Ray& local_ray) const override;
+    Vector LocalNormalAt(const Point &object_point) const override;
 
     public:
         Sphere(): Shape { Point { 0, 0, 0 } }, radius_ { 1.0 } {}
         Sphere(const Point& p, double r): Shape { p }, radius_ { r } {}
         Sphere(const Sphere& s): Shape { s.origin_ }, radius_ { s.radius_ } {}
-        void AddIntersections(IntersectionList& i, const Ray& r) const override;
         const double Radius() { return radius_; }
         bool operator==(const Shape& s) const override;
-        Vector NormalAt(const Point &world_point) const override;
 };
 
 #endif
