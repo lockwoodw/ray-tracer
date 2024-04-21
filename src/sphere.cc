@@ -2,9 +2,9 @@
 #include "sphere.h"
 #include "utils.h"
 
-void Sphere::Intersect(IntersectionList& list, const Ray& ray, const Ray& local_ray) const {
-    Vector sphere_to_ray = local_ray.Origin() - origin_,
-           direction = local_ray.Direction();
+void Sphere::Intersect(IntersectionList& list, const Ray& ray) const {
+    Vector sphere_to_ray = ray.Origin() - origin_,
+           direction = ray.Direction();
     double a = Vector::DotProduct(direction, direction),
            b = 2 * Vector::DotProduct(direction, sphere_to_ray),
            c = Vector::DotProduct(sphere_to_ray, sphere_to_ray) - radius_ * radius_,

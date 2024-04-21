@@ -264,6 +264,26 @@ target_link_libraries(
 
 target_include_directories(shape-test PRIVATE ../include/)
 
+add_executable(
+  plane-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/plane.cc
+  plane.cc
+)
+
+target_link_libraries(
+  plane-test
+  GTest::gtest_main
+)
+
+target_include_directories(plane-test PRIVATE ../include/)
+
 include(GoogleTest)
 gtest_discover_tests(
   utils-test
@@ -280,4 +300,5 @@ gtest_discover_tests(
   world-test
   camera-test
   shape-test
+  plane-test
 )

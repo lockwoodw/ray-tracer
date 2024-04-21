@@ -16,8 +16,6 @@ class Shape {
         Matrix transform_;
         Material material_;
 
-        virtual void Intersect(IntersectionList& list, const Ray& ray, const Ray& local_ray) const = 0;
-        virtual Vector LocalNormalAt(const Point &object_point) const = 0;
 
     public:
         Shape(const Point& p):
@@ -32,9 +30,13 @@ class Shape {
 
         virtual ~Shape() {} // required for abstract base class
 
+        virtual void Intersect(IntersectionList& list, const Ray& ray) const = 0;
         const Ray AddIntersections(IntersectionList& list, const Ray& ray) const;
-        virtual bool operator==(const Shape&) const  = 0;
+
+        virtual Vector LocalNormalAt(const Point &object_point) const = 0;
         Vector NormalAt(const Point &world_point) const;
+
+        virtual bool operator==(const Shape&) const  = 0;
 
         const Point Origin() const { return origin_; }
 
@@ -87,7 +89,7 @@ class IntersectionComputation {
     Point over_point_;
 
     public:
-        static double kEpsilon;
+        static const double kEpsilon;
         IntersectionComputation(const Intersection& i, const Ray& r);
         const Shape* Object() const { return object_; }
         double Distance() const { return distance_; }

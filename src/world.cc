@@ -12,6 +12,18 @@ std::size_t World::Remove(const Shape* object) {
     return objects_.erase(object);
 }
 
+std::size_t World::ClearObjects() {
+    std::size_t n = 0;
+    std::set<const Shape *>::iterator it = objects_.begin(), end = objects_.end();
+    while (it != end) {
+        delete *it;
+        n++;
+        it++;
+    }
+    objects_.clear();
+    return n;
+}
+
 std::size_t World::Remove(const Light* light) {
     return lights_.erase(light);
 }

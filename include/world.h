@@ -19,6 +19,7 @@ class World {
         void Add(const Light* light);
         std::size_t Remove(const Shape* object);
         std::size_t Remove(const Light* light);
+        std::size_t ClearObjects();
         bool Contains(const Shape* object) const;
         bool Contains(const Light* light) const;
         IntersectionList Intersect(const Ray& ray) const;

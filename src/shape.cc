@@ -2,7 +2,7 @@
 
 const Ray Shape::AddIntersections(IntersectionList& list, const Ray& ray) const {
     Ray local_ray = ray.Transform(transform_.Inverse());
-    Intersect(list, ray, local_ray);
+    Intersect(list, local_ray);
     return local_ray; // return value used for testing only
 }
 
@@ -24,7 +24,7 @@ Intersection& Intersection::operator=(const Intersection& i) {
     return *this;
 }
 
-double IntersectionComputation::kEpsilon = 1e-5;
+const double IntersectionComputation::kEpsilon = 1e-5;
 
 IntersectionComputation::IntersectionComputation(const Intersection& i, const Ray& r):
         object_ { i.Object() },

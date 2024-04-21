@@ -11,15 +11,16 @@
 class TestShape: public Shape {
     static int count_;
     int id_;
-    void Intersect(IntersectionList& list, const Ray& ray, const Ray& local_ray) const override { /* do nothing */}
-    Vector LocalNormalAt(const Point &object_point) const {
-        return Vector { object_point.X(), object_point.Y(), object_point.Z() };
-    };
 
     public:
         TestShape(): Shape { Point { 0, 0, 0 } }, id_ { count_++ } {}
         TestShape(const TestShape& ts): Shape { ts.origin_ }, id_ { ts.id_ } {}
+
         bool operator==(const Shape& s) const override;
+        void Intersect(IntersectionList& list, const Ray& ray) const override { /* do nothing */}
+        Vector LocalNormalAt(const Point &object_point) const {
+            return Vector { object_point.X(), object_point.Y(), object_point.Z() };
+        };
 };
 
 int TestShape::count_ = 0;

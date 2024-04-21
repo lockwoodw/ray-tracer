@@ -60,6 +60,7 @@ class Transformation: public Matrix {
 
     public:
         Transformation();
+        Transformation(const Transformation& t): Matrix { t } {}
         Transformation& RotateX(double radians);
         Transformation& RotateY(double radians);
         Transformation& RotateZ(double radians);
