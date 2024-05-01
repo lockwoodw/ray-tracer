@@ -15,12 +15,15 @@ class Light {
         const Colour Intensity() const { return intensity_; }
 };
 
+class Pattern; // forward declaration
+
 class Material {
     Colour surface_;
     double ambient_;
     double diffuse_;
     double specular_;
     double shininess_;
+    Pattern* pattern_;
 
     public:
         Material():
@@ -28,7 +31,8 @@ class Material {
             ambient_ { 0.1 },
             diffuse_ { 0.9 },
             specular_ { 0.9 },
-            shininess_ { 200.0 } {}
+            shininess_ { 200.0 },
+            pattern_ {} {}
 
         Material(Colour surface, double ambient, double diffuse, double specular,
             double shininess):
@@ -36,14 +40,16 @@ class Material {
             ambient_ { ambient },
             diffuse_ { diffuse },
             specular_ { specular },
-            shininess_ { shininess} {}
+            shininess_ { shininess},
+            pattern_ {} {}
 
         Material(const Material& m):
             surface_ { m.surface_ },
             ambient_ { m.ambient_ },
             diffuse_ { m.diffuse_ },
             specular_ { m.specular_ },
-            shininess_ { m.shininess_ } {}
+            shininess_ { m.shininess_ },
+            pattern_ { m.pattern_ } {}
 
         bool operator==(const Material& m) const;
 
@@ -52,15 +58,19 @@ class Material {
         double Diffuse() const { return diffuse_; }
         double Specular() const { return specular_; }
         double Shininess() const { return shininess_; }
+        Pattern* SurfacePattern() const { return pattern_; }
 
         Material& Surface(const Colour& c) { surface_ = c; return *this; }
         Material& Ambient(double a) { ambient_ = a; return *this; }
         Material& Diffuse(double d) { diffuse_ = d; return *this; }
         Material& Specular(double s) { specular_ = s; return *this; }
         Material& Shininess(double s) { shininess_ = s; return *this; }
+        Material& SurfacePattern(Pattern* p) { pattern_ = p; return *this; }
 
         Colour ApplyLightAt(const Light& light, const Point& point,
             const Vector& eye_vector, const Vector& normal_vector, bool in_shadow = false) const;
+
+        bool PatternExists() const { return pattern_ != nullptr; }
 };
 
 #endif

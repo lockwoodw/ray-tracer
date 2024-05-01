@@ -1,7 +1,9 @@
 #define _USE_MATH_DEFINES // for M_PI
+#include "shape.h"
+
 #include <gtest/gtest.h>
 #include <cmath>
-#include "shape.h"
+
 #include "transformations.h"
 #include "material.h"
 #include "ray.h"

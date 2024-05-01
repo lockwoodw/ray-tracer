@@ -1,7 +1,13 @@
+#include "material.h"
+
 #include <gtest/gtest.h>
 #include <cmath>
-#include "material.h"
+
 #include "utils.h"
+#include "colour.h"
+#include "shape.h"
+#include "space.h"
+#include "pattern.h"
 
 /*
 Scenario: A point light has a position and intensity
@@ -193,3 +199,18 @@ Scenario: Lighting with a pattern applied
   Then c1 = color(1, 1, 1)
     And c2 = color(0, 0, 0)
 */
+
+TEST(MaterialTest, LightingWithAPatternApplied) {
+    Material m {};
+    Colour white { 1, 1, 1 },
+           black { 0, 0, 0 };
+    StripePattern sp { white, black };
+    m.SurfacePattern(&sp).Ambient(1).Diffuse(0).Specular(0);
+    Vector eye { 0, 0, -1 },
+           normal { 0, 0, -1 };
+    Light light { Point { 0, 0, -10 }, white };
+    Colour c1 = m.ApplyLightAt(light, Point { 0.9, 0, 0 }, eye, normal, false),
+           c2 = m.ApplyLightAt(light, Point { 1.1, 0, 0 }, eye, normal, false);
+    ASSERT_EQ(c1, white);
+    ASSERT_EQ(c2, black);
+}

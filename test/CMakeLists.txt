@@ -150,6 +150,7 @@ add_executable(
   ../src/material.cc
   ../src/shape.cc
   ../src/sphere.cc
+  ../src/pattern.cc
   sphere.cc
 )
 
@@ -171,6 +172,7 @@ add_executable(
   ../src/material.cc
   ../src/shape.cc
   ../src/sphere.cc
+  ../src/pattern.cc
   intersections.cc
 )
 
@@ -188,6 +190,8 @@ add_executable(
   ../src/space.cc
   ../src/colour.cc
   ../src/material.cc
+  ../src/matrix.cc
+  ../src/pattern.cc
   material.cc
 )
 
@@ -209,6 +213,7 @@ add_executable(
   ../src/material.cc
   ../src/shape.cc
   ../src/sphere.cc
+  ../src/pattern.cc
   ../src/world.cc
   world.cc
 )
@@ -231,6 +236,7 @@ add_executable(
   ../src/material.cc
   ../src/shape.cc
   ../src/sphere.cc
+  ../src/pattern.cc
   ../src/world.cc
   ../src/camera.cc
   ../src/canvas.cc
@@ -254,6 +260,7 @@ add_executable(
   ../src/colour.cc
   ../src/material.cc
   ../src/shape.cc
+  ../src/pattern.cc
   shape.cc
 )
 
@@ -274,6 +281,7 @@ add_executable(
   ../src/material.cc
   ../src/shape.cc
   ../src/plane.cc
+  ../src/pattern.cc
   plane.cc
 )
 
@@ -283,6 +291,27 @@ target_link_libraries(
 )
 
 target_include_directories(plane-test PRIVATE ../include/)
+
+add_executable(
+  pattern-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/transformations.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/shape.cc
+  ../src/sphere.cc
+  ../src/pattern.cc
+  pattern.cc
+)
+
+target_link_libraries(
+  pattern-test
+  GTest::gtest_main
+)
+
+target_include_directories(pattern-test PRIVATE ../include/)
 
 include(GoogleTest)
 gtest_discover_tests(
@@ -301,4 +330,7 @@ gtest_discover_tests(
   camera-test
   shape-test
   plane-test
+  pattern-test
 )
+
+# cmake --build build

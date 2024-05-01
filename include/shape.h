@@ -16,7 +16,6 @@ class Shape {
         Matrix transform_;
         Material material_;
 
-
     public:
         Shape(const Point& p):
             origin_ { p },
