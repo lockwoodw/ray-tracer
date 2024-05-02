@@ -3,9 +3,11 @@
 
 #include <list>
 #include <stdexcept>
+
 #include "space.h"
 #include "ray.h"
 #include "matrix.h"
+#include "colour.h"
 #include "material.h"
 
 class IntersectionList;
@@ -58,6 +60,9 @@ class Shape {
         const Material& ShapeMaterial() const {
             return material_;
         }
+
+        Colour ApplyLightAt(const Light& light, const Point& point,
+            const Vector& eye_vector, const Vector& normal_vector, bool in_shadow = false) const;
 };
 
 class Intersection {

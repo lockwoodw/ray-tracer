@@ -8,6 +8,7 @@
 #include "shape.h"
 #include "space.h"
 #include "pattern.h"
+#include "sphere.h"
 
 /*
 Scenario: A point light has a position and intensity
@@ -75,7 +76,11 @@ TEST(MaterialTest, LightingWithTheEyeBetweenTheLightAndTheSurface) {
            normal_vector { 0, 0, -1 };
     Light light { Point { 0, 0, -10 }, Colour { 1, 1, 1 }};
     Colour expected { 1.9, 1.9, 1.9 };
-    ASSERT_EQ(m.ApplyLightAt(light, position, eye_vector, normal_vector), expected);
+    Sphere dummy { position, 1 };
+    ASSERT_EQ(m.ApplyLightAt(&dummy, light, position, eye_vector, normal_vector), expected);
+    // confirm other path to same result
+    dummy.SetMaterial(m);
+    ASSERT_EQ(dummy.ApplyLightAt(light, position, eye_vector, normal_vector), expected);
 }
 
 /*
@@ -95,7 +100,8 @@ TEST(MaterialTest, LightingWithTheEyeOffset45Degrees) {
            normal_vector { 0, 0, -1 };
     Light light { Point { 0, 0, -10 }, Colour { 1, 1, 1 }};
     Colour expected { 1.0, 1.0, 1.0 };
-    ASSERT_EQ(m.ApplyLightAt(light, position, eye_vector, normal_vector), expected);
+    Sphere dummy { position, 1 };
+    ASSERT_EQ(m.ApplyLightAt(&dummy, light, position, eye_vector, normal_vector), expected);
 }
 
 /*
@@ -114,7 +120,8 @@ TEST(MaterialTest, LightingWithTheEyeOppositeSurface) {
            normal_vector { 0, 0, -1 };
     Light light { Point { 0, 10, -10 }, Colour { 1, 1, 1 }};
     Colour expected { 0.7364, 0.7364, 0.7364 };
-    Colour result = m.ApplyLightAt(light, position, eye_vector, normal_vector);
+    Sphere dummy { position, 1 };
+    Colour result = m.ApplyLightAt(&dummy, light, position, eye_vector, normal_vector);
     // Compare colour constituents individually using comparator with smaller Epsilon
     ASSERT_TRUE(simple_floating_point_compare(expected.Red(), result.Red()));
     ASSERT_TRUE(simple_floating_point_compare(expected.Green(), result.Green()));
@@ -138,7 +145,8 @@ TEST(MaterialTest, LightingWithTheEyeInThePathOfTheReflectionVector) {
            normal_vector { 0, 0, -1 };
     Light light { Point { 0, 10, -10 }, Colour { 1, 1, 1 }};
     Colour expected { 1.6364, 1.6364, 1.6364 };
-    Colour result = m.ApplyLightAt(light, position, eye_vector, normal_vector);
+    Sphere dummy { position, 1 };
+    Colour result = m.ApplyLightAt(&dummy, light, position, eye_vector, normal_vector);
     // Compare colour constituents individually using comparator with smaller Epsilon
     ASSERT_TRUE(simple_floating_point_compare(expected.Red(), result.Red()));
     ASSERT_TRUE(simple_floating_point_compare(expected.Green(), result.Green()));
@@ -161,7 +169,8 @@ TEST(MaterialTest, LightingBehindTheSurface) {
            normal_vector { 0, 0, -1 };
     Light light { Point { 0, 0, 10 }, Colour { 1, 1, 1 }};
     Colour expected { 0.1, 0.1, 0.1 };
-    ASSERT_EQ(m.ApplyLightAt(light, position, eye_vector, normal_vector), expected);
+    Sphere dummy { position, 1 };
+    ASSERT_EQ(m.ApplyLightAt(&dummy, light, position, eye_vector, normal_vector), expected);
 }
 
 /*
@@ -182,7 +191,8 @@ TEST(MaterialTest, LightingWithTheSurfaceInShadow) {
     Light light { Point { 0, 0, -10 }, Colour { 1, 1, 1 }};
     bool in_shadow { true };
     Colour expected { 0.1, 0.1, 0.1 };
-    ASSERT_EQ(m.ApplyLightAt(light, position, eye_vector, normal_vector, in_shadow), expected);
+    Sphere dummy { position, 1 };
+    ASSERT_EQ(m.ApplyLightAt(&dummy, light, position, eye_vector, normal_vector, in_shadow), expected);
 }
 
 /*
@@ -209,8 +219,9 @@ TEST(MaterialTest, LightingWithAPatternApplied) {
     Vector eye { 0, 0, -1 },
            normal { 0, 0, -1 };
     Light light { Point { 0, 0, -10 }, white };
-    Colour c1 = m.ApplyLightAt(light, Point { 0.9, 0, 0 }, eye, normal, false),
-           c2 = m.ApplyLightAt(light, Point { 1.1, 0, 0 }, eye, normal, false);
+    Sphere dummy {};
+    Colour c1 = m.ApplyLightAt(&dummy, light, Point { 0.9, 0, 0 }, eye, normal, false),
+           c2 = m.ApplyLightAt(&dummy, light, Point { 1.1, 0, 0 }, eye, normal, false);
     ASSERT_EQ(c1, white);
     ASSERT_EQ(c2, black);
 }

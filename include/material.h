@@ -15,7 +15,9 @@ class Light {
         const Colour Intensity() const { return intensity_; }
 };
 
-class Pattern; // forward declaration
+// forward declarations
+class Pattern;
+class Shape;
 
 class Material {
     Colour surface_;
@@ -67,7 +69,7 @@ class Material {
         Material& Shininess(double s) { shininess_ = s; return *this; }
         Material& SurfacePattern(Pattern* p) { pattern_ = p; return *this; }
 
-        Colour ApplyLightAt(const Light& light, const Point& point,
+        Colour ApplyLightAt(const Shape* object, const Light& light, const Point& point,
             const Vector& eye_vector, const Vector& normal_vector, bool in_shadow = false) const;
 
         bool PatternExists() const { return pattern_ != nullptr; }

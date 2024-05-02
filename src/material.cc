@@ -19,11 +19,11 @@ bool Material::operator==(const Material& m) const {
         && floating_point_compare(shininess_, m.shininess_);
 }
 
-Colour Material::ApplyLightAt(const Light& light, const Point& point,
+Colour Material::ApplyLightAt(const Shape* object, const Light& light, const Point& point,
         const Vector& eye_vector, const Vector& normal_vector, bool in_shadow) const
 {
     // Apply colour from pattern, if any
-    Colour colour = PatternExists() ? pattern_->ColourAt(point) : surface_;
+    Colour colour = PatternExists() ? pattern_->ObjectColourAt(object, point) : surface_;
 
     // Combine the surface colour with the light's colour/intensity
     Colour effective = colour * light.Intensity();

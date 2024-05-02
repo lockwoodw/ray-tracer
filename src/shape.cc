@@ -18,6 +18,12 @@ Vector Shape::NormalAt(const Point &world_point) const {
     return world_normal.Normalize();
 }
 
+Colour Shape::ApplyLightAt(const Light& light, const Point& point,
+        const Vector& eye_vector, const Vector& normal_vector, bool in_shadow) const
+{
+    return material_.ApplyLightAt(this, light, point, eye_vector, normal_vector, in_shadow);
+}
+
 Intersection& Intersection::operator=(const Intersection& i) {
     object_ = i.object_;
     distance_ = i.distance_;

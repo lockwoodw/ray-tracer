@@ -54,8 +54,7 @@ const Colour World::ColourAt(const IntersectionComputation& ic) const {
     for (const Light* light: lights_) {
         Point point = ic.OverPoint();
         bool in_shadow = InShadow(point, light);
-        colour += ic.Object()->ShapeMaterial().ApplyLightAt(*light, point,
-            ic.EyeVector(), ic.NormalVector(), in_shadow);
+        colour += ic.Object()->ApplyLightAt(*light, point, ic.EyeVector(), ic.NormalVector(), in_shadow);
     }
     return colour;
 }

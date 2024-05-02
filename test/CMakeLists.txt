@@ -189,8 +189,10 @@ add_executable(
   ../src/tuple.cc
   ../src/space.cc
   ../src/colour.cc
-  ../src/material.cc
   ../src/matrix.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/sphere.cc
   ../src/pattern.cc
   material.cc
 )
@@ -300,6 +302,7 @@ add_executable(
   ../src/transformations.cc
   ../src/space.cc
   ../src/colour.cc
+  ../src/material.cc
   ../src/shape.cc
   ../src/sphere.cc
   ../src/pattern.cc
