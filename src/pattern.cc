@@ -19,3 +19,18 @@ bool StripePattern::operator==(const Pattern& p) const {
     }
     return (a_ == other->a_) && (b_ == other->b_);
 }
+
+const Colour GradientPattern::ColourAt(const Point& p) const {
+    // blending function: calculate distance between colours a_ and b_;
+    // multiply distance by fractional portion of x coordinate;
+    // add this product to the base colour
+    return a_ + ((b_ - a_) * (p.X() - std::floor(p.X())));
+}
+
+bool GradientPattern::operator==(const Pattern& p) const {
+    const GradientPattern* other = dynamic_cast<const GradientPattern*>(&p);
+    if (other == nullptr) { // Pattern is not a GradientPattern?
+        return false;
+    }
+    return (a_ == other->a_) && (b_ == other->b_);
+}

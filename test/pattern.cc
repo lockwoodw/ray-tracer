@@ -239,6 +239,17 @@ Scenario: A gradient linearly interpolates between colors
     And pattern_at(pattern, point(0.75, 0, 0)) = color(0.25, 0.25, 0.25)
 */
 
+TEST_F(DefaultPatternTest, ConfirmingAGradientPatternLinearlyInterpolatesBetweenColours) {
+    GradientPattern pattern(white_, black_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0, 0, 0 }), white_);
+    Colour c1 { 0.75, 0.75, 0.75 };
+    ASSERT_EQ(pattern.ColourAt(Point { 0.25, 0, 0 }), c1);
+    Colour c2 { 0.5, 0.5, 0.5 };
+    ASSERT_EQ(pattern.ColourAt(Point { 0.5, 0, 0 }), c2);
+    Colour c3 { 0.25, 0.25, 0.25 };
+    ASSERT_EQ(pattern.ColourAt(Point { 0.75, 0, 0 }), c3);
+}
+
 /*
 Scenario: A ring should extend in both x and z
   Given pattern ← ring_pattern(white, black)
