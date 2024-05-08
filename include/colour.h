@@ -31,6 +31,7 @@ class Colour {
         Colour operator-(const Colour& c) const;
         Colour operator*(double d) const;
         Colour operator*(const Colour& c) const; // Hadamard or Schur product
+        Colour operator/(double d) const;
         bool operator==(const Colour& c) const;
         bool operator!=(const Colour& c) const;
         Colour& operator=(const Colour& c);

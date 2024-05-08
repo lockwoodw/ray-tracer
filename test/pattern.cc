@@ -260,6 +260,14 @@ Scenario: A ring should extend in both x and z
     And pattern_at(pattern, point(0.708, 0, 0.708)) = black
 */
 
+TEST_F(DefaultPatternTest, ConfirmingARingPatternExtendsInXAndZ) {
+    RingPattern pattern(white_, black_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0, 0, 0 }), white_);
+    ASSERT_EQ(pattern.ColourAt(Point { 1, 0, 0 }), black_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0, 0, 1 }), black_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0.708, 0, 0.708 }), black_);
+}
+
 /*
 Scenario: Checkers should repeat in x
   Given pattern ← checkers_pattern(white, black)
@@ -267,6 +275,13 @@ Scenario: Checkers should repeat in x
     And pattern_at(pattern, point(0.99, 0, 0)) = white
     And pattern_at(pattern, point(1.01, 0, 0)) = black
 */
+
+TEST_F(DefaultPatternTest, ConfirmingACheckerPatternRepeatsInX) {
+    CheckerPattern pattern(white_, black_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0, 0, 0 }), white_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0.99, 0, 0 }), white_);
+    ASSERT_EQ(pattern.ColourAt(Point { 1.01, 0, 0 }), black_);
+}
 
 /*
 Scenario: Checkers should repeat in y
@@ -276,6 +291,13 @@ Scenario: Checkers should repeat in y
     And pattern_at(pattern, point(0, 1.01, 0)) = black
 */
 
+TEST_F(DefaultPatternTest, ConfirmingACheckerPatternRepeatsInY) {
+    CheckerPattern pattern(white_, black_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0, 0, 0 }), white_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0, 0.99, 0 }), white_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0, 1.01, 0 }), black_);
+}
+
 /*
 Scenario: Checkers should repeat in z
   Given pattern ← checkers_pattern(white, black)
@@ -283,3 +305,10 @@ Scenario: Checkers should repeat in z
     And pattern_at(pattern, point(0, 0, 0.99)) = white
     And pattern_at(pattern, point(0, 0, 1.01)) = black
 */
+
+TEST_F(DefaultPatternTest, ConfirmingACheckerPatternRepeatsInZ) {
+    CheckerPattern pattern(white_, black_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0, 0, 0 }), white_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0, 0, 0.99 }), white_);
+    ASSERT_EQ(pattern.ColourAt(Point { 0, 0, 1.01 }), black_);
+}

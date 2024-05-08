@@ -31,6 +31,10 @@ Colour Colour::operator*(const Colour& c) const {
     };
 }
 
+Colour Colour::operator/(double d) const {
+    return Colour { tuple_ / d };
+}
+
 bool Colour::operator==(const Colour& c) const {
     return tuple_ == c.tuple_;
 }

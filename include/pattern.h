@@ -23,49 +23,110 @@ class Pattern {
             return transform_;
         }
 
-        const Colour ObjectColourAt(const Shape* object, const Point& world_point) const;
+        virtual const Colour ObjectColourAt(const Shape* object, const Point& world_point) const;
         virtual const Colour ColourAt(const Point& p) const = 0;
         virtual bool operator==(const Pattern& p) const = 0;
 };
 
-class StripePattern: public Pattern {
-    Colour a_;
-    Colour b_;
+class TwoColourPattern: public Pattern {
+    protected:
+        Colour a_;
+        Colour b_;
 
     public:
-        StripePattern(const Colour& a, const Colour& b): Pattern {}, a_ { a }, b_ { b } {}
-        StripePattern(const StripePattern& sp): Pattern { sp } {
-            a_ = sp.a_;
-            b_ = sp.b_;
+        TwoColourPattern(const Colour& a, const Colour& b): Pattern {}, a_ { a }, b_ { b } {}
+        TwoColourPattern(const TwoColourPattern& tcp): Pattern { tcp } {
+            a_ = tcp.a_;
+            b_ = tcp.b_;
         }
-        const Colour ColourAt(const Point& p) const override;
-        bool operator==(const Pattern& p) const override;
+        virtual ~TwoColourPattern() {}
+
         const Colour A() const {
             return a_;
         }
         const Colour B() const {
             return b_;
         }
+
+        virtual const Colour ColourAt(const Point& p) const = 0;
+        virtual bool operator==(const Pattern& p) const = 0;
 };
 
-class GradientPattern: public Pattern {
-    Colour a_;
-    Colour b_;
-
+class StripePattern: public TwoColourPattern {
     public:
-        GradientPattern(const Colour& a, const Colour& b): Pattern {}, a_ { a }, b_ { b } {}
-        GradientPattern(const GradientPattern& sp): Pattern { sp } {
-            a_ = sp.a_;
-            b_ = sp.b_;
-        }
+        StripePattern(const Colour& a, const Colour& b): TwoColourPattern { a, b } {}
+        StripePattern(const StripePattern& sp): TwoColourPattern { sp } {}
         const Colour ColourAt(const Point& p) const override;
         bool operator==(const Pattern& p) const override;
-        const Colour A() const {
+};
+
+class GradientPattern: public TwoColourPattern {
+    public:
+        GradientPattern(const Colour& a, const Colour& b): TwoColourPattern { a, b } {}
+        GradientPattern(const GradientPattern& gp): TwoColourPattern { gp } {}
+        const Colour ColourAt(const Point& p) const override;
+        bool operator==(const Pattern& p) const override;
+};
+
+class RingPattern: public TwoColourPattern {
+    public:
+        RingPattern(const Colour& a, const Colour& b): TwoColourPattern { a, b } {}
+        RingPattern(const RingPattern& rp): TwoColourPattern { rp } {}
+        const Colour ColourAt(const Point& p) const override;
+        bool operator==(const Pattern& p) const override;
+};
+
+class CheckerPattern: public TwoColourPattern {
+    public:
+        CheckerPattern(const Colour& a, const Colour& b): TwoColourPattern { a, b } {}
+        CheckerPattern(const CheckerPattern& cp): TwoColourPattern { cp } {}
+        const Colour ColourAt(const Point& p) const override;
+        bool operator==(const Pattern& p) const override;
+};
+
+class RadialGradientPattern: public TwoColourPattern {
+    public:
+        RadialGradientPattern(const Colour& a, const Colour& b): TwoColourPattern { a, b } {}
+        RadialGradientPattern(const RadialGradientPattern& rgp): TwoColourPattern { rgp } {}
+        const Colour ColourAt(const Point& p) const override;
+        bool operator==(const Pattern& p) const override;
+};
+
+class BlendedPattern: public Pattern {
+    protected:
+        Pattern* a_;
+        Pattern* b_;
+
+    public:
+        BlendedPattern(Pattern* a, Pattern* b): Pattern {}, a_ { a }, b_ { b } {}
+        BlendedPattern(const BlendedPattern& bp): Pattern { bp } {
+            a_ = bp.a_;
+            b_ = bp.b_;
+        }
+
+        Pattern* A() const {
             return a_;
         }
-        const Colour B() const {
+        Pattern* B() const {
             return b_;
         }
+
+        const Colour ObjectColourAt(const Shape* object, const Point& world_point) const override;
+        const Colour ColourAt(const Point& p) const override;
+        bool operator==(const Pattern& p) const override;
 };
+
+class SolidPattern: public Pattern {
+    Colour colour_;
+
+    public:
+        SolidPattern(): Pattern {}, colour_ { Colour { 0, 0, 0 } } {}
+        SolidPattern(const Colour& colour): Pattern {}, colour_ { colour } {}
+        SolidPattern(const SolidPattern& sp): Pattern { sp }, colour_ { sp.colour_ } {}
+        const Colour ColourAt(const Point& p) const override { return colour_; }
+        bool operator==(const Pattern& p) const override;
+};
+
+
 
 #endif
