@@ -44,8 +44,9 @@ Scenario: Creating a stripe pattern
 
 TEST_F(DefaultPatternTest, CreatingAStripePattern) {
     StripePattern pattern { white_, black_ };
-    ASSERT_EQ(pattern.A(), white_);
-    ASSERT_EQ(pattern.B(), black_);
+    SolidPattern white_pattern { white_ }, black_pattern { black_ };
+    ASSERT_EQ(*(pattern.A()), white_pattern);
+    ASSERT_EQ(*(pattern.B()), black_pattern);
 }
 
 /*

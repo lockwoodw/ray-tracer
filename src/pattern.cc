@@ -8,13 +8,39 @@ const Colour Pattern::ObjectColourAt(const Shape* object, const Point& world_poi
     return ColourAt(pattern_point);
 }
 
-const Colour StripePattern::ColourAt(const Point& p) const {
-    return (static_cast<int>(std::floor(p.X())) % 2) == 0 ? a_ : b_;
+bool SolidPattern::operator==(const Pattern& p) const {
+    const SolidPattern* other = dynamic_cast<const SolidPattern*>(&p);
+    return (other != nullptr) ? (colour_ == other->colour_) : false;
+}
+
+TwoColourMetaPattern::TwoColourMetaPattern(const Colour& a, const Colour& b): Pattern {}, owned_ { true } {
+    a_ = new SolidPattern(a);
+    b_ = new SolidPattern(b);
+}
+
+TwoColourMetaPattern::~TwoColourMetaPattern() {
+    if (owned_) {
+        delete a_;
+        delete b_;
+    }
+}
+
+// Override the base class method because we need to calculate the world point
+// in pattern space for all patterns
+const Colour TwoColourMetaPattern::ObjectColourAt(const Shape* object, const Point& world_point) const {
+    Point object_point = object->Transform().Inverse() * world_point;
+    return ColourAt(object_point);
+}
+
+const Colour StripePattern::ColourAt(const Point& object_point) const {
+    Point p = transform_.Inverse() * object_point;
+    const Pattern* pattern = (static_cast<int>(std::floor(p.X())) % 2) == 0 ? a_ : b_;
+    return pattern->ColourAt(object_point);
 }
 
 bool StripePattern::operator==(const Pattern& p) const {
     const StripePattern* other = dynamic_cast<const StripePattern*>(&p);
-    return (other != nullptr) ? ((a_ == other->a_) && (b_ == other->b_)) : false;
+    return (other != nullptr) && (owned_ == other->owned_) && ((*a_ == *(other->a_)) && (*b_ == *(other->b_)));
 }
 
 const Colour GradientPattern::ColourAt(const Point& p) const {
@@ -68,6 +94,20 @@ bool RadialGradientPattern::operator==(const Pattern& p) const {
     return (other != nullptr) ? ((a_ == other->a_) && (b_ == other->b_)) : false;
 }
 
+Colour AveragePatternBlender::Blend(std::vector<Pattern*> patterns, const Point& object_point) const {
+    Colour sum { 0, 0, 0 };
+    for (Pattern* pattern: patterns) {
+        Point pattern_point = pattern->Transform().Inverse() * object_point;
+        sum += pattern->ColourAt(pattern_point);
+    }
+    return sum / patterns.size();
+}
+
+bool AveragePatternBlender::operator==(const PatternBlender& pb) const {
+    const AveragePatternBlender* other = dynamic_cast<const AveragePatternBlender*>(&pb);
+    return other != nullptr;
+}
+
 // Override the base class method because we need to calculate the world point
 // in pattern space for both patterns
 const Colour BlendedPattern::ObjectColourAt(const Shape* object, const Point& world_point) const {
@@ -76,23 +116,22 @@ const Colour BlendedPattern::ObjectColourAt(const Shape* object, const Point& wo
 }
 
 const Colour BlendedPattern::ColourAt(const Point& p) const {
-    // In this case, p is an object point, so we need to convert it to the
-    // pattern space, once per pattern.
-    Point pattern_point_a = a_->Transform().Inverse() * p,
-          pattern_point_b = b_->Transform().Inverse() * p;
-    // Take average of two patterns.
-    Colour ca = a_->ColourAt(pattern_point_a),
-           cb = b_->ColourAt(pattern_point_b),
-           sum = ca + cb;
-    return sum / 2.0;
+    return blender_->Blend(patterns_, p);
 }
 
 bool BlendedPattern::operator==(const Pattern& p) const {
     const BlendedPattern* other = dynamic_cast<const BlendedPattern*>(&p);
-    return (other != nullptr) ? ((*a_ == *(other->a_)) && (*b_ == *(other->b_))) : false;
+    return (other != nullptr) && (*blender_ == *other->blender_) && (patterns_ == other->patterns_);
 }
 
-bool SolidPattern::operator==(const Pattern& p) const {
-    const SolidPattern* other = dynamic_cast<const SolidPattern*>(&p);
-    return (other != nullptr) ? (colour_ == other->colour_) : false;
+const Colour CheckerMetaPattern::ColourAt(const Point& object_point) const {
+    Point p = transform_.Inverse() * object_point;
+    const Pattern* pattern = (static_cast<int>(std::floor(p.X()) + std::floor(p.Y()) + std::floor(p.Z())) % 2 == 0)
+        ? a_ : b_;
+    return pattern->ColourAt(object_point);
+}
+
+bool CheckerMetaPattern::operator==(const Pattern& p) const {
+    const CheckerMetaPattern* other = dynamic_cast<const CheckerMetaPattern*>(&p);
+    return (other != nullptr) && ((*a_ == *(other->a_)) && (*b_ == *(other->b_)));
 }
