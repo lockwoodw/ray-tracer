@@ -74,58 +74,38 @@ class StripePattern: public TwoColourMetaPattern {
         bool operator==(const Pattern& p) const override;
 };
 
-class TwoColourPattern: public Pattern {
-    protected:
-        Colour a_;
-        Colour b_;
-
+class GradientPattern: public TwoColourMetaPattern {
     public:
-        TwoColourPattern(const Colour& a, const Colour& b): Pattern {}, a_ { a }, b_ { b } {}
-        TwoColourPattern(const TwoColourPattern& tcp): Pattern { tcp } {
-            a_ = tcp.a_;
-            b_ = tcp.b_;
-        }
-        virtual ~TwoColourPattern() {}
-
-        const Colour A() const {
-            return a_;
-        }
-        const Colour B() const {
-            return b_;
-        }
-
-        virtual const Colour ColourAt(const Point& p) const = 0;
-        virtual bool operator==(const Pattern& p) const = 0;
-};
-
-class GradientPattern: public TwoColourPattern {
-    public:
-        GradientPattern(const Colour& a, const Colour& b): TwoColourPattern { a, b } {}
-        GradientPattern(const GradientPattern& gp): TwoColourPattern { gp } {}
+        GradientPattern(const Colour& a, const Colour& b): TwoColourMetaPattern { a, b } {}
+        GradientPattern(const Pattern* a, const Pattern* b): TwoColourMetaPattern { a, b } {}
+        GradientPattern(const GradientPattern& gp): TwoColourMetaPattern { gp } {}
         const Colour ColourAt(const Point& p) const override;
         bool operator==(const Pattern& p) const override;
 };
 
-class RingPattern: public TwoColourPattern {
+class RingPattern: public TwoColourMetaPattern {
     public:
-        RingPattern(const Colour& a, const Colour& b): TwoColourPattern { a, b } {}
-        RingPattern(const RingPattern& rp): TwoColourPattern { rp } {}
+        RingPattern(const Colour& a, const Colour& b): TwoColourMetaPattern { a, b } {}
+        RingPattern(const Pattern* a, const Pattern* b): TwoColourMetaPattern { a, b } {}
+        RingPattern(const RingPattern& rp): TwoColourMetaPattern { rp } {}
         const Colour ColourAt(const Point& p) const override;
         bool operator==(const Pattern& p) const override;
 };
 
-class CheckerPattern: public TwoColourPattern {
+class CheckerPattern: public TwoColourMetaPattern {
     public:
-        CheckerPattern(const Colour& a, const Colour& b): TwoColourPattern { a, b } {}
-        CheckerPattern(const CheckerPattern& cp): TwoColourPattern { cp } {}
+        CheckerPattern(const Colour& a, const Colour& b): TwoColourMetaPattern { a, b } {}
+        CheckerPattern(const Pattern* a, const Pattern* b): TwoColourMetaPattern { a, b } {}
+        CheckerPattern(const CheckerPattern& cp): TwoColourMetaPattern { cp } {}
         const Colour ColourAt(const Point& p) const override;
         bool operator==(const Pattern& p) const override;
 };
 
-class RadialGradientPattern: public TwoColourPattern {
+class RadialGradientPattern: public TwoColourMetaPattern {
     public:
-        RadialGradientPattern(const Colour& a, const Colour& b): TwoColourPattern { a, b } {}
-        RadialGradientPattern(const RadialGradientPattern& rgp): TwoColourPattern { rgp } {}
+        RadialGradientPattern(const Colour& a, const Colour& b): TwoColourMetaPattern { a, b } {}
+        RadialGradientPattern(const Pattern* a, const Pattern* b): TwoColourMetaPattern { a, b } {}
+        RadialGradientPattern(const RadialGradientPattern& rgp): TwoColourMetaPattern { rgp } {}
         const Colour ColourAt(const Point& p) const override;
         bool operator==(const Pattern& p) const override;
 };
@@ -164,15 +144,6 @@ class BlendedPattern: public Pattern {
         }
 
         const Colour ObjectColourAt(const Shape* object, const Point& world_point) const override;
-        const Colour ColourAt(const Point& p) const override;
-        bool operator==(const Pattern& p) const override;
-};
-
-class CheckerMetaPattern: public TwoColourMetaPattern {
-    public:
-        CheckerMetaPattern(const Colour& a, const Colour& b): TwoColourMetaPattern { a, b } {}
-        CheckerMetaPattern(const Pattern* a, const Pattern* b): TwoColourMetaPattern { a, b } {}
-        CheckerMetaPattern(const CheckerMetaPattern& cp): TwoColourMetaPattern { cp } {}
         const Colour ColourAt(const Point& p) const override;
         bool operator==(const Pattern& p) const override;
 };
