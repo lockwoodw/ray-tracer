@@ -148,4 +148,34 @@ class BlendedPattern: public Pattern {
         bool operator==(const Pattern& p) const override;
 };
 
+// Implement Ken Perlin's improved noise algorithm, copyrighted 2002
+// See https://mrl.cs.nyu.edu/~perlin/noise/
+class PerlinNoise {
+    const static int kPermutation[256];
+    static int kP[512];
+
+    public:
+        PerlinNoise();
+        double Fade(double t) const {
+            return t * t * t * (t * (t * 6 - 15) + 10);
+        }
+        double Lerp(double t, double a, double b) const {
+            return a + t * (b - a);
+        }
+        double Grad(int hash, double x, double y, double z) const;
+        double Noise(const Point& p) const;
+};
+
+class PerturbedPattern: public Pattern {
+    protected:
+        const Pattern* pattern_;
+        PerlinNoise generator_;
+
+    public:
+        PerturbedPattern(const Pattern* pattern): Pattern {}, pattern_ { pattern }, generator_ { PerlinNoise() } {}
+        const Colour ObjectColourAt(const Shape* object, const Point& world_point) const override;
+        const Colour ColourAt(const Point& p) const override;
+        bool operator==(const Pattern& p) const override;
+};
+
 #endif
