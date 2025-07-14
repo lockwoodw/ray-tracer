@@ -28,6 +28,7 @@ class World {
         const Colour ColourAt(const IntersectionComputation& ic) const;
         const Colour ColourAt(const Ray& ray) const;
         bool InShadow(const Point& point) const;
+        const Colour ReflectedColour(const IntersectionComputation& ic) const;
 };
 
 #endif

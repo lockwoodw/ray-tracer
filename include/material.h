@@ -26,6 +26,7 @@ class Material {
     double specular_;
     double shininess_;
     Pattern* pattern_;
+    double reflectivity_;
 
     public:
         Material():
@@ -34,7 +35,8 @@ class Material {
             diffuse_ { 0.9 },
             specular_ { 0.9 },
             shininess_ { 200.0 },
-            pattern_ {} {}
+            pattern_ {},
+            reflectivity_ {} {}
 
         Material(Colour surface, double ambient, double diffuse, double specular,
             double shininess):
@@ -43,7 +45,8 @@ class Material {
             diffuse_ { diffuse },
             specular_ { specular },
             shininess_ { shininess},
-            pattern_ {} {}
+            pattern_ {},
+            reflectivity_ {} {}
 
         Material(const Material& m):
             surface_ { m.surface_ },
@@ -51,7 +54,8 @@ class Material {
             diffuse_ { m.diffuse_ },
             specular_ { m.specular_ },
             shininess_ { m.shininess_ },
-            pattern_ { m.pattern_ } {}
+            pattern_ { m.pattern_ },
+            reflectivity_ { m.reflectivity_} {}
 
         bool operator==(const Material& m) const;
 
@@ -61,6 +65,7 @@ class Material {
         double Specular() const { return specular_; }
         double Shininess() const { return shininess_; }
         Pattern* SurfacePattern() const { return pattern_; }
+        double Reflectivity() const { return reflectivity_; }
 
         Material& Surface(const Colour& c) { surface_ = c; return *this; }
         Material& Ambient(double a) { ambient_ = a; return *this; }
@@ -68,6 +73,7 @@ class Material {
         Material& Specular(double s) { specular_ = s; return *this; }
         Material& Shininess(double s) { shininess_ = s; return *this; }
         Material& SurfacePattern(Pattern* p) { pattern_ = p; return *this; }
+        Material& Reflectivity(double r) { reflectivity_ = r; return *this; }
 
         Colour ApplyLightAt(const Shape* object, const Light& light, const Point& point,
             const Vector& eye_vector, const Vector& normal_vector, bool in_shadow = false) const;

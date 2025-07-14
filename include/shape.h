@@ -91,6 +91,7 @@ class IntersectionComputation {
     Vector normal_vector_;
     bool inside_;
     Point over_point_;
+    Vector reflection_vector_;
 
     public:
         static const double kEpsilon;
@@ -102,6 +103,7 @@ class IntersectionComputation {
         const Vector NormalVector() const { return normal_vector_; }
         bool Inside() const { return inside_; }
         const Point OverPoint() const { return over_point_; }
+        const Vector ReflectionVector() const { return reflection_vector_; }
 };
 
 class IntersectionComparator {

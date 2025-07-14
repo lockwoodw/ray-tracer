@@ -93,3 +93,14 @@ bool World::InShadow(const Point& point) const {
     }
     return result;
 }
+
+const Colour World::ReflectedColour(const IntersectionComputation& ic) const {
+    double reflectivity = ic.Object()->ShapeMaterial().Reflectivity();
+    if (reflectivity == 0) {
+        return Colour(0, 0, 0);
+    }
+
+    Ray reflected_ray { ic.OverPoint(), ic.ReflectionVector() };
+    const Colour colour = ColourAt(reflected_ray);
+    return colour * reflectivity;
+}

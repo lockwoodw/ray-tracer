@@ -1,10 +1,12 @@
 #include <gtest/gtest.h>
+#include <cmath>
 #include "world.h"
 #include "sphere.h"
 #include "material.h"
 #include "colour.h"
 #include "transformations.h"
 #include "ray.h"
+#include "plane.h"
 
 /*
 Scenario: Creating a world
@@ -53,6 +55,12 @@ class DefaultWorldTest: public testing::Test {
             delete sphere2_;
         }
 };
+
+const bool ColoursAreEqual(Colour& c1, Colour& c2) {
+    return simple_floating_point_compare(c1.Red(), c2.Red())
+        && simple_floating_point_compare(c1.Green(), c2.Green())
+        && simple_floating_point_compare(c1.Blue(), c2.Blue());
+}
 
 /*
 Scenario: The default world
@@ -121,9 +129,7 @@ TEST_F(DefaultWorldTest, ShadingAnIntersection) {
     IntersectionComputation ic { i, ray };
     Colour expected { 0.38066, 0.47583, 0.2855 },
            shade = default_world_.ColourAt(ic);
-    ASSERT_TRUE(simple_floating_point_compare(expected.Red(), shade.Red()));
-    ASSERT_TRUE(simple_floating_point_compare(expected.Green(), shade.Green()));
-    ASSERT_TRUE(simple_floating_point_compare(expected.Blue(), shade.Blue()));
+    ASSERT_TRUE(ColoursAreEqual(expected, shade));
 }
 
 /*
@@ -151,9 +157,7 @@ TEST_F(DefaultWorldTest, ShadingAnIntersectionFromTheInside) {
     IntersectionComputation ic { i, ray };
     Colour expected { 0.90498, 0.90498, 0.90498 },
            shade = default_world_.ColourAt(ic);
-    ASSERT_TRUE(simple_floating_point_compare(expected.Red(), shade.Red()));
-    ASSERT_TRUE(simple_floating_point_compare(expected.Green(), shade.Green()));
-    ASSERT_TRUE(simple_floating_point_compare(expected.Blue(), shade.Blue()));
+	ASSERT_TRUE(ColoursAreEqual(expected, shade));
 }
 
 /*
@@ -185,9 +189,7 @@ TEST_F(DefaultWorldTest, FindingTheColourWhenTheRayHits) {
     Vector direction { 0, 0, 1 };
     Ray ray { origin, direction };
     Colour expected  { 0.38066, 0.47583, 0.2855 }, actual = default_world_.ColourAt(ray);
-    ASSERT_TRUE(simple_floating_point_compare(expected.Red(), actual.Red()));
-    ASSERT_TRUE(simple_floating_point_compare(expected.Green(), actual.Green()));
-    ASSERT_TRUE(simple_floating_point_compare(expected.Blue(), actual.Blue()));
+	ASSERT_TRUE(ColoursAreEqual(expected, actual));
 }
 
 /*
@@ -212,9 +214,7 @@ TEST_F(DefaultWorldTest, FindingTheColourForAnIntersectionBehindTheRay) {
     material2_.Ambient(1.0);
     sphere2_->SetMaterial(material2_);
     Colour actual = default_world_.ColourAt(ray), expected = sphere2_->ShapeMaterial().Surface();
-    ASSERT_TRUE(simple_floating_point_compare(expected.Red(), actual.Red()));
-    ASSERT_TRUE(simple_floating_point_compare(expected.Green(), actual.Green()));
-    ASSERT_TRUE(simple_floating_point_compare(expected.Blue(), actual.Blue()));
+	ASSERT_TRUE(ColoursAreEqual(expected, actual));
 }
 
 /*
@@ -314,6 +314,16 @@ Scenario: The reflected color for a nonreflective material
   Then color = color(0, 0, 0)
 */
 
+TEST_F(DefaultWorldTest, ConfirmingTheReflectedColourForNonreflectiveMaterial) {
+    Ray r { Point(0, 0, 0), Vector(0, 0, 1) };
+    material2_.Ambient(1.0);
+    sphere2_->SetMaterial(material2_);
+    Intersection i { 1, sphere2_ };
+    IntersectionComputation comps { i, r };
+    Colour colour = default_world_.ReflectedColour(comps);
+    ASSERT_EQ(colour, Colour(0, 0, 0));
+}
+
 /*
 Scenario: The reflected color for a reflective material
   Given w ← default_world()
@@ -327,6 +337,27 @@ Scenario: The reflected color for a reflective material
     And color ← reflected_color(w, comps)
   Then color = color(0.19032, 0.2379, 0.14274)
 */
+
+TEST_F(DefaultWorldTest, ConfirmingTheReflectedColourForReflectiveMaterial) {
+    Plane plane {};
+    Material material {};
+    material.Reflectivity(0.5);
+    plane.SetMaterial(material);
+    Transformation transform {};
+    transform.Translate(0, -1, 0);
+    plane.SetTransform(transform);
+    default_world_.Add(&plane);
+
+    double sqrt_2 = std::sqrt(2),
+           half_sqrt_2 = sqrt_2 / 2;
+    Ray r { Point(0, 0, -3), Vector(0, -half_sqrt_2, half_sqrt_2) };
+
+    Intersection i { sqrt_2, &plane };
+    IntersectionComputation comps { i, r };
+    Colour colour = default_world_.ReflectedColour(comps),
+           expected { 0.19033, 0.23791, 0.14274 };
+    ASSERT_TRUE(ColoursAreEqual(expected, colour));
+}
 
 /*
 Scenario: shade_hit() with a reflective material

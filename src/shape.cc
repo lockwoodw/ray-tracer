@@ -44,6 +44,7 @@ IntersectionComputation::IntersectionComputation(const Intersection& i, const Ra
         normal_vector_ = -normal_vector_;
     }
     over_point_ = point_ + normal_vector_ * IntersectionComputation::kEpsilon;
+    reflection_vector_ = Vector::Reflect(r.Direction(), normal_vector_);
 }
 
 IntersectionList::~IntersectionList() {

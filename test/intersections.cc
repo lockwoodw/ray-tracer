@@ -1,10 +1,12 @@
 #include <gtest/gtest.h>
 #include <vector>
+#include <cmath>
 #include "space.h"
 #include "shape.h"
 #include "sphere.h"
 #include "ray.h"
 #include "transformations.h"
+#include "plane.h"
 
 /*
 Scenario: An intersection encapsulates t and object
@@ -61,6 +63,16 @@ Scenario: Precomputing the reflection vector
   When comps ← prepare_computations(i, r)
   Then comps.reflectv = vector(0, √2/2, √2/2)
 */
+
+TEST(IntersectionsTest, PrecomputingTheReflectionVector) {
+    Plane p {};
+    double sqrt_2 = std::sqrt(2),
+           half_sqrt_2 = sqrt_2 / 2;
+    Ray r { Point(0, 1, -1), Vector(0, -half_sqrt_2, half_sqrt_2) };
+    Intersection i { sqrt_2, &p };
+    IntersectionComputation comps { i, r };
+    ASSERT_EQ(comps.ReflectionVector(), Vector(0, half_sqrt_2, half_sqrt_2));
+}
 
 /*
 Scenario: The hit, when an intersection occurs on the outside

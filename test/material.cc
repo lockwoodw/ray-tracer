@@ -53,6 +53,11 @@ Scenario: Reflectivity for the default material
   Then m.reflective = 0.0
 */
 
+TEST(MaterialTest, ConfirmingDefaultReflectivity) {
+  Material m {};
+  ASSERT_DOUBLE_EQ(m.Reflectivity(), 0.0);
+}
+
 /*
 Scenario: Transparency and Refractive Index for the default material
   Given m ← material()

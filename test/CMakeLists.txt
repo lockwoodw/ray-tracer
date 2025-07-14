@@ -173,6 +173,7 @@ add_executable(
   ../src/shape.cc
   ../src/sphere.cc
   ../src/pattern.cc
+  ../src/plane.cc
   intersections.cc
 )
 
@@ -217,6 +218,7 @@ add_executable(
   ../src/sphere.cc
   ../src/pattern.cc
   ../src/world.cc
+  ../src/plane.cc
   world.cc
 )
 
