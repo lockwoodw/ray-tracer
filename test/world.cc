@@ -374,6 +374,28 @@ Scenario: shade_hit() with a reflective material
   Then color = color(0.87677, 0.92436, 0.82918)
 */
 
+TEST_F(DefaultWorldTest, ConfirmingReflectedColourInWorld) {
+    Plane plane {};
+    Material material {};
+    material.Reflectivity(0.5);
+    plane.SetMaterial(material);
+    Transformation transform {};
+    transform.Translate(0, -1, 0);
+    plane.SetTransform(transform);
+    default_world_.Add(&plane);
+
+    double sqrt_2 = std::sqrt(2),
+           half_sqrt_2 = sqrt_2 / 2;
+    Ray r { Point(0, 0, -3), Vector(0, -half_sqrt_2, half_sqrt_2) };
+
+    Intersection i { sqrt_2, &plane };
+    IntersectionComputation comps { i, r };
+    Colour colour = default_world_.ColourAt(comps),
+           expected { 0.87677, 0.92436, 0.82918 };
+    // Note: smaller epsilon seems to be required for this test
+    ASSERT_TRUE(ColoursAreEqual(expected, colour, 1e-4));
+}
+
 /*
 Scenario: color_at() with mutually reflective surfaces
   Given w ← world()
@@ -390,6 +412,36 @@ Scenario: color_at() with mutually reflective surfaces
   Then color_at(w, r) should terminate successfully
 */
 
+TEST(WorldTest, ConfirmingColourForMutuallyReflectiveSurfaces) {
+    World w {};
+    Light point_light { Point(0, 0, 0), Colour(1, 1, 1) };
+    w.Add(&point_light);
+
+    Plane lower {};
+    Material lower_material {};
+    lower_material.Reflectivity(1);
+    Transformation lower_transform {};
+    lower_transform.Translate(0, -1, 0);
+    lower.SetMaterial(lower_material);
+    lower.SetTransform(lower_transform);
+    w.Add(&lower);
+
+    Plane upper {};
+    Material upper_material {};
+    upper_material.Reflectivity(1);
+    Transformation upper_transform {};
+    upper_transform.Translate(0, 1, 0);
+    upper.SetMaterial(upper_material);
+    upper.SetTransform(upper_transform);
+    w.Add(&upper);
+
+    Ray r { Point(0, 0, 0), Vector(0, 1, 0) };
+    // Hack to assert no exit due to seg fault (from endless recursion)
+    EXPECT_EXIT((w.ColourAt(r), exit(0)), ::testing::ExitedWithCode(0),".*");
+    // This is the assertion to use when there is (expected) endless recursion:
+    // EXPECT_EXIT((w.ColourAt(r), exit(0)), ::testing::KilledBySignal(SIGSEGV), ".*");
+}
+
 /*
 Scenario: The reflected color at the maximum recursive depth
   Given w ← default_world()
@@ -403,6 +455,27 @@ Scenario: The reflected color at the maximum recursive depth
     And color ← reflected_color(w, comps, 0)
   Then color = color(0, 0, 0)
 */
+
+TEST_F(DefaultWorldTest, ConfirmingReflectedColourAtMaximumRecursiveDepth) {
+    Plane plane {};
+    Material material {};
+    material.Reflectivity(0.5);
+    plane.SetMaterial(material);
+    Transformation transform {};
+    transform.Translate(0, -1, 0);
+    plane.SetTransform(transform);
+    default_world_.Add(&plane);
+
+    double sqrt_2 = std::sqrt(2),
+           half_sqrt_2 = sqrt_2 / 2;
+    Ray r { Point(0, 0, -3), Vector(0, -half_sqrt_2, half_sqrt_2) };
+
+    Intersection i { sqrt_2, &plane };
+    IntersectionComputation comps { i, r };
+    Colour colour = default_world_.ReflectedColour(comps, 0),
+           expected { 0, 0, 0 };
+    ASSERT_TRUE(ColoursAreEqual(expected, colour));
+}
 
 /*
 Scenario: The refracted color with an opaque surface

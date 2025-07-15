@@ -1,5 +1,7 @@
 #include "world.h"
 
+const int World::kMaxReflections = 5;
+
 void World::Add(const Shape* object) {
     objects_.insert(object);
 }
@@ -49,23 +51,24 @@ IntersectionList World::Intersect(const Ray& ray) const {
     return xs;
 }
 
-const Colour World::ColourAt(const IntersectionComputation& ic) const {
+const Colour World::ColourAt(const IntersectionComputation& ic, const int max_depth) const {
     Colour colour {};
     for (const Light* light: lights_) {
         Point point = ic.OverPoint();
         bool in_shadow = InShadow(point, light);
         colour += ic.Object()->ApplyLightAt(*light, point, ic.EyeVector(), ic.NormalVector(), in_shadow);
     }
-    return colour;
+    Colour reflected = ReflectedColour(ic, max_depth);
+    return colour + reflected;
 }
 
-const Colour World::ColourAt(const Ray& ray) const {
-    Colour colour { 0, 0, 0 }; // black: default if there is no hit
+const Colour World::ColourAt(const Ray& ray, const int max_depth) const {
+    Colour colour = Colour::kBlack; // black: default if there is no hit
     IntersectionList xs = Intersect(ray);
     const Intersection* hit = xs.Hit();
     if (hit) {
         const IntersectionComputation ic { *hit, ray };
-        colour += ColourAt(ic);
+        colour += ColourAt(ic, max_depth);
     }
     return colour;
 }
@@ -94,13 +97,19 @@ bool World::InShadow(const Point& point) const {
     return result;
 }
 
-const Colour World::ReflectedColour(const IntersectionComputation& ic) const {
+const Colour World::ReflectedColour(const IntersectionComputation& ic, const int max_depth) const {
+    if (max_depth <= 0) {
+        // Go no further processing reflections
+        return Colour::kBlack;
+    }
+
     double reflectivity = ic.Object()->ShapeMaterial().Reflectivity();
     if (reflectivity == 0) {
-        return Colour(0, 0, 0);
+        return Colour::kBlack;
     }
 
     Ray reflected_ray { ic.OverPoint(), ic.ReflectionVector() };
-    const Colour colour = ColourAt(reflected_ray);
+    // Reduce max_depth to prevent endless recursion of reflected rays
+    const Colour colour = ColourAt(reflected_ray, max_depth - 1);
     return colour * reflectivity;
 }
