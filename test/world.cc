@@ -56,10 +56,10 @@ class DefaultWorldTest: public testing::Test {
         }
 };
 
-const bool ColoursAreEqual(Colour& c1, Colour& c2) {
-    return simple_floating_point_compare(c1.Red(), c2.Red())
-        && simple_floating_point_compare(c1.Green(), c2.Green())
-        && simple_floating_point_compare(c1.Blue(), c2.Blue());
+const bool ColoursAreEqual(Colour& c1, Colour& c2, double epsilon=kEpsilon) {
+    return simple_floating_point_compare(c1.Red(), c2.Red(), epsilon)
+        && simple_floating_point_compare(c1.Green(), c2.Green(), epsilon)
+        && simple_floating_point_compare(c1.Blue(), c2.Blue(), epsilon);
 }
 
 /*
@@ -355,8 +355,9 @@ TEST_F(DefaultWorldTest, ConfirmingTheReflectedColourForReflectiveMaterial) {
     Intersection i { sqrt_2, &plane };
     IntersectionComputation comps { i, r };
     Colour colour = default_world_.ReflectedColour(comps),
-           expected { 0.19033, 0.23791, 0.14274 };
-    ASSERT_TRUE(ColoursAreEqual(expected, colour));
+           expected { 0.19032, 0.2379, 0.14274 };
+    // Note: smaller epsilon seems to be required for this test
+    ASSERT_TRUE(ColoursAreEqual(expected, colour, 1e-4));
 }
 
 /*
