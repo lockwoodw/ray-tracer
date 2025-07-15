@@ -37,6 +37,9 @@ class Colour {
         Colour& operator=(const Colour& c);
 
         friend std::ostream& operator<<(std::ostream& os, const Colour& c);
+        static const Colour kBlack;
+        static const Colour kWhite;
 };
+
 
 #endif

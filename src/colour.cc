@@ -1,5 +1,8 @@
 #include "colour.h"
 
+const Colour Colour::kBlack { 0, 0, 0 };
+const Colour Colour::kWhite { 1, 1, 1 };
+
 Colour::Colour(const Tuple& t): tuple_ { t } {
     if (t.Size() != 3) {
         throw std::invalid_argument("Incorrect tuple size for Colour");
