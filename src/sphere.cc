@@ -42,3 +42,12 @@ bool Sphere::operator==(const Shape& s) const {
 Vector Sphere::LocalNormalAt(const Point &object_point) const {
     return object_point - origin_;
 }
+
+Sphere GlassySphere() {
+    Sphere s {};
+    Material m {};
+    m.Transparency(1.0);
+    m.RefractiveIndex(1.5);
+    s.SetMaterial(m);
+    return s;
+}

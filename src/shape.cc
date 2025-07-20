@@ -32,7 +32,8 @@ Intersection& Intersection::operator=(const Intersection& i) {
 
 const double IntersectionComputation::kEpsilon = 1e-5;
 
-IntersectionComputation::IntersectionComputation(const Intersection& i, const Ray& r):
+IntersectionComputation::IntersectionComputation(const Intersection& i, const Ray& r,
+    IntersectionList* xs):
         object_ { i.Object() },
         distance_ { i.Distance() },
         point_ { r.Position(i.Distance()) },
@@ -45,6 +46,71 @@ IntersectionComputation::IntersectionComputation(const Intersection& i, const Ra
     }
     over_point_ = point_ + normal_vector_ * IntersectionComputation::kEpsilon;
     reflection_vector_ = Vector::Reflect(r.Direction(), normal_vector_);
+
+    // Determine refractive indices
+    IntersectionList* intersections = xs;
+
+    auto free_fn = [xs, &intersections] () {
+        if (xs == nullptr && intersections != nullptr) {
+            // free allocated memory
+            delete intersections;
+        }
+    };
+
+    try
+    {
+        if (intersections == nullptr) {
+            // If no intersection list was given, just add the given intersection
+            intersections = new IntersectionList();
+            intersections->Add(i);
+        }
+
+        std::list<const Shape *> objects {};
+        for (const Intersection* to_test: *intersections) {
+            if (i == to_test) {
+                if (objects.size() == 0) {
+                    // this is the first intersection encountered
+                    n1_ = 1.0;
+                }
+                else {
+                    n1_ = objects.back()->ShapeMaterial().RefractiveIndex();
+                }
+            }
+
+            bool found { false };
+            const Shape *to_test_object = to_test->Object();
+            for (auto e: objects) {
+                if (to_test_object == e) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                objects.remove(to_test_object);
+            }
+            else {
+                objects.push_back(to_test_object);
+            }
+
+            if (i == to_test) {
+                if (objects.size() == 0) {
+                    // this is the last intersection encountered
+                    n2_ = 1.0;
+                }
+                else {
+                    n2_ = objects.back()->ShapeMaterial().RefractiveIndex();
+                }
+                break;
+            }
+        }
+
+        free_fn();
+    }
+    catch(const std::exception& e)
+    {
+        free_fn();
+    }
 }
 
 IntersectionList::~IntersectionList() {

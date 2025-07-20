@@ -18,4 +18,6 @@ class Sphere: public Shape {
         Vector LocalNormalAt(const Point &object_point) const override;
 };
 
+Sphere GlassySphere();
+
 #endif

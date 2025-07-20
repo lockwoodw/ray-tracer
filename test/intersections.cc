@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <vector>
+#include <array>
 #include <cmath>
 #include "space.h"
 #include "shape.h"
@@ -295,6 +296,54 @@ Scenario Outline: Finding n1 and n2 at various intersections
     | 4     | 2.5 | 1.5 |
     | 5     | 1.5 | 1.0 |
 */
+
+TEST(IntersectionsTest, FindingN1AndN2AtVariousIntersections) {
+    Sphere a = GlassySphere();
+    Transformation at = Transformation().Scale(2, 2, 2);
+    Material am {};
+    am.RefractiveIndex(1.5);
+    a.SetTransform(at);
+    a.SetMaterial(am);
+
+    Sphere b = GlassySphere();
+    Transformation bt = Transformation().Translate(0, 0, -0.25);
+    Material bm {};
+    bm.RefractiveIndex(2);
+    b.SetTransform(bt);
+    b.SetMaterial(bm);
+
+    Sphere c = GlassySphere();
+    Transformation ct = Transformation().Translate(0, 0, 0.25);
+    Material cm {};
+    cm.RefractiveIndex(2.5);
+    c.SetTransform(ct);
+    c.SetMaterial(cm);
+
+    const Ray r { Point {0, 0, -4}, Vector {0, 0, 1} };
+
+    IntersectionList intersections {};
+    intersections.Add(Intersection { 2, &a });
+    intersections.Add(Intersection { 2.75, &b });
+    intersections.Add(Intersection { 3.25, &c });
+    intersections.Add(Intersection { 4.75, &b });
+    intersections.Add(Intersection { 5.25, &c });
+    intersections.Add(Intersection { 6, &a });
+
+    std::vector<std::array<double, 2>> indices {};
+    indices.emplace_back(std::array<double, 2> { 1.0, 1.5 });
+    indices.emplace_back(std::array<double, 2> { 1.5, 2.0 });
+    indices.emplace_back(std::array<double, 2> { 2.0, 2.5 });
+    indices.emplace_back(std::array<double, 2> { 2.5, 2.5 });
+    indices.emplace_back(std::array<double, 2> { 2.5, 1.5 });
+    indices.emplace_back(std::array<double, 2> { 1.5, 1.0 });
+
+    for (int i = 0; i < indices.size(); i++) {
+        const Intersection* x = intersections[i];
+        IntersectionComputation ic { *x, r, &intersections };
+        EXPECT_DOUBLE_EQ(indices[i][0], ic.N1());
+        EXPECT_DOUBLE_EQ(indices[i][1], ic.N2());
+    }
+}
 
 /*
 Scenario: The Schlick approximation under total internal reflection

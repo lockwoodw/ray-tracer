@@ -27,6 +27,8 @@ class Material {
     double shininess_;
     Pattern* pattern_;
     double reflectivity_;
+    double transparency_;
+    double refractive_index_;
 
     public:
         Material():
@@ -36,7 +38,9 @@ class Material {
             specular_ { 0.9 },
             shininess_ { 200.0 },
             pattern_ {},
-            reflectivity_ {} {}
+            reflectivity_ {},
+            transparency_ { },
+            refractive_index_ { 1.0 } {}
 
         Material(Colour surface, double ambient, double diffuse, double specular,
             double shininess):
@@ -46,7 +50,9 @@ class Material {
             specular_ { specular },
             shininess_ { shininess},
             pattern_ {},
-            reflectivity_ {} {}
+            reflectivity_ {},
+            transparency_ { },
+            refractive_index_ { 1.0 } {}
 
         Material(const Material& m):
             surface_ { m.surface_ },
@@ -55,7 +61,9 @@ class Material {
             specular_ { m.specular_ },
             shininess_ { m.shininess_ },
             pattern_ { m.pattern_ },
-            reflectivity_ { m.reflectivity_} {}
+            reflectivity_ { m.reflectivity_},
+            transparency_ { m.transparency_ },
+            refractive_index_ { m.refractive_index_ } {}
 
         bool operator==(const Material& m) const;
 
@@ -66,6 +74,8 @@ class Material {
         double Shininess() const { return shininess_; }
         Pattern* SurfacePattern() const { return pattern_; }
         double Reflectivity() const { return reflectivity_; }
+        double Transparency() const { return transparency_; }
+        double RefractiveIndex() const { return refractive_index_; }
 
         Material& Surface(const Colour& c) { surface_ = c; return *this; }
         Material& Ambient(double a) { ambient_ = a; return *this; }
@@ -74,6 +84,8 @@ class Material {
         Material& Shininess(double s) { shininess_ = s; return *this; }
         Material& SurfacePattern(Pattern* p) { pattern_ = p; return *this; }
         Material& Reflectivity(double r) { reflectivity_ = r; return *this; }
+        Material& Transparency(double t) { transparency_ = t; return *this; }
+        Material& RefractiveIndex(double i) { refractive_index_ = i; return *this; }
 
         Colour ApplyLightAt(const Shape* object, const Light& light, const Point& point,
             const Vector& eye_vector, const Vector& normal_vector, bool in_shadow = false) const;

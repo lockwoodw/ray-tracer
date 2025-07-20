@@ -65,6 +65,13 @@ Scenario: Transparency and Refractive Index for the default material
     And m.refractive_index = 1.0
 */
 
+TEST(MaterialTest, ConfirmingDefaultTransparencyAndRefractiveIndex) {
+  Material m {};
+  ASSERT_DOUBLE_EQ(m.Transparency(), 0.0);
+  ASSERT_DOUBLE_EQ(m.RefractiveIndex(), 1.0);
+}
+
+
 /*
 Scenario: Lighting with the eye between the light and the surface
   Given eyev ← vector(0, 0, -1)

@@ -67,7 +67,7 @@ const Colour World::ColourAt(const Ray& ray, const int max_depth) const {
     IntersectionList xs = Intersect(ray);
     const Intersection* hit = xs.Hit();
     if (hit) {
-        const IntersectionComputation ic { *hit, ray };
+        const IntersectionComputation ic { *hit, ray, &xs };
         colour += ColourAt(ic, max_depth);
     }
     return colour;

@@ -3,7 +3,7 @@
 
 #include <list>
 #include <stdexcept>
-
+#include <iterator>
 #include "space.h"
 #include "ray.h"
 #include "matrix.h"
@@ -92,10 +92,14 @@ class IntersectionComputation {
     bool inside_;
     Point over_point_;
     Vector reflection_vector_;
+    // refractive indices
+    double n1_;
+    double n2_;
 
     public:
         static const double kEpsilon;
-        IntersectionComputation(const Intersection& i, const Ray& r);
+        IntersectionComputation(const Intersection& i, const Ray& r,
+            IntersectionList* xs = nullptr);
         const Shape* Object() const { return object_; }
         double Distance() const { return distance_; }
         const Point WorldPoint() const { return point_; }
@@ -104,6 +108,8 @@ class IntersectionComputation {
         bool Inside() const { return inside_; }
         const Point OverPoint() const { return over_point_; }
         const Vector ReflectionVector() const { return reflection_vector_; }
+        const double N1() const { return n1_; }
+        const double N2() const { return n2_; }
 };
 
 class IntersectionComparator {
@@ -128,6 +134,12 @@ class IntersectionList {
         const Intersection* Hit() const;
         IntersectionList& operator<<(const Intersection* i);
         IntersectionList& operator<<(const Intersection& i);
+        std::list<const Intersection*>::iterator begin() {
+            return list_.begin();
+        }
+        std::list<const Intersection*>::iterator end() {
+            return list_.end();
+        }
 };
 
 #endif

@@ -411,3 +411,10 @@ Scenario: A helper for producing a sphere with a glassy material
     And s.material.transparency = 1.0
     And s.material.refractive_index = 1.5
 */
+
+TEST(SphereTest, ConfirmingMaterialForGlassySphere) {
+    Sphere s = GlassySphere();
+    Material m = s.ShapeMaterial();
+    ASSERT_DOUBLE_EQ(m.Transparency(), 1.0);
+    ASSERT_DOUBLE_EQ(m.RefractiveIndex(), 1.5);
+}
