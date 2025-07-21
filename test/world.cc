@@ -54,7 +54,15 @@ class DefaultWorldTest: public testing::Test {
             delete sphere1_;
             delete sphere2_;
         }
+
+    public:
+        static const double kSqrt2;
+        static const double kHalfSqrt2;
 };
+
+const double DefaultWorldTest::kSqrt2 = std::sqrt(2);
+const double DefaultWorldTest::kHalfSqrt2 = DefaultWorldTest::kSqrt2 / 2;
+
 
 const bool ColoursAreEqual(Colour& c1, Colour& c2, double epsilon=kEpsilon) {
     return simple_floating_point_compare(c1.Red(), c2.Red(), epsilon)
@@ -348,11 +356,10 @@ TEST_F(DefaultWorldTest, ConfirmingTheReflectedColourForReflectiveMaterial) {
     plane.SetTransform(transform);
     default_world_.Add(&plane);
 
-    double sqrt_2 = std::sqrt(2),
-           half_sqrt_2 = sqrt_2 / 2;
-    Ray r { Point(0, 0, -3), Vector(0, -half_sqrt_2, half_sqrt_2) };
+    Ray r { Point(0, 0, -3), Vector(0, -DefaultWorldTest::kHalfSqrt2,
+        DefaultWorldTest::kHalfSqrt2) };
 
-    Intersection i { sqrt_2, &plane };
+    Intersection i { DefaultWorldTest::kSqrt2, &plane };
     IntersectionComputation comps { i, r };
     Colour colour = default_world_.ReflectedColour(comps),
            expected { 0.19032, 0.2379, 0.14274 };
@@ -384,11 +391,10 @@ TEST_F(DefaultWorldTest, ConfirmingReflectedColourInWorld) {
     plane.SetTransform(transform);
     default_world_.Add(&plane);
 
-    double sqrt_2 = std::sqrt(2),
-           half_sqrt_2 = sqrt_2 / 2;
-    Ray r { Point(0, 0, -3), Vector(0, -half_sqrt_2, half_sqrt_2) };
+    Ray r { Point(0, 0, -3), Vector(0, -DefaultWorldTest::kHalfSqrt2,
+        DefaultWorldTest::kHalfSqrt2) };
 
-    Intersection i { sqrt_2, &plane };
+    Intersection i { DefaultWorldTest::kSqrt2, &plane };
     IntersectionComputation comps { i, r };
     Colour colour = default_world_.ColourAt(comps),
            expected { 0.87677, 0.92436, 0.82918 };
@@ -466,11 +472,10 @@ TEST_F(DefaultWorldTest, ConfirmingReflectedColourAtMaximumRecursiveDepth) {
     plane.SetTransform(transform);
     default_world_.Add(&plane);
 
-    double sqrt_2 = std::sqrt(2),
-           half_sqrt_2 = sqrt_2 / 2;
-    Ray r { Point(0, 0, -3), Vector(0, -half_sqrt_2, half_sqrt_2) };
+    Ray r { Point(0, 0, -3), Vector(0, -DefaultWorldTest::kHalfSqrt2,
+        DefaultWorldTest::kHalfSqrt2) };
 
-    Intersection i { sqrt_2, &plane };
+    Intersection i { DefaultWorldTest::kSqrt2, &plane };
     IntersectionComputation comps { i, r };
     Colour colour = default_world_.ReflectedColour(comps, 0),
            expected { 0, 0, 0 };
@@ -488,6 +493,19 @@ Scenario: The refracted color with an opaque surface
   Then c = color(0, 0, 0)
 */
 
+TEST_F(DefaultWorldTest, ConfirmingRefractedColourOfOpaqueSurface) {
+    Ray r { Point { 0, 0, -5 }, Vector { 0, 0, 1 } };
+    Intersection x1 { 4, sphere1_ };
+    Intersection x2 { 6, sphere1_ };
+    IntersectionList intersections {};
+    intersections.Add(x1);
+    intersections.Add(x2);
+    IntersectionComputation comps { x1, r, &intersections };
+    Colour c = default_world_.RefractedColour(comps, 5),
+           expected = Colour::kBlack;
+    ASSERT_TRUE(ColoursAreEqual(c, expected));
+}
+
 /*
 Scenario: The refracted color at the maximum recursive depth
   Given w ← default_world()
@@ -501,6 +519,22 @@ Scenario: The refracted color at the maximum recursive depth
     And c ← refracted_color(w, comps, 0)
   Then c = color(0, 0, 0)
 */
+
+TEST_F(DefaultWorldTest, ConfirmingRefractedColourAtTheMaximumRecursiveDepth) {
+    Material m {};
+    m.Transparency(1.0).RefractiveIndex(1.5);
+    sphere1_->SetMaterial(m);
+    Ray r { Point { 0, 0, -5 }, Vector { 0, 0, 1 } };
+    Intersection x1 { 4, sphere1_ };
+    Intersection x2 { 6, sphere1_ };
+    IntersectionList intersections {};
+    intersections.Add(x1);
+    intersections.Add(x2);
+    IntersectionComputation comps { x1, r, &intersections };
+    Colour c = default_world_.RefractedColour(comps, 0),
+           expected = Colour::kBlack;
+    ASSERT_TRUE(ColoursAreEqual(c, expected));
+}
 
 /*
 Scenario: The refracted color under total internal reflection
@@ -517,6 +551,22 @@ Scenario: The refracted color under total internal reflection
     And c ← refracted_color(w, comps, 5)
   Then c = color(0, 0, 0)
 */
+
+TEST_F(DefaultWorldTest, ConfirmingRefractedColourUnderTotalInternalRefraction) {
+    Material m {};
+    m.Transparency(1.0).RefractiveIndex(1.5);
+    sphere1_->SetMaterial(m);
+    Ray r { Point { 0, 0, DefaultWorldTest::kHalfSqrt2 }, Vector { 0, 1, 0 } };
+    Intersection x1 { -DefaultWorldTest::kHalfSqrt2, sphere1_ },
+                 x2 { DefaultWorldTest::kHalfSqrt2, sphere1_ };
+    IntersectionList intersections {};
+    intersections.Add(x1);
+    intersections.Add(x2);
+    IntersectionComputation comps { x2, r, &intersections };
+    Colour c = default_world_.RefractedColour(comps, 5),
+           expected = Colour::kBlack;
+    ASSERT_TRUE(ColoursAreEqual(c, expected));
+}
 
 /*
 Scenario: The refracted color with a refracted ray

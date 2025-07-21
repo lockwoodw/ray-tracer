@@ -104,7 +104,7 @@ const Colour World::ReflectedColour(const IntersectionComputation& ic, const int
     }
 
     double reflectivity = ic.Object()->ShapeMaterial().Reflectivity();
-    if (reflectivity == 0) {
+    if (simple_floating_point_compare(reflectivity, 0)) {
         return Colour::kBlack;
     }
 
@@ -112,4 +112,31 @@ const Colour World::ReflectedColour(const IntersectionComputation& ic, const int
     // Reduce max_depth to prevent endless recursion of reflected rays
     const Colour colour = ColourAt(reflected_ray, max_depth - 1);
     return colour * reflectivity;
+}
+
+const Colour World::RefractedColour(const IntersectionComputation& ic, const int max_depth) const {
+    // Snell's Law: given two angles, the angle of the incoming ray (Θi) and
+    // the angle of the refracted ray (Θt), then sin(Θi)/sin(Θt) = n2/n1, where
+    // n1,n2 are the refractive indices of the materials on either side of the
+    // ray-object intersection.
+
+    // The ratio of n1/n2
+    double n_ratio = ic.N1() / ic.N2();
+
+    // cos(Θi) is the same as the dot product of these two vectors:
+    double cos_i = Vector::DotProduct(ic.EyeVector(), ic.NormalVector());
+
+    // Solve for sin(Θt) using Snell's Law and the Pythagorean identity,
+    // sin(Θ)^2 + cos(Θ)^2 = 1
+    double sin_t_squared = n_ratio*n_ratio * (1 - cos_i*cos_i);
+
+    double transparency = ic.Object()->ShapeMaterial().Transparency();
+
+    // Return black for these cases:
+    if (sin_t_squared > 1 || max_depth == 0 ||
+            simple_floating_point_compare(transparency, 0)) {
+        return Colour::kBlack;
+    }
+
+    return Colour::kWhite;
 }

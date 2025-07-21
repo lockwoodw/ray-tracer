@@ -7,6 +7,7 @@
 #include "material.h"
 #include "colour.h"
 #include "space.h"
+#include "utils.h"
 
 class World {
     std::set<const Shape*> objects_;
@@ -26,10 +27,15 @@ class World {
         IntersectionList Intersect(const Ray& ray) const;
         std::size_t NObjects() const { return objects_.size(); }
         std::size_t NLights() const { return lights_.size(); }
-        const Colour ColourAt(const IntersectionComputation& ic, const int max_depth = World::kMaxReflections) const;
-        const Colour ColourAt(const Ray& ray, const int max_depth = World::kMaxReflections) const;
+        const Colour ColourAt(const IntersectionComputation& ic,
+            const int max_depth = World::kMaxReflections) const;
+        const Colour ColourAt(const Ray& ray,
+            const int max_depth = World::kMaxReflections) const;
         bool InShadow(const Point& point) const;
-        const Colour ReflectedColour(const IntersectionComputation& ic, const int max_depth = World::kMaxReflections) const;
+        const Colour ReflectedColour(const IntersectionComputation& ic,
+            const int max_depth = World::kMaxReflections) const;
+        const Colour RefractedColour(const IntersectionComputation& ic,
+            const int max_depth = World::kMaxReflections) const;
 };
 
 #endif
