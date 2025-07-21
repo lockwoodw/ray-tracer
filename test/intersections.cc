@@ -69,6 +69,8 @@ TEST(IntersectionsTest, PrecomputingTheReflectionVector) {
     Plane p {};
     double sqrt_2 = std::sqrt(2),
            half_sqrt_2 = sqrt_2 / 2;
+    // The vector originates at the point and slants 45 degrees
+    // downwards--confirm using https://www.vcalc.com/wiki/vCalc/V3+-+Vector+Rotation
     Ray r { Point(0, 1, -1), Vector(0, -half_sqrt_2, half_sqrt_2) };
     Intersection i { sqrt_2, &p };
     IntersectionComputation comps { i, r };
