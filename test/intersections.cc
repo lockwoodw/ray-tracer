@@ -159,6 +159,20 @@ Scenario: The under point is offset below the surface
     And comps.point.z < comps.under_point.z
 */
 
+TEST(IntersectionsTest, ConfirmingUnderPointIsBelowSurface) {
+    Ray r { Point { 0, 0, -5 }, Vector { 0, 0, 1 }};
+    Sphere s = GlassySphere();
+    Transformation t = Transformation().Translate(0, 0, 1);
+    s.SetTransform(t);
+    Intersection i { 5, &s };
+    IntersectionList intersections {};
+    intersections.Add(i);
+    IntersectionComputation comps { i, r, &intersections };
+    double under_point = comps.UnderPoint().Z();
+    ASSERT_GT(under_point, IntersectionComputation::kEpsilon / 2);
+    ASSERT_LT(comps.WorldPoint().Z(), under_point);
+}
+
 /*
 Scenario: Aggregating intersections
   Given s ← sphere()

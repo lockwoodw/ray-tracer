@@ -95,6 +95,7 @@ class IntersectionComputation {
     // refractive indices
     double n1_;
     double n2_;
+    Point under_point_;
 
     public:
         static const double kEpsilon;
@@ -110,6 +111,7 @@ class IntersectionComputation {
         const Vector ReflectionVector() const { return reflection_vector_; }
         const double N1() const { return n1_; }
         const double N2() const { return n2_; }
+        const Point UnderPoint() const { return under_point_; }
 };
 
 class IntersectionComparator {
