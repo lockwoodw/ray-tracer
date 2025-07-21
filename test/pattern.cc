@@ -8,18 +8,6 @@
 #include "matrix.h"
 #include "transformations.h"
 
-class TestPattern: public Pattern {
-    public:
-        TestPattern(): Pattern {} {}
-        const Colour ColourAt(const Point& p) const {
-            return Colour { p.X(), p.Y(), p.Z() };
-        }
-        bool operator==(const Pattern& p) const {
-            const TestPattern* other = dynamic_cast<const TestPattern*>(&p);
-            return other != nullptr;
-        }
-};
-
 /*
 Background:
   Given black ← color(0, 0, 0)
