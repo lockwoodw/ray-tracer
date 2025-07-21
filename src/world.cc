@@ -59,7 +59,8 @@ const Colour World::ColourAt(const IntersectionComputation& ic, const int max_de
         colour += ic.Object()->ApplyLightAt(*light, point, ic.EyeVector(), ic.NormalVector(), in_shadow);
     }
     Colour reflected = ReflectedColour(ic, max_depth);
-    return colour + reflected;
+    Colour refracted = RefractedColour(ic, max_depth);
+    return colour + reflected + refracted;
 }
 
 const Colour World::ColourAt(const Ray& ray, const int max_depth) const {
@@ -138,5 +139,17 @@ const Colour World::RefractedColour(const IntersectionComputation& ic, const int
         return Colour::kBlack;
     }
 
-    return Colour::kWhite;
+    // All other cases: spawn a second ray in the refracted direction and return
+    // its colour.
+
+    // Compute direction of the refracted ray
+    double cos_t = std::sqrt(1.0 - sin_t_squared);
+    Vector direction = ic.NormalVector() * (n_ratio * cos_i - cos_t) - ic.EyeVector() * n_ratio;
+
+    // Create the refracted ray
+    Ray refracted_ray { ic.UnderPoint(), direction };
+
+    // Find the colour of the refracted ray and multiply by the transparency
+    // of the material to account for its opacity
+    return ColourAt(refracted_ray, max_depth - 1) * transparency;
 }

@@ -7,6 +7,7 @@
 #include "transformations.h"
 #include "ray.h"
 #include "plane.h"
+#include "pattern.h"
 
 /*
 Scenario: Creating a world
@@ -586,6 +587,32 @@ Scenario: The refracted color with a refracted ray
   Then c = color(0, 0.99888, 0.04725)
 */
 
+TEST_F(DefaultWorldTest, ConfirmingRefractedColourWithARefractedRay) {
+    Material m1 {};
+    TestPattern p1 {};
+    m1.Ambient(1.0).SurfacePattern(&p1);
+    sphere1_->SetMaterial(m1);
+
+    Material m2 {};
+    m2.Transparency(1.0).RefractiveIndex(1.5);
+    sphere2_->SetMaterial(m2);
+
+    Ray r { Point { 0, 0, 0.1 }, Vector { 0, 1, 0 } };
+    Intersection x1 { -0.9899, sphere1_ },
+                 x2 { -0.4899, sphere2_ },
+                 x3 { 0.4899, sphere2_ },
+                 x4 { 0.9899, sphere1_ };
+    IntersectionList intersections {};
+    intersections.Add(x1);
+    intersections.Add(x2);
+    intersections.Add(x3);
+    intersections.Add(x4);
+    IntersectionComputation comps { x3, r, &intersections };
+    Colour c = default_world_.RefractedColour(comps, 5),
+           expected = Colour { 0, 0.99888, 0.04725 };
+    ASSERT_TRUE(ColoursAreEqual(c, expected, 1e-4));
+}
+
 /*
 Scenario: shade_hit() with a transparent material
   Given w ← default_world()
@@ -605,6 +632,32 @@ Scenario: shade_hit() with a transparent material
     And color ← shade_hit(w, comps, 5)
   Then color = color(0.93642, 0.68642, 0.68642)
 */
+
+TEST_F(DefaultWorldTest, ConfirmingColourWithATransparentMaterial) {
+    Plane floor {};
+    floor.SetTransform(Transformation().Translate(0, -1 , 0));
+    Material floor_material {};
+    floor_material.Transparency(0.5).RefractiveIndex(1.5);
+    floor.SetMaterial(floor_material);
+    default_world_.Add(&floor);
+
+    Sphere ball {};
+    Material ball_material {};
+    ball_material.Surface(Colour { 1, 0, 0 }).Ambient(0.5);
+    ball.SetMaterial(ball_material);
+    ball.SetTransform(Transformation().Translate(0, -3.5, -0.5));
+    default_world_.Add(&ball);
+
+    Ray r { Point { 0, 0, -3 },
+        Vector { 0, -DefaultWorldTest::kHalfSqrt2, DefaultWorldTest::kHalfSqrt2 }};
+    Intersection i { DefaultWorldTest::kSqrt2, &floor };
+    IntersectionList intersections {};
+    intersections.Add(i);
+    IntersectionComputation comps { i, r, &intersections };
+    Colour color = default_world_.ColourAt(comps, 5),
+           expected = Colour { 0.93642, 0.68642, 0.68642 };
+    ASSERT_TRUE(ColoursAreEqual(color, expected));
+}
 
 /*
 Scenario: shade_hit() with a reflective, transparent material

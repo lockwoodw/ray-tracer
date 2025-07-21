@@ -2,6 +2,7 @@
 #define RAY_TRACER_WORLD_H
 
 #include <set>
+#include <cmath> // for sqrt
 #include "shape.h"
 #include "ray.h"
 #include "material.h"
