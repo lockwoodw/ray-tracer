@@ -4,6 +4,7 @@
 #include <list>
 #include <stdexcept>
 #include <iterator>
+#include <cmath> // for sqrt
 #include "space.h"
 #include "ray.h"
 #include "matrix.h"
@@ -112,6 +113,7 @@ class IntersectionComputation {
         const double N1() const { return n1_; }
         const double N2() const { return n2_; }
         const Point UnderPoint() const { return under_point_; }
+        const double Reflectance() const;
 };
 
 class IntersectionComparator {

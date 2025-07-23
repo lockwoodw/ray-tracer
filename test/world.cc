@@ -679,3 +679,30 @@ Scenario: shade_hit() with a reflective, transparent material
     And color ← shade_hit(w, comps, 5)
   Then color = color(0.93391, 0.69643, 0.69243)
 */
+
+TEST_F(DefaultWorldTest, ConfirmingColourWithAReflectiveAndTransparentMaterial) {
+    Ray r { Point { 0, 0, -3 },
+        Vector { 0, -DefaultWorldTest::kHalfSqrt2, DefaultWorldTest::kHalfSqrt2 }};
+
+    Plane floor {};
+    floor.SetTransform(Transformation().Translate(0, -1 , 0));
+    Material floor_material {};
+    floor_material.Reflectivity(0.5).Transparency(0.5).RefractiveIndex(1.5);
+    floor.SetMaterial(floor_material);
+    default_world_.Add(&floor);
+
+    Sphere ball {};
+    Material ball_material {};
+    ball_material.Surface(Colour { 1, 0, 0 }).Ambient(0.5);
+    ball.SetMaterial(ball_material);
+    ball.SetTransform(Transformation().Translate(0, -3.5, -0.5));
+    default_world_.Add(&ball);
+
+    Intersection i { DefaultWorldTest::kSqrt2, &floor };
+    IntersectionList intersections {};
+    intersections.Add(i);
+    IntersectionComputation comps { i, r, &intersections };
+    Colour color = default_world_.ColourAt(comps, 5),
+           expected = Colour { 0.93391, 0.69643, 0.69243 };
+    ASSERT_TRUE(ColoursAreEqual(color, expected));
+}

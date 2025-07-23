@@ -8,6 +8,10 @@
 #include "ray.h"
 #include "transformations.h"
 #include "plane.h"
+#include "utils.h"
+
+static double kSqrt2 = std::sqrt(2);
+static double kHalfSqrt2 = kSqrt2 / 2;
 
 /*
 Scenario: An intersection encapsulates t and object
@@ -67,14 +71,12 @@ Scenario: Precomputing the reflection vector
 
 TEST(IntersectionsTest, PrecomputingTheReflectionVector) {
     Plane p {};
-    double sqrt_2 = std::sqrt(2),
-           half_sqrt_2 = sqrt_2 / 2;
     // The vector originates at the point and slants 45 degrees
     // downwards--confirm using https://www.vcalc.com/wiki/vCalc/V3+-+Vector+Rotation
-    Ray r { Point(0, 1, -1), Vector(0, -half_sqrt_2, half_sqrt_2) };
-    Intersection i { sqrt_2, &p };
+    Ray r { Point(0, 1, -1), Vector(0, -kHalfSqrt2, kHalfSqrt2) };
+    Intersection i { kSqrt2, &p };
     IntersectionComputation comps { i, r };
-    ASSERT_EQ(comps.ReflectionVector(), Vector(0, half_sqrt_2, half_sqrt_2));
+    ASSERT_EQ(comps.ReflectionVector(), Vector(0, kHalfSqrt2, kHalfSqrt2));
 }
 
 /*
@@ -356,8 +358,8 @@ TEST(IntersectionsTest, FindingN1AndN2AtVariousIntersections) {
     for (int i = 0; i < indices.size(); i++) {
         const Intersection* x = intersections[i];
         IntersectionComputation ic { *x, r, &intersections };
-        EXPECT_DOUBLE_EQ(indices[i][0], ic.N1());
-        EXPECT_DOUBLE_EQ(indices[i][1], ic.N2());
+        ASSERT_DOUBLE_EQ(indices[i][0], ic.N1());
+        ASSERT_DOUBLE_EQ(indices[i][1], ic.N2());
     }
 }
 
@@ -371,6 +373,17 @@ Scenario: The Schlick approximation under total internal reflection
   Then reflectance = 1.0
 */
 
+TEST(IntersectionsTest, FindingSchlickApproximationUnderTotalInternalReflection) {
+    Sphere shape = GlassySphere();
+    Ray r { Point { 0, 0, kHalfSqrt2 }, Vector { 0, 1, 0 } };
+    Intersection x1 { -kHalfSqrt2, &shape },
+                 x2 { kHalfSqrt2, &shape };
+    IntersectionList intersections {};
+    intersections << x1 << x2;
+    IntersectionComputation comps { x2, r, &intersections };
+    ASSERT_TRUE(simple_floating_point_compare(comps.Reflectance(), 1.0));
+}
+
 /*
 Scenario: The Schlick approximation with a perpendicular viewing angle
   Given shape ← glass_sphere()
@@ -381,6 +394,17 @@ Scenario: The Schlick approximation with a perpendicular viewing angle
   Then reflectance = 0.04
 */
 
+TEST(IntersectionsTest, FindingSchlickApproximationWithAPerpendicularViewingAngle) {
+    Sphere shape = GlassySphere();
+    Ray r { Point { 0, 0, 0 }, Vector { 0, 1, 0 } };
+    Intersection x1 { -1, &shape },
+                 x2 { 1, &shape };
+    IntersectionList intersections {};
+    intersections << x1 << x2;
+    IntersectionComputation comps { x2, r, &intersections };
+    ASSERT_TRUE(simple_floating_point_compare(comps.Reflectance(), 0.04));
+}
+
 /*
 Scenario: The Schlick approximation with small angle and n2 > n1
   Given shape ← glass_sphere()
@@ -390,6 +414,16 @@ Scenario: The Schlick approximation with small angle and n2 > n1
     And reflectance ← schlick(comps)
   Then reflectance = 0.48873
 */
+
+TEST(IntersectionsTest, FindingSchlickApproximationWithASmallAngle) {
+    Sphere shape = GlassySphere();
+    Ray r { Point { 0, 0.99, -2 }, Vector { 0, 0, 1 } };
+    Intersection x1 { 1.8589, &shape };
+    IntersectionList intersections {};
+    intersections << x1;
+    IntersectionComputation comps { x1, r, &intersections };
+    ASSERT_TRUE(simple_floating_point_compare(comps.Reflectance(), 0.48873));
+}
 
 /*
 Scenario: An intersection can encapsulate `u` and `v`

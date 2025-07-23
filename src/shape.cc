@@ -114,6 +114,31 @@ IntersectionComputation::IntersectionComputation(const Intersection& i, const Ra
     }
 }
 
+const double IntersectionComputation::Reflectance() const {
+    // Implement Christophe Schlick's algorithm to approximate Fresnel's
+    // equations…
+
+    // Find the cosine of the angle between the eye and normal vectors
+    // This is cos(Θi) from Snell's Law.
+    double cos = Vector::DotProduct(eye_vector_, normal_vector_);
+
+    // Total internal reflection occurs only if n1 > n2
+    if (n1_ > n2_) {
+        double n = n1_ / n2_;
+        double sin_t_squared = n*n * (1.0 - cos * cos);
+        if (sin_t_squared > 1.0) {
+            return 1.0;
+        }
+        // When n1 > n2, use cos(Θt) instead of cos(Θi)
+        cos = std::sqrt(1.0 - sin_t_squared);
+    }
+
+    double r0 = (n1_ - n2_) / (n1_ + n2_);
+    r0 *= r0;
+
+    return r0 + (1 - r0) * (std::pow(1 - cos, 5));
+}
+
 IntersectionList::~IntersectionList() {
     for(auto i: list_) {
         delete i;

@@ -60,6 +60,14 @@ const Colour World::ColourAt(const IntersectionComputation& ic, const int max_de
     }
     Colour reflected = ReflectedColour(ic, max_depth);
     Colour refracted = RefractedColour(ic, max_depth);
+
+    // Apply Schlick approximation if the material is both transparent and
+    // reflective
+    const Material m = ic.Object()->ShapeMaterial();
+    if (m.Reflectivity() > 0 && m.Transparency() > 0) {
+        double reflectance = ic.Reflectance();
+        return colour + reflected * reflectance + refracted * (1 - reflectance);
+    }
     return colour + reflected + refracted;
 }
 
