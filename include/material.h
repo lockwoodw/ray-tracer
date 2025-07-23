@@ -29,6 +29,7 @@ class Material {
     double reflectivity_;
     double transparency_;
     double refractive_index_;
+    bool casts_shadow_;
 
     public:
         Material():
@@ -40,7 +41,8 @@ class Material {
             pattern_ {},
             reflectivity_ {},
             transparency_ { },
-            refractive_index_ { 1.0 } {}
+            refractive_index_ { 1.0 },
+            casts_shadow_ { true } {}
 
         Material(Colour surface, double ambient, double diffuse, double specular,
             double shininess):
@@ -52,7 +54,8 @@ class Material {
             pattern_ {},
             reflectivity_ {},
             transparency_ { },
-            refractive_index_ { 1.0 } {}
+            refractive_index_ { 1.0 },
+            casts_shadow_ { true } {}
 
         Material(const Material& m):
             surface_ { m.surface_ },
@@ -63,7 +66,8 @@ class Material {
             pattern_ { m.pattern_ },
             reflectivity_ { m.reflectivity_},
             transparency_ { m.transparency_ },
-            refractive_index_ { m.refractive_index_ } {}
+            refractive_index_ { m.refractive_index_ },
+            casts_shadow_ { m.casts_shadow_ } {}
 
         bool operator==(const Material& m) const;
 
@@ -76,6 +80,7 @@ class Material {
         double Reflectivity() const { return reflectivity_; }
         double Transparency() const { return transparency_; }
         double RefractiveIndex() const { return refractive_index_; }
+        bool CastsShadow() const { return casts_shadow_; }
 
         Material& Surface(const Colour& c) { surface_ = c; return *this; }
         Material& Ambient(double a) { ambient_ = a; return *this; }
@@ -86,6 +91,7 @@ class Material {
         Material& Reflectivity(double r) { reflectivity_ = r; return *this; }
         Material& Transparency(double t) { transparency_ = t; return *this; }
         Material& RefractiveIndex(double i) { refractive_index_ = i; return *this; }
+        Material& CastsShadow(bool c) { casts_shadow_ = c; return *this; }
 
         Colour ApplyLightAt(const Shape* object, const Light& light, const Point& point,
             const Vector& eye_vector, const Vector& normal_vector, bool in_shadow = false) const;

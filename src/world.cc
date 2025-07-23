@@ -89,8 +89,10 @@ bool World::InShadow(const Point& point, const Light* light) const {
 
     Ray ray { point, direction };
     IntersectionList xs = Intersect(ray);
-    const Intersection* hit = xs.Hit();
-    return hit && hit->Distance() < distance;
+    // Use ShadowHit() to exclude objects that don't cast shadows, even if
+    // they are actually closer to the point
+    const Intersection* hit = xs.ShadowHit();
+    return (hit && hit->Distance() < distance);
 }
 
 bool World::InShadow(const Point& point) const {

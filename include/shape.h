@@ -126,9 +126,10 @@ class IntersectionComparator {
 class IntersectionList {
     std::list<const Intersection*> list_;
     const Intersection* hit_;
+    const Intersection* shadow_hit_;
 
     public:
-        IntersectionList(): hit_ { nullptr } {}
+        IntersectionList(): hit_ { nullptr }, shadow_hit_ { nullptr } {}
         ~IntersectionList();
         const Intersection* operator[](unsigned int index);
         void Add(const Intersection* i);
@@ -136,6 +137,7 @@ class IntersectionList {
         void Add(const Intersection& i);
         int Size() const { return list_.size(); }
         const Intersection* Hit() const;
+        const Intersection* ShadowHit() const;
         IntersectionList& operator<<(const Intersection* i);
         IntersectionList& operator<<(const Intersection& i);
         std::list<const Intersection*>::iterator begin() {

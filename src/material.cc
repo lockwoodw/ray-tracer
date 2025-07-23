@@ -16,7 +16,11 @@ bool Material::operator==(const Material& m) const {
         && floating_point_compare(ambient_, m.ambient_)
         && floating_point_compare(diffuse_, m.diffuse_)
         && floating_point_compare(specular_, m.specular_)
-        && floating_point_compare(shininess_, m.shininess_);
+        && floating_point_compare(shininess_, m.shininess_)
+        && floating_point_compare(reflectivity_, m.reflectivity_)
+        && floating_point_compare(transparency_, m.transparency_)
+        && floating_point_compare(refractive_index_, m.refractive_index_)
+        && (casts_shadow_ == m.casts_shadow_);
 }
 
 Colour Material::ApplyLightAt(const Shape* object, const Light& light, const Point& point,

@@ -165,6 +165,12 @@ void IntersectionList::Add(const Intersection* i) {
         if (!hit_ || i->Distance() < hit_->Distance()) {
             hit_ = i;
         }
+        // This object will also be the hit for shadows only if it casts
+        // shadows
+        if ((!shadow_hit_ || i->Distance() < shadow_hit_->Distance()) &&
+                i->Object()->ShapeMaterial().CastsShadow()) {
+            shadow_hit_ = i;
+        }
     }
 }
 
@@ -188,4 +194,8 @@ IntersectionList& IntersectionList::operator<<(const Intersection& i) {
 
 const Intersection* IntersectionList::Hit() const {
     return hit_;
+}
+
+const Intersection* IntersectionList::ShadowHit() const {
+    return shadow_hit_;
 }

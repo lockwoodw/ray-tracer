@@ -706,3 +706,61 @@ TEST_F(DefaultWorldTest, ConfirmingColourWithAReflectiveAndTransparentMaterial) 
            expected = Colour { 0.93391, 0.69643, 0.69243 };
     ASSERT_TRUE(ColoursAreEqual(color, expected));
 }
+
+/*
+Scenario: The shadow when an object is between the point and the light but the
+object casts no shadow
+  Given w ← default_world()
+    And p ← point(10, -10, 10)
+   Then is_shadowed(w, p) is not true
+*/
+
+TEST_F(DefaultWorldTest, FindingNoShadowWhenAShadowlessObjectIsBetweenThePointAndLight) {
+    default_world_.Remove(sphere2_); // Remove second sphere to keep things simple
+    Material m1 = sphere1_->ShapeMaterial();
+    m1.CastsShadow(false);
+    sphere1_->SetMaterial(m1);
+    Point point { 10, -10, 10 };
+    ASSERT_FALSE(default_world_.InShadow(point));
+}
+
+/*
+Scenario: The shadow when one shadowless object is between the point and the
+light but the object contains another that does cast shadows
+  Given w ← default_world()
+    And p ← point(10, -10, 10)
+   Then is_shadowed(w, p) is true
+*/
+TEST_F(DefaultWorldTest, FindingAShadowWhenAShadowlessObjectContainsAnotherObject) {
+    // Same as previous test but sphere2_ is still inside sphere1_
+    Material m1 = sphere1_->ShapeMaterial();
+    m1.CastsShadow(false);
+    sphere1_->SetMaterial(m1);
+    Point point { 10, -10, 10 };
+    ASSERT_TRUE(default_world_.InShadow(point));
+}
+
+/*
+Scenario: The shadow when a shadowless object is between the point and the
+light and there is another object beside it that does cast shadows
+*/
+
+TEST(WorldTest, FindingAShadowWhenAShadowlessObjectIsBesideAnother) {
+    World world {};
+    Light point_light { Point(-10, 10, 0), Colour(1, 1, 1) };
+    world.Add(&point_light);
+
+    Sphere sphere1 {}, sphere2 {};
+    // sphere1 is at the origin and casts no shadow
+    Material m {};
+    m.CastsShadow(false);
+    sphere1.SetMaterial(m);
+    world.Add(&sphere1);
+
+    // sphere2 is 3X as big and right beside sphere1 along the x-axis
+    sphere2.SetTransform(Transformation().Scale(3, 3, 3).Translate(-4, 0, 0));
+    world.Add(&sphere2);
+
+    Point point { 10, -10, 0 }; // located diagonally from light through the origin
+    ASSERT_TRUE(world.InShadow(point));
+}
