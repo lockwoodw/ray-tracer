@@ -5,7 +5,7 @@
 
 class SpatialTuple: public Tuple {
     public:
-        enum { kX, kY, kZ, kW };
+        enum Coordinates { kX, kY, kZ, kW };
         SpatialTuple(): Tuple { 4 } {}
         SpatialTuple(const Tuple& t);
         double X() const { return At(kX); }

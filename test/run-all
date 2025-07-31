@@ -1,0 +1,19 @@
+#!/usr/bin/env bash 
+build/camera-test 
+build/canvas-test 
+build/colour-test
+build/cube-test
+build/intersections-test 
+build/material-test 
+build/matrix-test 
+build/pattern-test 
+build/plane-test 
+build/ray-test 
+build/shape-test 
+build/space-test 
+build/sphere-test 
+build/transformations-test 
+build/tuple-test 
+build/type-test 
+build/utils-test 
+build/world-test 
