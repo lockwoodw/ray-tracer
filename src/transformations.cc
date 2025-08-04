@@ -115,6 +115,10 @@ Transformation& Transformation::Shear(double xy, double xz, double yx, double yz
     return *this *= transform;
 }
 
+Transformation& Transformation::Apply(const Transformation& t) {
+    return *this *= t;
+}
+
 ViewTransform::ViewTransform(const Point& from, const Point& to, const Vector& up): Matrix { 4, 4 } {
     Vector to_from { to - from },
            forward = to_from.Normalize(),

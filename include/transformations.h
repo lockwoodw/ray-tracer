@@ -68,6 +68,7 @@ class Transformation: public Matrix {
         Transformation& Scale(double scale);
         Transformation& Translate(double x, double y, double z);
         Transformation& Shear(double xy, double xz, double yx, double yz, double zx, double zy);
+        Transformation& Apply(const Transformation& t);
 };
 
 class ViewTransform: public Matrix {
