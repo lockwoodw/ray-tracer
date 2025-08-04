@@ -423,3 +423,21 @@ TEST(TransformationsTest, ConfirmingAnArbitraryViewTransform) {
         }
     }
 }
+
+TEST(TransformationsTest, ConfirmingTheUniformScalingTransform) {
+    Point p { 2, 3, 4 };
+    double scale { 3 };
+    Transformation scaler = Transformation().Scale(scale);
+    Point transformed = scaler * p,
+          expected = p * scale;
+    ASSERT_EQ(transformed, expected);
+}
+
+TEST(TransformationsTest, ApplyingAnExistingTransform) {
+    Point p { 8, 9, 10 };
+    Transformation existing = Transformation().Translate(2, -3, 4);
+    double scale { 3 };
+    Point transformed = Transformation().Scale(3).Apply(existing) * p,
+          expected { 8 * 3 + 2, 9 * 3 -3, 10 * 3 + 4 };
+    ASSERT_EQ(transformed, expected);
+}
