@@ -65,6 +65,7 @@ class Transformation: public Matrix {
         Transformation& RotateY(double radians);
         Transformation& RotateZ(double radians);
         Transformation& Scale(double x, double y, double z);
+        Transformation& Scale(double scale);
         Transformation& Translate(double x, double y, double z);
         Transformation& Shear(double xy, double xz, double yx, double yz, double zx, double zy);
 };

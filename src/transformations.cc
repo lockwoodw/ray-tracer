@@ -98,6 +98,12 @@ Transformation& Transformation::Scale(double x, double y, double z) {
     return *this *= transform;
 }
 
+Transformation& Transformation::Scale(double scale) {
+    double src[] { scale, scale, scale };
+    Scaling transform { 3, src };
+    return *this *= transform;
+}
+
 Transformation& Transformation::Translate(double x, double y, double z) {
     double src[] { x, y, z };
     Translation transform { 3, src };
