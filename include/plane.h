@@ -15,6 +15,7 @@ class Plane: public Shape {
         bool operator==(const Shape& s) const;
         void Intersect(IntersectionList& list, const Ray& ray) const override;
         Vector LocalNormalAt(const Point &object_point) const override {
+            // Normal for x-z plane
             return Vector { 0, 1, 0 };
         }
 };
