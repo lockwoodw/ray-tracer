@@ -26,7 +26,8 @@ std::array<double, 2> Cube::IntersectionsByAxis(const Ray& ray, const SpatialTup
     }
 
     if (t[0] > t[1]) {
-        // swap
+        // the algorithm requires t[0] < t[1]; depending on the ray's direction,
+        // we may need to swap the t values
         double temp = t[0];
         t[0] = t[1];
         t[1] = temp;
@@ -36,11 +37,26 @@ std::array<double, 2> Cube::IntersectionsByAxis(const Ray& ray, const SpatialTup
 
 void Cube::Intersect(IntersectionList& list, const Ray& ray) const {
     std::array<double, 2> xt = IntersectionsByAxis(ray, SpatialTuple::Coordinates::kX),
-                          yt = IntersectionsByAxis(ray, SpatialTuple::Coordinates::kY),
-                          zt = IntersectionsByAxis(ray, SpatialTuple::Coordinates::kZ);
+                          yt = IntersectionsByAxis(ray, SpatialTuple::Coordinates::kY);
 
-    double tmin = std::max(std::max(xt[0], yt[0]), zt[0]), // the max of the minimums
-           tmax = std::min(std::min(xt[1], yt[1]), zt[1]); // the min of the maximums
+    if (xt[0] > yt[1] || yt[0] > xt[1]) {
+        // These cases are misses: the ray intersects the planes defined by the
+        // X and Y axes but does not intersect the box
+        return;
+    }
+
+    double tmin = std::max(xt[0], yt[0]), // the max of the minimums
+           tmax = std::min(xt[1], yt[1]); // the min of the maximums
+
+    std::array<double, 2> zt = IntersectionsByAxis(ray, SpatialTuple::Coordinates::kZ);
+
+    if (zt[0] > tmax || zt[1] < tmin) {
+        // Also misses
+        return;
+    }
+
+    tmin = std::max(tmin, zt[0]);
+    tmax = std::min(tmax, zt[1]);
 
     // if tmin > tmax then the max minimum is further from the ray's origin
     // than the min maximum--a contradiction that indicates a miss

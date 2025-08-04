@@ -219,6 +219,7 @@ add_executable(
   ../src/pattern.cc
   ../src/world.cc
   ../src/plane.cc
+  ../src/cube.cc
   world.cc
 )
 

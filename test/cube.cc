@@ -137,3 +137,4 @@ TEST(CubeTest, ConfirmingTheNormalOnTheSurfaceOfACube) {
         ASSERT_EQ(normal, expected);
     }
 }
+

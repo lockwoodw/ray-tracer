@@ -8,6 +8,7 @@
 #include "ray.h"
 #include "plane.h"
 #include "pattern.h"
+#include "cube.h"
 
 /*
 Scenario: Creating a world
@@ -763,4 +764,25 @@ TEST(WorldTest, FindingAShadowWhenAShadowlessObjectIsBesideAnother) {
 
     Point point { 10, -10, 0 }; // located diagonally from light through the origin
     ASSERT_TRUE(world.InShadow(point));
+}
+
+TEST(WorldTest, IntersectingAScaledCubeWithARay) {
+    World world {};
+    Light point_light { Point(-10, 10, -10), Colour(1, 1, 1) };
+    world.Add(&point_light);
+
+    Cube cube {};
+    cube.SetTransform(Transformation().Scale(2, 2, 2));
+    world.Add(&cube);
+
+    Point origin { 0, 0, -5 };
+    Vector direction { 0, 0, 1 };
+    Ray ray { origin, direction };
+    IntersectionList xs = world.Intersect(ray);
+    double expected[] { 3, 7 };
+    int size = sizeof(expected) / sizeof(double);
+    ASSERT_EQ(xs.Size(), size);
+    for (int i = 0; i < size; i++) {
+        ASSERT_EQ(xs[i]->Distance(), expected[i]);
+    }
 }
