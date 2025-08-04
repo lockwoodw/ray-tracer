@@ -3,7 +3,8 @@
 
 #include <algorithm> // for max()
 #include <array>
-#include <limits> // for infinity
+#include <limits>    // for infinity
+#include <cmath>     // for fabs()
 #include "shape.h"
 #include "space.h"
 

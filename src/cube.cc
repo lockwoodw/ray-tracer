@@ -5,13 +5,15 @@ const double Cube::kEpsilon = 1e-5;
 std::array<double, 2> Cube::IntersectionsByAxis(const Ray& ray, const SpatialTuple::Coordinates axis) {
     double origin = ray.Origin().At(axis),
            direction = ray.Direction().At(axis);
+
     // This is similar to the calculation of intersect "t" to a plane, but there
     // are two "planes" for each axis of the cube
     double tmin_numerator = -1 - origin, // intersect to the leftmost side of the cube (if this is the X axis)
            tmax_numerator = 1 - origin;  // intersect to the rightmost side of the cube
+
     std::array<double, 2> t {};
 
-    if (abs(direction) >= Cube::kEpsilon) {
+    if (fabs(direction) >= Cube::kEpsilon) {
         t[0] = tmin_numerator / direction;
         t[1] = tmax_numerator / direction;
     }
@@ -62,9 +64,9 @@ Vector Cube::LocalNormalAt(const Point &object_point) const {
     double x = object_point.X(),
            y = object_point.Y(),
            z = object_point.Z(),
-           abs_x = abs(x),
-           abs_y = abs(y),
-           abs_z = abs(z);
+           abs_x = fabs(x),
+           abs_y = fabs(y),
+           abs_z = fabs(z);
     double max_coord = std::max(std::max(abs_x, abs_y), abs_z);
 
     if (max_coord == abs_x) {
