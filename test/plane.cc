@@ -92,6 +92,18 @@ TEST(PlaneTest, IntersectingWithARayFurtherAboveThePlane) {
     ASSERT_EQ(p, *i->Object());
 }
 
+TEST(PlaneTest, ConfirmingTheIntersectionPoint) {
+    Plane p {};
+    Ray r { Point { 0, 3, -3 }, Vector { 0, -1, 1 } };
+    IntersectionList xs {};
+    p.Intersect(xs, r);
+    ASSERT_EQ(xs.Size(), 1);
+    const Intersection* i = xs[0];
+    Point expected { 0, 0, 0 },
+          actual = r.Origin() + r.Direction() * i->Distance();
+    ASSERT_EQ(expected, actual);
+}
+
 /*
 Scenario: A ray intersecting a plane from below
   Given p ← plane()

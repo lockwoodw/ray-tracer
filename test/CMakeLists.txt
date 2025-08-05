@@ -339,6 +339,26 @@ target_link_libraries(
 
 target_include_directories(cube-test PRIVATE ../include/)
 
+add_executable(
+  sheet-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/sheet.cc
+  sheet.cc
+)
+
+target_link_libraries(
+  sheet-test
+  GTest::gtest_main
+)
+
+target_include_directories(sheet-test PRIVATE ../include/)
+
 include(GoogleTest)
 gtest_discover_tests(
   utils-test
@@ -358,6 +378,7 @@ gtest_discover_tests(
   plane-test
   pattern-test
   cube-test
+  sheet-test
 )
 
 # cmake --build build
