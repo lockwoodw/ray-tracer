@@ -15,6 +15,9 @@ bool SolidPattern::operator==(const Pattern& p) const {
 
 std::mt19937_64 SpeckledPattern::mt_engine_ = std::mt19937_64 { static_cast<long unsigned int>(time(nullptr)) };
 std::uniform_real_distribution<double> SpeckledPattern::urd_ { 0.0, 1.0 };
+const double SpeckledPattern::kDefaultDarkThreshold { 0.3 };
+const double SpeckledPattern::kDefaultLightThreshold { 0.1 };
+const double SpeckledPattern::kDefaultAttenuation { 0.1 };
 
 bool SpeckledPattern::operator==(const Pattern& p) const {
     const SpeckledPattern* other = dynamic_cast<const SpeckledPattern*>(&p);
@@ -27,12 +30,12 @@ Colour SpeckledPattern::AdjustColour(Colour& c, bool darken) const {
     };
     if (darken) {
         for (auto& point: colour_points) {
-            point = std::max(point - point * urd_(mt_engine_) * threshold_, 0.0);
+            point = std::max(point - point * urd_(mt_engine_) * attenuation_, 0.0);
         }
     }
     else {
         for (auto& point: colour_points) {
-            point = std::min(point + point * urd_(mt_engine_) * threshold_, 1.0);
+            point = std::min(point + point * urd_(mt_engine_) * attenuation_, 1.0);
         }
     }
     return Colour { colour_points[0], colour_points[1], colour_points[2] };
@@ -40,8 +43,10 @@ Colour SpeckledPattern::AdjustColour(Colour& c, bool darken) const {
 
 const Colour SpeckledPattern::ColourAt(const Point& p) const {
     Colour copy = colour_;
-    if (urd_(mt_engine_) < threshold_) {
-        return AdjustColour(copy, urd_(mt_engine_) > threshold_);
+    if (urd_(mt_engine_) <= dark_threshold_) {
+        // Change colour if randomly generated number is within the threshold;
+        // if so, darken the colour if randomly generated number
+        return AdjustColour(copy, urd_(mt_engine_) > light_threshold_);
     }
     return colour_;
 }

@@ -44,22 +44,41 @@ class SolidPattern: public Pattern {
 };
 
 class SpeckledPattern: public Pattern {
-    // random number generator: Mersenne Twister
-    static std::mt19937_64 mt_engine_;
+    // Darken or lighten base colour per pixel based on probability threshold
+
+    static std::mt19937_64 mt_engine_; // random number generator: Mersenne Twister
     static std::uniform_real_distribution<double> urd_;
 
     Colour colour_;
-    double threshold_;
+    double dark_threshold_;
+    double light_threshold_;
+    double attenuation_;
+
     Colour AdjustColour(Colour& c, bool darken=true) const;
 
     public:
-        SpeckledPattern(): Pattern {}, colour_ { Colour { 0, 0, 0 } }, threshold_ { 0.3 } {}
-        SpeckledPattern(const Colour& colour): Pattern {}, colour_ { colour }, threshold_ { 0.3 } {}
+        static const double kDefaultDarkThreshold;
+        static const double kDefaultLightThreshold;
+        static const double kDefaultAttenuation;
+
+        SpeckledPattern(): Pattern {}, colour_ { Colour { 0, 0, 0 } },
+            dark_threshold_ { kDefaultDarkThreshold },
+            light_threshold_ { kDefaultLightThreshold },
+            attenuation_ { kDefaultAttenuation } {}
+        SpeckledPattern(const Colour& colour): Pattern {}, colour_ { colour },
+            dark_threshold_ { kDefaultDarkThreshold },
+            light_threshold_ { kDefaultLightThreshold },
+            attenuation_ { kDefaultAttenuation } {}
         SpeckledPattern(const SpeckledPattern& sp):
-            Pattern { sp }, colour_ { sp.colour_ }, threshold_ { sp.threshold_ } {}
+            Pattern { sp }, colour_ { sp.colour_ },
+            dark_threshold_ { sp.dark_threshold_ },
+            light_threshold_ { sp.light_threshold_ },
+            attenuation_ { sp.attenuation_ } {}
         const Colour ColourAt(const Point& p) const override;
         bool operator==(const Pattern& p) const override;
-        void SetThreshold(double t) { threshold_ = t; }
+        void SetDarkThreshold(double t) { dark_threshold_ = t; }
+        void SetLightThreshold(double t) { light_threshold_ = t; }
+        void SetAttentuation(double a) { attenuation_ = a; }
 };
 
 class TwoColourMetaPattern: public Pattern {
