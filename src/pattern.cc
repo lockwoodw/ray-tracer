@@ -13,6 +13,39 @@ bool SolidPattern::operator==(const Pattern& p) const {
     return (other != nullptr) ? (colour_ == other->colour_) : false;
 }
 
+std::mt19937_64 SpeckledPattern::mt_engine_ = std::mt19937_64 { static_cast<long unsigned int>(time(nullptr)) };
+std::uniform_real_distribution<double> SpeckledPattern::urd_ { 0.0, 1.0 };
+
+bool SpeckledPattern::operator==(const Pattern& p) const {
+    const SpeckledPattern* other = dynamic_cast<const SpeckledPattern*>(&p);
+    return (other != nullptr) ? (colour_ == other->colour_) : false;
+}
+
+Colour SpeckledPattern::AdjustColour(Colour& c, bool darken) const {
+    std::array<double, 3> colour_points {
+         c.Red(), c.Green(), c.Blue()
+    };
+    if (darken) {
+        for (auto& point: colour_points) {
+            point = std::max(point - point * urd_(mt_engine_) * threshold_, 0.0);
+        }
+    }
+    else {
+        for (auto& point: colour_points) {
+            point = std::min(point + point * urd_(mt_engine_) * threshold_, 1.0);
+        }
+    }
+    return Colour { colour_points[0], colour_points[1], colour_points[2] };
+}
+
+const Colour SpeckledPattern::ColourAt(const Point& p) const {
+    Colour copy = colour_;
+    if (urd_(mt_engine_) < threshold_) {
+        return AdjustColour(copy, urd_(mt_engine_) > threshold_);
+    }
+    return colour_;
+}
+
 TwoColourMetaPattern::TwoColourMetaPattern(const Colour& a, const Colour& b): Pattern {}, owned_ { true } {
     a_ = new SolidPattern(a);
     b_ = new SolidPattern(b);

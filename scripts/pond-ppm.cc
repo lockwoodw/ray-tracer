@@ -156,7 +156,9 @@ int main(int argc, char** argv) {
 
     Plane floor {};
     floor.SetTransform(Transformation().Translate(0, -scale, 0));
+    SpeckledPattern sp { Colour { 193.0/255, 154.0/255, 107.0/255 } };
     Material floor_material = FloorMaterial();
+    floor_material.SurfacePattern(&sp);
     floor.SetMaterial(floor_material);
     world.Add(&floor);
 

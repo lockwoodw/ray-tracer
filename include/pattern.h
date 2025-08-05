@@ -2,6 +2,8 @@
 #define RAY_TRACER_PATTERN_H
 
 #include <vector>
+#include <random>
+#include <ctime>
 
 #include "shape.h"
 #include "matrix.h"
@@ -39,6 +41,25 @@ class SolidPattern: public Pattern {
         SolidPattern(const SolidPattern& sp): Pattern { sp }, colour_ { sp.colour_ } {}
         const Colour ColourAt(const Point& p) const override { return colour_; }
         bool operator==(const Pattern& p) const override;
+};
+
+class SpeckledPattern: public Pattern {
+    // random number generator: Mersenne Twister
+    static std::mt19937_64 mt_engine_;
+    static std::uniform_real_distribution<double> urd_;
+
+    Colour colour_;
+    double threshold_;
+    Colour AdjustColour(Colour& c, bool darken=true) const;
+
+    public:
+        SpeckledPattern(): Pattern {}, colour_ { Colour { 0, 0, 0 } }, threshold_ { 0.3 } {}
+        SpeckledPattern(const Colour& colour): Pattern {}, colour_ { colour }, threshold_ { 0.3 } {}
+        SpeckledPattern(const SpeckledPattern& sp):
+            Pattern { sp }, colour_ { sp.colour_ }, threshold_ { sp.threshold_ } {}
+        const Colour ColourAt(const Point& p) const override;
+        bool operator==(const Pattern& p) const override;
+        void SetThreshold(double t) { threshold_ = t; }
 };
 
 class TwoColourMetaPattern: public Pattern {
