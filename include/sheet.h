@@ -4,6 +4,7 @@
 #include "shape.h"
 
 #include "space.h"
+#include "utils.h"
 
 class Sheet: public Shape {
     // A finite plane
@@ -12,8 +13,6 @@ class Sheet: public Shape {
     double depth_; // the extent of the sheet in z
 
     public:
-        static const double kEpsilon;
-
         Sheet(): Shape { Point { 0, 0, 0 } }, width_ { 1.0 }, depth_ { 1.0 } {}
         Sheet(const Sheet& s): Shape { s.origin_ }, width_ { s.width_ },
             depth_ { s.depth_ } {}

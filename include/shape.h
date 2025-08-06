@@ -20,6 +20,8 @@ class Shape {
         Material material_;
 
     public:
+        static const double kEpsilon;
+
         Shape(const Point& p):
             origin_ { p },
             transform_ { Matrix::Identity(4) },

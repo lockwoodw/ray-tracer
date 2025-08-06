@@ -13,8 +13,6 @@ class Cube: public Shape {
         const SpatialTuple::Coordinates axis);
 
     public:
-        static const double kEpsilon;
-
         Cube(): Shape { Point { 0, 0, 0 } } {}
         Cube(const Cube& p): Shape { p.origin_ } {}
 

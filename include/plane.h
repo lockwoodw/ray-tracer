@@ -7,8 +7,6 @@
 
 class Plane: public Shape {
     public:
-        static const double kEpsilon;
-
         Plane(): Shape { Point { 0, 0, 0 } } {}
         Plane(const Plane& p): Shape { p.origin_ } {}
 

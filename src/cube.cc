@@ -1,7 +1,5 @@
 #include "cube.h"
 
-const double Cube::kEpsilon = 1e-5;
-
 std::array<double, 2> Cube::IntersectionsByAxis(const Ray& ray, const SpatialTuple::Coordinates axis) {
     double origin = ray.Origin().At(axis),
            direction = ray.Direction().At(axis);
@@ -13,7 +11,7 @@ std::array<double, 2> Cube::IntersectionsByAxis(const Ray& ray, const SpatialTup
 
     std::array<double, 2> t {};
 
-    if (fabs(direction) >= Cube::kEpsilon) {
+    if (std::fabs(direction) >= kEpsilon) {
         t[0] = tmin_numerator / direction;
         t[1] = tmax_numerator / direction;
     }
@@ -80,9 +78,9 @@ Vector Cube::LocalNormalAt(const Point &object_point) const {
     double x = object_point.X(),
            y = object_point.Y(),
            z = object_point.Z(),
-           abs_x = fabs(x),
-           abs_y = fabs(y),
-           abs_z = fabs(z);
+           abs_x = std::fabs(x),
+           abs_y = std::fabs(y),
+           abs_z = std::fabs(z);
     double max_coord = std::max(std::max(abs_x, abs_y), abs_z);
 
     if (max_coord == abs_x) {

@@ -1,5 +1,7 @@
 #include "shape.h"
 
+const double Shape::kEpsilon = 1e-5;
+
 const Ray Shape::AddIntersections(IntersectionList& list, const Ray& ray) const {
     Ray local_ray = ray.Transform(transform_.Inverse());
     Intersect(list, local_ray);

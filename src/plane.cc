@@ -2,10 +2,8 @@
 
 #include <cmath>
 
-const double Plane::kEpsilon = 1e-5;
-
 void Plane::Intersect(IntersectionList& list, const Ray& ray) const {
-    if (std::abs(ray.Direction().Y()) >= Plane::kEpsilon) {
+    if (std::fabs(ray.Direction().Y()) >= kEpsilon) {
         // For explanation of this calculation for t,
         // see https://www.scratchapixel.com/lessons/3d-basic-rendering/…
         //   minimal-ray-tracer-rendering-simple-shapes/…
@@ -17,7 +15,7 @@ void Plane::Intersect(IntersectionList& list, const Ray& ray) const {
 
 bool Plane::operator==(const Shape& s) const {
     const Plane* other = dynamic_cast<const Plane*>(&s);
-    if (other == nullptr) { // Shape is not an XZPlane?
+    if (other == nullptr) { // Shape is not an Plane?
         return false;
     }
     return origin_ == other->origin_;
