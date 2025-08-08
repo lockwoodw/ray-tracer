@@ -9,6 +9,8 @@
 #include "ray.h"
 #include "space.h"
 #include "utils.h"
+#include "sphere.h"
+#include "group.h"
 
 /*
 Scenario: The default transformation
@@ -155,6 +157,11 @@ Scenario: A shape has a parent attribute
   Then s.parent is nothing
 */
 
+TEST(ShapeTest, AShapeHasAParentAttribute) {
+    TestShape s {};
+    ASSERT_EQ(s.Parent(), nullptr);
+}
+
 /*
 Scenario: Converting a point from world to object space
   Given g1 ← group()
@@ -168,6 +175,20 @@ Scenario: Converting a point from world to object space
   When p ← world_to_object(s, point(-2, 0, -10))
   Then p = point(0, 0, -1)
 */
+
+TEST(ShapeTest, ConvertingAPointFromWorldToObjectSpace) {
+    ShapeGroup g1 {};
+    g1.SetTransform(Transformation().RotateY(M_PI / 2));
+    ShapeGroup g2 {};
+    g2.SetTransform(Transformation().Scale(2));
+    g1 << &g2;
+    Sphere s {};
+    s.SetTransform(Transformation().Translate(5, 0, 0));
+    g2 << &s;
+    Point expected { 0, 0, -1 },
+          actual = s.ConvertWorldPointToObjectSpace(Point { -2, 0, -10 });
+    ASSERT_EQ(expected, actual);
+}
 
 /*
 Scenario: Converting a normal from object to world space
@@ -183,6 +204,24 @@ Scenario: Converting a normal from object to world space
   Then n = vector(0.2857, 0.4286, -0.8571)
 */
 
+TEST(ShapeTest, ConvertingANormalFromObjectToWorldSpace) {
+    ShapeGroup g1 {};
+    g1.SetTransform(Transformation().RotateY(M_PI / 2));
+    ShapeGroup g2 {};
+    g2.SetTransform(Transformation().Scale(1, 2, 3));
+    g1 << &g2;
+    Sphere s {};
+    s.SetTransform(Transformation().Translate(5, 0, 0));
+    g2 << &s;
+    double vcoord { std::sqrt(3.0) / 3.0 };
+    Vector expected { 0.2857, 0.4286, -0.8571 },
+           actual = s.ConvertObjectNormalToWorldSpace(Vector { vcoord, vcoord, vcoord });
+    // Need to relax epsilon to match the expected values
+    ASSERT_NEAR(expected.X(), actual.X(), 1e-4);
+    ASSERT_NEAR(expected.Y(), actual.Y(), 1e-4);
+    ASSERT_NEAR(expected.Z(), actual.Z(), 1e-4);
+}
+
 /*
 Scenario: Finding the normal on a child object
   Given g1 ← group()
@@ -196,3 +235,20 @@ Scenario: Finding the normal on a child object
   When n ← normal_at(s, point(1.7321, 1.1547, -5.5774))
   Then n = vector(0.2857, 0.4286, -0.8571)
 */
+
+TEST(ShapeTest, FindingTheNormalOnAChildObject) {
+    ShapeGroup g1 {};
+    g1.SetTransform(Transformation().RotateY(M_PI / 2));
+    ShapeGroup g2 {};
+    g2.SetTransform(Transformation().Scale(1, 2, 3));
+    g1 << &g2;
+    Sphere s {};
+    s.SetTransform(Transformation().Translate(5, 0, 0));
+    g2 << &s;
+    Vector expected { 0.2857, 0.4286, -0.8571 },
+           actual = s.NormalAt(Point { 1.7321, 1.1547, -5.5774 });
+    // Need to relax epsilon to match the expected values
+    ASSERT_NEAR(expected.X(), actual.X(), 1e-4);
+    ASSERT_NEAR(expected.Y(), actual.Y(), 1e-4);
+    ASSERT_NEAR(expected.Z(), actual.Z(), 1e-4);
+}

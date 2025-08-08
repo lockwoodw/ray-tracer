@@ -1,4 +1,5 @@
 #include "shape.h"
+#include "group.h"
 
 const double Shape::kEpsilon = 1e-5;
 
@@ -10,20 +11,39 @@ const Ray Shape::AddIntersections(IntersectionList& list, const Ray& ray) const 
 
 Vector Shape::NormalAt(const Point &world_point) const {
     // convert world_point into point in object space
-    Point object_point = transform_.Inverse() * world_point;
+    Point object_point = ConvertWorldPointToObjectSpace(world_point);
     // get local normal
     Vector object_normal = LocalNormalAt(object_point);
     // convert local normal back to world space
-    Vector world_normal = transform_.Inverse().Transpose() * object_normal;
-    // hack to mitigate the effect of any translation operation on the w element
-    world_normal[world_normal.kW] = 0.0;
-    return world_normal.Normalize();
+    return ConvertObjectNormalToWorldSpace(object_normal);
 }
 
 Colour Shape::ApplyLightAt(const Light& light, const Point& point,
         const Vector& eye_vector, const Vector& normal_vector, bool in_shadow) const
 {
     return material_.ApplyLightAt(this, light, point, eye_vector, normal_vector, in_shadow);
+}
+
+const Point Shape::ConvertWorldPointToObjectSpace(const Point& world_point) const {
+    // Recursively apply transformations to world point to convert it to
+    // object space; apply parent transformations first
+    Point object_point = (parent_ != nullptr) ? parent_->ConvertWorldPointToObjectSpace(world_point)
+        : world_point;
+    return transform_.Inverse() * object_point;
+}
+
+const Vector Shape::ConvertObjectNormalToWorldSpace(const Vector& object_normal) const {
+    // Recursively transpose transformations for object normal to convert it to
+    // world space
+    Vector world_normal = transform_.Inverse().Transpose() * object_normal;
+    // hack to mitigate the effect of any translation operation on the w element
+    world_normal[world_normal.kW] = 0.0;
+    world_normal = world_normal.Normalize();
+
+    if (parent_ != nullptr) {
+        world_normal = parent_->ConvertObjectNormalToWorldSpace(world_normal);
+    }
+    return world_normal;
 }
 
 int TestShape::count_ = 0;

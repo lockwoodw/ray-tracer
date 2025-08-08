@@ -22,7 +22,7 @@ void Sheet::Intersect(IntersectionList& list, const Ray& ray) const {
 
 bool Sheet::operator==(const Shape& s) const {
     const Sheet* other = dynamic_cast<const Sheet*>(&s);
-    if (other == nullptr) { // Shape is not an XZPlane?
+    if (other == nullptr) { // Shape is not an Sheet?
         return false;
     }
     return origin_ == other->origin_ && floating_point_compare(width_, other->width_)

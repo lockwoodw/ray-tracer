@@ -12,12 +12,14 @@
 #include "material.h"
 
 class IntersectionList;
+class ShapeGroup;
 
 class Shape {
     protected:
         Point origin_;
         Matrix transform_;
         Material material_;
+        ShapeGroup* parent_;
 
     public:
         static const double kEpsilon;
@@ -25,12 +27,14 @@ class Shape {
         Shape(const Point& p):
             origin_ { p },
             transform_ { Matrix::Identity(4) },
-            material_ { Material() } {}
+            material_ { Material() },
+            parent_ { nullptr } {}
 
         Shape(const Shape& s):
             origin_ { s.origin_ },
             transform_ { s.transform_ },
-            material_ { s.material_ } {}
+            material_ { s.material_ },
+            parent_ { s.parent_ } {}
 
         virtual ~Shape() {} // required for abstract base class
 
@@ -66,6 +70,12 @@ class Shape {
 
         Colour ApplyLightAt(const Light& light, const Point& point,
             const Vector& eye_vector, const Vector& normal_vector, bool in_shadow = false) const;
+
+        ShapeGroup* Parent() { return parent_; }
+        void Parent(ShapeGroup* parent) { parent_ = parent; }
+
+        const Point ConvertWorldPointToObjectSpace(const Point& world_point) const;
+        const Vector ConvertObjectNormalToWorldSpace(const Vector& object_normal) const;
 };
 
 class TestShape: public Shape {

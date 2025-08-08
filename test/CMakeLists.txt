@@ -266,6 +266,8 @@ add_executable(
   ../src/material.cc
   ../src/shape.cc
   ../src/pattern.cc
+  ../src/sphere.cc
+  ../src/group.cc
   shape.cc
 )
 
@@ -399,6 +401,28 @@ target_link_libraries(
 
 target_include_directories(disc-test PRIVATE ../include/)
 
+add_executable(
+  group-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/sphere.cc
+  ../src/transformations.cc
+  ../src/group.cc
+  group.cc
+)
+
+target_link_libraries(
+  group-test
+  GTest::gtest_main
+)
+
+target_include_directories(group-test PRIVATE ../include/)
+
 include(GoogleTest)
 gtest_discover_tests(
   utils-test
@@ -420,6 +444,7 @@ gtest_discover_tests(
   cube-test
   sheet-test
   disc-test
+  group-test
 )
 
 # cmake --build build

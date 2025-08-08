@@ -3,6 +3,8 @@ build/camera-test
 build/canvas-test
 build/colour-test
 build/cube-test
+build/disc-test
+build/group-test
 build/intersections-test
 build/material-test
 build/matrix-test

@@ -3,7 +3,7 @@
 #include <cmath>
 
 const Colour Pattern::ObjectColourAt(const Shape* object, const Point& world_point) const {
-    Point object_point = object->Transform().Inverse() * world_point,
+    Point object_point = object->ConvertWorldPointToObjectSpace(world_point),
           pattern_point = transform_.Inverse() * object_point;
     return ColourAt(pattern_point);
 }
