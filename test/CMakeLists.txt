@@ -379,6 +379,26 @@ target_link_libraries(
 
 target_include_directories(cylinder-test PRIVATE ../include/)
 
+add_executable(
+  disc-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/disc.cc
+  disc.cc
+)
+
+target_link_libraries(
+  disc-test
+  GTest::gtest_main
+)
+
+target_include_directories(disc-test PRIVATE ../include/)
+
 include(GoogleTest)
 gtest_discover_tests(
   utils-test
@@ -399,6 +419,7 @@ gtest_discover_tests(
   pattern-test
   cube-test
   sheet-test
+  disc-test
 )
 
 # cmake --build build

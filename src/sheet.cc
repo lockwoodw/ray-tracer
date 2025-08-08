@@ -6,10 +6,12 @@ void Sheet::Intersect(IntersectionList& list, const Ray& ray) const {
     // Same calculation as for Planes, but we also confirm the intersection
     // point lies within the bounds of the Sheet
     if (std::abs(ray.Direction().Y()) >= kEpsilon) {
-        double distance = -ray.Origin().Y() / ray.Direction().Y();
-        Point i = ray.Origin() + ray.Direction() * distance;
-        double x = i.X(),
-               z = i.Z(),
+        Point ro = ray.Origin();
+        Vector rd = ray.Direction();
+        double distance = -ro.Y() / rd.Y();
+        Point intersection = ro + rd * distance;
+        double x = intersection.X(),
+               z = intersection.Z(),
                width = width_ / 2,
                depth = depth_ / 2;
         if (x >= -width && x <= width && z >= -depth && z <= depth) {
