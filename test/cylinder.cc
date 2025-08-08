@@ -234,3 +234,21 @@ Scenario Outline: The normal vector on a cylinder's end caps
     | point(0.5, 2, 0) | vector(0, 1, 0)  |
     | point(0, 2, 0.5) | vector(0, 1, 0)  |
 */
+
+TEST(CylinderTest, ConfirmingTheNormalVectorOnCylinderEndCaps) {
+    Cylinder c { 1.0, 2.0, true };
+
+    using Record = std::pair<Point, Vector>;
+    std::array<Record, 6> records {
+        Record { Point { 0, 1, 0 },   Vector{ 0, -1, 0 } },
+        Record { Point { 0.5, 1, 0 }, Vector{ 0, -1, 0 } },
+        Record { Point { 0, 1, 0.5 }, Vector{ 0, -1, 0 } },
+        Record { Point { 0, 2, 0 },   Vector{ 0, 1, 0 } },
+        Record { Point { 0.5, 2, 0 }, Vector{ 0, 1, 0 } },
+        Record { Point { 0, 2, 0.5 }, Vector{ 0, 1, 0 } },
+    };
+
+    for (auto record: records) {
+        ASSERT_EQ(c.LocalNormalAt(std::get<0>(record)), std::get<1>(record));
+    }
+}

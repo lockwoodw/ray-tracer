@@ -45,7 +45,7 @@ class Material {
             casts_shadow_ { true } {}
 
         Material(Colour surface, double ambient, double diffuse, double specular,
-            double shininess):
+                double shininess):
             surface_ { surface },
             ambient_ { ambient },
             diffuse_ { diffuse },

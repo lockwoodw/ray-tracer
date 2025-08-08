@@ -102,6 +102,23 @@ void Cylinder::Intersect(IntersectionList& list, const Ray& ray) const {
 }
 
 Vector Cylinder::LocalNormalAt(const Point &object_point) const {
-    // To calculate the normal of the given point, zero-out its Y component
-    return Vector { object_point.X(), 0, object_point.Z() };
+    double px = object_point.X(),
+    pz = object_point.Z(),
+    py = object_point.Y(),
+    // the square of the distance from the y axis:
+    dist = px*px + pz*pz;
+
+    // Determine if the point is on an end cap, and if so, which one:
+    if (dist < 1 && py >= maximum_ - kEpsilon) {
+        return Vector { 0, 1, 0 };
+    }
+
+    if (dist < 1 && py <= minimum_ + kEpsilon) {
+        return Vector { 0, -1, 0 };
+    }
+
+    // Otherwise, take the normal at the point on the cylinder body…
+    // To calculate the normal of the point on the cylinder body,
+    // zero-out its Y component
+    return Vector { px, 0, pz };
 }
