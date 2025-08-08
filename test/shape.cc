@@ -10,31 +10,6 @@
 #include "space.h"
 #include "utils.h"
 
-class TestShape: public Shape {
-    static int count_;
-    int id_;
-
-    public:
-        TestShape(): Shape { Point { 0, 0, 0 } }, id_ { count_++ } {}
-        TestShape(const TestShape& ts): Shape { ts.origin_ }, id_ { ts.id_ } {}
-
-        bool operator==(const Shape& s) const override;
-        void Intersect(IntersectionList& list, const Ray& ray) const override { /* do nothing */}
-        Vector LocalNormalAt(const Point &object_point) const {
-            return Vector { object_point.X(), object_point.Y(), object_point.Z() };
-        };
-};
-
-int TestShape::count_ = 0;
-
-bool TestShape::operator==(const Shape& s) const {
-    const TestShape* other = dynamic_cast<const TestShape*>(&s);
-    if (other == nullptr) { // Shape is not a TestShape?
-        return false;
-    }
-    return origin_ == other->origin_ && id_ == other->id_;
-}
-
 /*
 Scenario: The default transformation
   Given s ← test_shape()

@@ -68,6 +68,21 @@ class Shape {
             const Vector& eye_vector, const Vector& normal_vector, bool in_shadow = false) const;
 };
 
+class TestShape: public Shape {
+    static int count_;
+    int id_;
+
+    public:
+        TestShape(): Shape { Point { 0, 0, 0 } }, id_ { count_++ } {}
+        TestShape(const TestShape& ts): Shape { ts.origin_ }, id_ { ts.id_ } {}
+
+        bool operator==(const Shape& s) const override;
+        void Intersect(IntersectionList& list, const Ray& ray) const override { /* do nothing */}
+        Vector LocalNormalAt(const Point &object_point) const {
+            return Vector { object_point.X(), object_point.Y(), object_point.Z() };
+        }
+};
+
 class Intersection {
     const Shape* object_;
     double distance_;

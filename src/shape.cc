@@ -26,6 +26,16 @@ Colour Shape::ApplyLightAt(const Light& light, const Point& point,
     return material_.ApplyLightAt(this, light, point, eye_vector, normal_vector, in_shadow);
 }
 
+int TestShape::count_ = 0;
+
+bool TestShape::operator==(const Shape& s) const {
+    const TestShape* other = dynamic_cast<const TestShape*>(&s);
+    if (other == nullptr) { // Shape is not a TestShape?
+        return false;
+    }
+    return origin_ == other->origin_ && id_ == other->id_;
+}
+
 Intersection& Intersection::operator=(const Intersection& i) {
     object_ = i.object_;
     distance_ = i.distance_;
