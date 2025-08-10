@@ -1,9 +1,12 @@
 #ifndef RAY_TRACER_UTILS_H
 #define RAY_TRACER_UTILS_H
 
+#include <limits>
+
 static const double kAbsEpsilon = 1e-12;
 static const double kRelEpsilon = 1e-8;
 static const double kEpsilon = 1e-5;
+static const double kInfinity = std::numeric_limits<double>::infinity();
 
 bool floating_point_relative_compare(double a, double b, double rel_epsilon = kRelEpsilon);
 bool floating_point_compare(double a, double b, double abs_epsilon = kAbsEpsilon, double rel_epsilon = kRelEpsilon);
