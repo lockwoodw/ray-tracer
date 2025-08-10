@@ -252,3 +252,20 @@ TEST(ShapeTest, FindingTheNormalOnAChildObject) {
     ASSERT_NEAR(expected.Y(), actual.Y(), 1e-4);
     ASSERT_NEAR(expected.Z(), actual.Z(), 1e-4);
 }
+
+/*
+Scenario: Test shape has (arbitrary) bounds
+  Given shape ← test_shape()
+  When box ← bounds_of(shape)
+  Then box.min = point(-1, -1, -1)
+    And box.max = point(1, 1, 1)
+*/
+
+TEST(ShapeTest, TheTestShapeHasBounds) {
+    TestShape shape {};
+    BoundingBox box = shape.BoundsOf();
+    Point min { -1, -1, -1 },
+          max { 1, 1, 1 };
+    ASSERT_EQ(min, box.Min());
+    ASSERT_EQ(max, box.Max());
+}

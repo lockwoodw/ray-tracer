@@ -35,3 +35,6 @@ void Disc::Intersect(IntersectionList& list, const Ray& ray) const {
     }
 }
 
+const BoundingBox Disc::BoundsOf() const {
+    return BoundingBox { Point { -radius_, 0, -radius_ }, Point { radius_, 0, radius_ } };
+}

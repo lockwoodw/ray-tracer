@@ -76,3 +76,12 @@ TEST(SheetTest, HittingASheetOnAnAngle) {
     Point calculated_intersect = ray_origin + direction * distance;
     ASSERT_EQ(intersect, calculated_intersect);
 }
+
+TEST(SheetTest, ASheetHasABoundingBox) {
+    Sheet s {};
+    BoundingBox box = s.BoundsOf();
+    Point min { -0.5, 0, -0.5 },
+          max { 0.5, 0, 0.5 };
+    ASSERT_EQ(min, box.Min());
+    ASSERT_EQ(max, box.Max());
+}

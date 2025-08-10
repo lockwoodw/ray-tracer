@@ -20,6 +20,7 @@ class Disc: public Shape {
             // Normal for x-z plane
             return Vector { 0, 1, 0 };
         }
+        const BoundingBox BoundsOf() const override;
 };
 
 #endif

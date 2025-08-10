@@ -124,3 +124,20 @@ TEST(PlaneTest, IntersectingWithARayBelowThePlane) {
     ASSERT_DOUBLE_EQ(i->Distance(), 1);
     ASSERT_EQ(p, *i->Object());
 }
+
+/*
+Scenario: A plane has a bounding box
+  Given shape ← plane()
+  When box ← bounds_of(shape)
+  Then box.min = point(-infinity, 0, -infinity)
+    And box.max = point(infinity, 0, infinity)
+*/
+
+TEST(PlaneTest, APlaneHasABoundingBox) {
+    Plane p {};
+    BoundingBox box = p.BoundsOf();
+    Point min { -kInfinity, 0, -kInfinity },
+          max { kInfinity, 0, kInfinity };
+    ASSERT_EQ(min, box.Min());
+    ASSERT_EQ(max, box.Max());
+}

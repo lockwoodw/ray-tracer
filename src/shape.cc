@@ -56,6 +56,10 @@ bool TestShape::operator==(const Shape& s) const {
     return origin_ == other->origin_ && id_ == other->id_;
 }
 
+const BoundingBox TestShape::BoundsOf() const {
+    return BoundingBox { Point { -1, -1, -1 }, Point { 1, 1, 1 } };
+}
+
 Intersection& Intersection::operator=(const Intersection& i) {
     object_ = i.object_;
     distance_ = i.distance_;

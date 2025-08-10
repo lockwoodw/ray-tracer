@@ -91,3 +91,7 @@ Vector Cube::LocalNormalAt(const Point &object_point) const {
     }
     return Vector(0, 0, z);
 }
+
+const BoundingBox Cube::BoundsOf() const {
+    return BoundingBox { Point { -1, -1, -1 }, Point { 1, 1, 1 } };
+}

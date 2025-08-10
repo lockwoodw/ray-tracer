@@ -32,6 +32,7 @@ class Cylinder: public Shape {
         bool operator==(const Shape& s) const;
         void Intersect(IntersectionList& list, const Ray& ray) const override;
         Vector LocalNormalAt(const Point &object_point) const override;
+        const BoundingBox BoundsOf() const override;
 
         void Minimum(double m) { minimum_ = m; }
         void Maximum(double m) { maximum_ = m; }

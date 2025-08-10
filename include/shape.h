@@ -10,6 +10,7 @@
 #include "matrix.h"
 #include "colour.h"
 #include "material.h"
+#include "bounds.h"
 
 class IntersectionList;
 class ShapeGroup;
@@ -44,7 +45,9 @@ class Shape {
         virtual Vector LocalNormalAt(const Point &object_point) const = 0;
         Vector NormalAt(const Point &world_point) const;
 
-        virtual bool operator==(const Shape&) const  = 0;
+        virtual bool operator==(const Shape&) const = 0;
+
+        virtual const BoundingBox BoundsOf() const = 0;
 
         const Point Origin() const { return origin_; }
 
@@ -91,6 +94,7 @@ class TestShape: public Shape {
         Vector LocalNormalAt(const Point &object_point) const {
             return Vector { object_point.X(), object_point.Y(), object_point.Z() };
         }
+        const BoundingBox BoundsOf() const override;
 };
 
 class Intersection {

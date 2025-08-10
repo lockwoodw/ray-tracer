@@ -57,3 +57,12 @@ TEST(DiscTest, HittingADisc) {
     const Intersection* i = xs[0];
     ASSERT_DOUBLE_EQ(i->Distance(), 5);
 }
+
+TEST(DiscTest, ADiscHasABoundingBox) {
+    Disc d {};
+    BoundingBox box = d.BoundsOf();
+    Point min { -1, 0, -1 },
+          max { 1, 0, 1 };
+    ASSERT_EQ(min, box.Min());
+    ASSERT_EQ(max, box.Max());
+}

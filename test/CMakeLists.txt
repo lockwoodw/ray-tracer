@@ -149,6 +149,7 @@ add_executable(
   ../src/colour.cc
   ../src/material.cc
   ../src/shape.cc
+  ../src/bounds.cc
   ../src/sphere.cc
   ../src/pattern.cc
   sphere.cc
@@ -268,6 +269,7 @@ add_executable(
   ../src/pattern.cc
   ../src/sphere.cc
   ../src/group.cc
+  ../src/bounds.cc
   shape.cc
 )
 
@@ -287,6 +289,7 @@ add_executable(
   ../src/colour.cc
   ../src/material.cc
   ../src/shape.cc
+  ../src/bounds.cc
   ../src/plane.cc
   ../src/pattern.cc
   plane.cc
@@ -330,6 +333,7 @@ add_executable(
   ../src/colour.cc
   ../src/material.cc
   ../src/shape.cc
+  ../src/bounds.cc
   ../src/cube.cc
   cube.cc
 )
@@ -350,6 +354,7 @@ add_executable(
   ../src/colour.cc
   ../src/material.cc
   ../src/shape.cc
+  ../src/bounds.cc
   ../src/sheet.cc
   sheet.cc
 )
@@ -370,6 +375,7 @@ add_executable(
   ../src/colour.cc
   ../src/material.cc
   ../src/shape.cc
+  ../src/bounds.cc
   ../src/cylinder.cc
   cylinder.cc
 )
@@ -390,6 +396,7 @@ add_executable(
   ../src/colour.cc
   ../src/material.cc
   ../src/shape.cc
+  ../src/bounds.cc
   ../src/disc.cc
   disc.cc
 )
@@ -412,6 +419,7 @@ add_executable(
   ../src/shape.cc
   ../src/sphere.cc
   ../src/transformations.cc
+  ../src/bounds.cc
   ../src/group.cc
   group.cc
 )
@@ -422,6 +430,27 @@ target_link_libraries(
 )
 
 target_include_directories(group-test PRIVATE ../include/)
+
+add_executable(
+  bounds-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/transformations.cc
+  ../src/bounds.cc
+  bounds.cc
+)
+
+target_link_libraries(
+  bounds-test
+  GTest::gtest_main
+)
+
+target_include_directories(bounds-test PRIVATE ../include/)
 
 include(GoogleTest)
 gtest_discover_tests(
@@ -445,6 +474,7 @@ gtest_discover_tests(
   sheet-test
   disc-test
   group-test
+  bounds-test
 )
 
 # cmake --build build

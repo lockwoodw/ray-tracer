@@ -418,3 +418,20 @@ TEST(SphereTest, ConfirmingMaterialForGlassySphere) {
     ASSERT_DOUBLE_EQ(m.Transparency(), 1.0);
     ASSERT_DOUBLE_EQ(m.RefractiveIndex(), 1.5);
 }
+
+/*
+Scenario: A sphere has a bounding box
+  Given shape ← sphere()
+  When box ← bounds_of(shape)
+  Then box.min = point(-1, -1, -1)
+    And box.max = point(1, 1, 1)
+*/
+
+TEST(SphereTest, ASphereHasABoundingBox) {
+    Sphere s {};
+    BoundingBox box = s.BoundsOf();
+    Point min { -1, -1, -1 },
+          max { 1, 1, 1 };
+    ASSERT_EQ(min, box.Min());
+    ASSERT_EQ(max, box.Max());
+}

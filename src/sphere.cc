@@ -43,6 +43,10 @@ Vector Sphere::LocalNormalAt(const Point &object_point) const {
     return object_point - origin_;
 }
 
+const BoundingBox Sphere::BoundsOf() const {
+    return BoundingBox { Point { -radius_, -radius_, -radius_ }, Point { radius_, radius_, radius_ } };
+}
+
 Sphere GlassySphere() {
     Sphere s {};
     Material m {};

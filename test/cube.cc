@@ -138,3 +138,19 @@ TEST(CubeTest, ConfirmingTheNormalOnTheSurfaceOfACube) {
     }
 }
 
+/*
+Scenario: A cube has a bounding box
+  Given shape ← cube()
+  When box ← bounds_of(shape)
+  Then box.min = point(-1, -1, -1)
+    And box.max = point(1, 1, 1)
+*/
+
+TEST(CubeTest, ACubeHasABoundingBox) {
+    Cube c {};
+    BoundingBox box = c.BoundsOf();
+    Point min { -1, -1, -1 },
+          max { 1, 1, 1 };
+    ASSERT_EQ(min, box.Min());
+    ASSERT_EQ(max, box.Max());
+}

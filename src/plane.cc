@@ -20,3 +20,7 @@ bool Plane::operator==(const Shape& s) const {
     }
     return origin_ == other->origin_;
 }
+
+const BoundingBox Plane::BoundsOf() const {
+    return BoundingBox { Point { -kInfinity, 0, -kInfinity }, Point { kInfinity, 0, kInfinity } };
+}

@@ -28,3 +28,9 @@ bool Sheet::operator==(const Shape& s) const {
     return origin_ == other->origin_ && floating_point_compare(width_, other->width_)
         && floating_point_compare(depth_, other->depth_);
 }
+
+const BoundingBox Sheet::BoundsOf() const {
+    double width = width_ / 2,
+           depth = depth_ / 2;
+    return BoundingBox { Point { -width, 0, -depth }, Point { width, 0, depth } };
+}

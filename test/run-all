@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+build/bounds-test
 build/camera-test
 build/canvas-test
 build/colour-test

@@ -252,3 +252,39 @@ TEST(CylinderTest, ConfirmingTheNormalVectorOnCylinderEndCaps) {
         ASSERT_EQ(c.LocalNormalAt(std::get<0>(record)), std::get<1>(record));
     }
 }
+
+/*
+Scenario: An unbounded cylinder has a bounding box
+  Given shape ← cylinder()
+  When box ← bounds_of(shape)
+  Then box.min = point(-1, -infinity, -1)
+    And box.max = point(1, infinity, 1)
+*/
+
+TEST(CylinderTest, AnUnboundedCylinderHasABoundingBox) {
+    Cylinder c {};
+    BoundingBox box = c.BoundsOf();
+    Point min { -1, -kInfinity, -1 },
+          max { 1, kInfinity, 1 };
+    ASSERT_EQ(min, box.Min());
+    ASSERT_EQ(max, box.Max());
+}
+
+/*
+Scenario: A bounded cylinder has a bounding box
+  Given shape ← cylinder()
+    And shape.minimum ← -5
+    And shape.maximum ← 3
+  When box ← bounds_of(shape)
+  Then box.min = point(-1, -5, -1)
+    And box.max = point(1, 3, 1)
+*/
+
+TEST(CylinderTest, ABoundedCylinderHasABoundingBox) {
+    Cylinder c { -5, 3, true };
+    BoundingBox box = c.BoundsOf();
+    Point min { -1, -5, -1 },
+          max { 1, 3, 1 };
+    ASSERT_EQ(min, box.Min());
+    ASSERT_EQ(max, box.Max());
+}

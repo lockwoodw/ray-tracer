@@ -38,3 +38,7 @@ void ShapeGroup::Intersect(IntersectionList& list, const Ray& ray) const {
 Vector ShapeGroup::LocalNormalAt(const Point &object_point) const {
     throw std::runtime_error("Can't call LocalNormalAt() on a group!");
 }
+
+const BoundingBox ShapeGroup::BoundsOf() const {
+    return BoundingBox {};
+}
