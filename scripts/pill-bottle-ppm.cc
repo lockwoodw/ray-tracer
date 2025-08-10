@@ -48,7 +48,7 @@ Light WorldLight(double scale) {
 }
 
 Matrix CameraTransform(double scale) {
-    Point from { 3*scale, 6*scale, -6 * scale }, to { 0, 6*scale, 0 };
+    Point from { 7*scale, 7*scale, -11 * scale }, to { 0, 7*scale, 0 };
     // Point from { 0, 6*scale, -7 * scale }, to { 0, 6*scale, 0 };
     // Point from { 5*scale, 6*scale, -7 * scale }, to { 0, 6*scale, -3*scale };
     // Point from { 2*scale, 0.25*scale, -scale }, to { 0, 0.25*scale, 0 };
@@ -99,10 +99,11 @@ int main(int argc, char** argv) {
     speckled_ptn->SetAttentuation(0.3);
     SolidPattern* solid_ptn = new SolidPattern(Colour { 0.9, 0.9, 0.9 });
     StripePattern striped_ptn { speckled_ptn, solid_ptn };
-    striped_ptn.SetTransform(Transformation().Scale(0.4*scale, 1, 1).RotateY(M_PI/2));
+    striped_ptn.SetTransform(Transformation().Scale(0.05*scale, 1, 1).RotateY(M_PI/2));
     PerturbedPattern pptn = PerturbedPattern { &striped_ptn };
     Material floor_m {};
     floor_m.SurfacePattern(&pptn);
+    floor_m.Reflectivity(0.2);
     floor.SetMaterial(floor_m);
     world.Add(&floor);
 
@@ -248,7 +249,7 @@ int main(int argc, char** argv) {
     world.Add(&bottle_floor);
 
 
-    Camera camera { 108 * scale_int, 135 * scale_int, M_PI / 2 };
+    Camera camera { 108 * scale_int, 135 * scale_int, M_PI / 3 };
     camera.SetTransform(CameraTransform(scale));
 
     Canvas canvas = camera.Render(world);
