@@ -2,6 +2,7 @@
 #define RAY_TRACER_SHAPE_H
 
 #include <list>
+#include <set>
 #include <stdexcept>
 #include <iterator>
 #include <cmath> // for sqrt
@@ -157,20 +158,22 @@ class IntersectionComputation {
         const double Reflectance() const;
 };
 
-class IntersectionComparator {
-    public:
-        bool operator()(const Intersection* a, const Intersection* b) {
-            return a->Distance() < b->Distance();
-        }
-};
-
 class IntersectionList {
-    std::list<const Intersection*> list_;
     const Intersection* hit_;
     const Intersection* shadow_hit_;
 
+    struct IntersectionComparator
+    {
+        bool operator()(const Intersection* a, const Intersection* b) const {
+            return a->Distance() < b->Distance();
+        }
+    };
+    using ListType = std::multiset<const Intersection*, IntersectionComparator>;
+    ListType list_;
+
     public:
-        IntersectionList(): hit_ { nullptr }, shadow_hit_ { nullptr } {}
+        IntersectionList(): hit_ { nullptr }, shadow_hit_ { nullptr },
+            list_ {} { }
         ~IntersectionList();
         const Intersection* operator[](unsigned int index);
         void Add(const Intersection* i);
@@ -181,10 +184,10 @@ class IntersectionList {
         const Intersection* ShadowHit() const;
         IntersectionList& operator<<(const Intersection* i);
         IntersectionList& operator<<(const Intersection& i);
-        std::list<const Intersection*>::iterator begin() {
+        ListType::iterator begin() {
             return list_.begin();
         }
-        std::list<const Intersection*>::iterator end() {
+        ListType::iterator end() {
             return list_.end();
         }
 };

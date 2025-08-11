@@ -199,7 +199,7 @@ const Intersection* IntersectionList::operator[](unsigned int index) {
         throw std::out_of_range("Index does not exist in list");
     }
     unsigned int n = 0;
-    std::list<const Intersection*>::const_iterator it = list_.begin();
+    auto it = list_.begin();
     while (n++ != index && it != list_.end()) {
         it++;
     }
@@ -207,8 +207,7 @@ const Intersection* IntersectionList::operator[](unsigned int index) {
 }
 
 void IntersectionList::Add(const Intersection* i) {
-    list_.push_back(i);
-    list_.sort(IntersectionComparator());
+    list_.insert(i);
     if (i->Distance() >= 0) {
         if (!hit_ || i->Distance() < hit_->Distance()) {
             hit_ = i;
