@@ -32,21 +32,21 @@ void BoundingBox::Add(const BoundingBox& b) {
     }
 }
 
-bool BoundingBox::Contains(const Point& p) {
+bool BoundingBox::Contains(const Point& p) const {
     for (auto index: kIndices) {
         double coord = p.At(index);
-        if (coord < min_[index] || coord > max_[index]) {
+        if (coord < min_.At(index) || coord > max_.At(index)) {
             return false;
         }
     }
     return true;
 }
 
-bool BoundingBox::Contains(const BoundingBox& b) {
+bool BoundingBox::Contains(const BoundingBox& b) const {
     for (auto index: kIndices) {
         double min_coord = b.min_.At(index),
                max_coord = b.max_.At(index);
-        if (min_coord < min_[index] || max_coord > max_[index]) {
+        if (min_coord < min_.At(index) || max_coord > max_.At(index)) {
             return false;
         }
     }
@@ -130,4 +130,39 @@ const bool BoundingBox::Intersects(const Ray& ray) const {
     tmax = std::min(tmax, zt[1]);
 
     return tmax > tmin;
+}
+
+const std::array<const BoundingBox, 2> BoundingBox::Split() const {
+    // Returns two non-overlapping bounding boxes that cover the same volume
+    // as the original bounding box, split along the longest axis.
+
+    // figure out the box's largest dimension
+    double greatest {};
+    int index_of_greatest {};
+
+    for (auto index: kIndices) {
+        double min_coord = min_.At(index),
+               max_coord = max_.At(index),
+               length = max_coord - min_coord;
+        if (length > greatest) {
+            greatest = length;
+            index_of_greatest = index;
+        }
+    }
+
+    // variables to help construct the points on
+    // the dividing plane
+    Point p0 = min_,
+          p1 = max_;
+
+    // adjust the points so that they lie on the
+    // dividing plane
+    p0[index_of_greatest] += greatest / 2;
+    p1[index_of_greatest] = p0[index_of_greatest];
+
+    // construct and return the two halves of
+    // the bounding box
+    BoundingBox left { min_, p1 },
+                right { p0, max_ };
+    return std::array<const BoundingBox, 2> { left, right };
 }

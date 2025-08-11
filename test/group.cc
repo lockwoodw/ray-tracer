@@ -112,8 +112,8 @@ TEST(GroupTest, IntersectingATransformedGroup) {
     ShapeGroup g {};
     g.SetTransform(Transformation().Scale(2));
     Sphere s {};
-    s.SetTransform(Transformation().Translate(5, 0, 0));
     g << &s;
+    s.SetTransform(Transformation().Translate(5, 0, 0));
     Ray r { Point { 10, 0, -10 }, Vector { 0, 0, 1 } };
     IntersectionList xs {};
     g.Intersect(xs, r);
@@ -184,4 +184,70 @@ TEST(GroupTest, IntersectingGroupTestsChildrenIfBoxIsHit) {
     Ray r { Point { 0, 0, -5 }, Vector { 0, 0, 1 } };
     IntersectionList xs {};
     ASSERT_TRUE(group.Intersect(xs, r));
+}
+
+TEST(GroupTest, IntersectingGroupOfGroups) {
+    Sphere s {};
+    s.SetTransform(Transformation().Scale(2));
+    ShapeGroup inner {};
+    inner.SetTransform(Transformation().Translate(0, 1, 0));
+    inner << &s;
+    ShapeGroup outer {};
+    outer << &inner;
+    Ray r { Point { 0, 3, -5 }, Vector { 0, 0, 1 } };
+    IntersectionList xs {};
+    ASSERT_TRUE(outer.Intersect(xs, r));
+    ASSERT_DOUBLE_EQ(xs[0]->Distance(), 5);
+}
+
+/*
+Scenario: Partitioning a group's children
+  Given s1 ← sphere() with:
+      | transform | translation(-2, 0, 0) |
+    And s2 ← sphere() with:
+      | transform | translation(2, 0, 0) |
+    And s3 ← sphere()
+    And g ← group() of [s1, s2, s3]
+  When (left, right) ← partition_children(g)
+  Then g is a group of [s3]
+    And left = [s1]
+    And right = [s2]
+*/
+
+TEST(GroupTest, PartitioningAGroupsChildren) {
+    Sphere s1 {};
+    s1.SetTransform(Transformation().Translate(-2, 0, 0));
+    Sphere s2 {};
+    s2.SetTransform(Transformation().Translate(2, 0, 0));
+    Sphere s3 {};
+    ShapeGroup g {};
+    g << &s1 << &s2 << &s3;
+    auto partitions = g.Partition();
+    ASSERT_TRUE(g.Contains(&s3));
+    ASSERT_FALSE(g.Contains(&s1));
+    ASSERT_FALSE(g.Contains(&s2));
+    ASSERT_EQ(partitions[0].back(), &s1);
+    ASSERT_EQ(partitions[1].back(), &s2);
+}
+
+/*
+Scenario: Creating a sub-group from a list of children
+  Given s1 ← sphere()
+    And s2 ← sphere()
+    And g ← group()
+  When make_subgroup(g, [s1, s2])
+  Then g.count = 1
+    And g[0] is a group of [s1, s2]
+*/
+
+TEST(GroupTest, CreatingASubgroupFromAListOfChildren) {
+    Sphere s1 {},
+           s2 {};
+    std::vector<Shape*> list { &s1, &s2 };
+    ShapeGroup g {};
+    g.AddSubgroup(list);
+    ASSERT_EQ(g.Size(), 1);
+    ShapeGroup* subgroup = static_cast<ShapeGroup*>(g[0]);
+    ASSERT_TRUE(subgroup->Contains(&s1));
+    ASSERT_TRUE(subgroup->Contains(&s2));
 }

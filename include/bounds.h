@@ -30,10 +30,11 @@ class BoundingBox {
         const Point Max() const { return max_; }
         void Add(const Point& p);
         void Add(const BoundingBox& b);
-        bool Contains(const Point& p);
-        bool Contains(const BoundingBox& b);
+        bool Contains(const Point& p) const;
+        bool Contains(const BoundingBox& b) const;
         const BoundingBox Transform(const Matrix& m) const;
         const bool Intersects(const Ray& r) const;
+        const std::array<const BoundingBox, 2> Split() const;
 };
 
 #endif

@@ -269,3 +269,79 @@ TEST(BoundsTest, IntersectingARayWithANonCubicBoundingBox) {
         ASSERT_EQ(box.Intersects(r), std::get<2>(record));
     }
 }
+
+/*
+Scenario: Splitting a perfect cube
+  Given box ← bounding_box(min=point(-1, -4, -5) max=point(9, 6, 5))
+  When (left, right) ← split_bounds(box)
+  Then left.min = point(-1, -4, -5)
+    And left.max = point(4, 6, 5)
+    And right.min = point(4, -4, -5)
+    And right.max = point(9, 6, 5)
+*/
+
+TEST(BoundsTest, SplittingAPerfectCube) {
+    BoundingBox box { Point { -1, -4, -5 }, Point { 9, 6, 5 } };
+    auto partition = box.Split();
+    ASSERT_EQ(partition[0].Min(), Point(-1, -4, -5));
+    ASSERT_EQ(partition[0].Max(), Point(4, 6, 5));
+    ASSERT_EQ(partition[1].Min(), Point(4, -4, -5));
+    ASSERT_EQ(partition[1].Max(), Point(9, 6, 5));
+}
+
+/*
+Scenario: Splitting an x-wide box
+  Given box ← bounding_box(min=point(-1, -2, -3) max=point(9, 5.5, 3))
+  When (left, right) ← split_bounds(box)
+  Then left.min = point(-1, -2, -3)
+    And left.max = point(4, 5.5, 3)
+    And right.min = point(4, -2, -3)
+    And right.max = point(9, 5.5, 3)
+*/
+
+TEST(BoundsTest, SplittingAnXWideCube) {
+    BoundingBox box { Point { -1, -2, -3 }, Point { 9, 5.5, 3 } };
+    auto partition = box.Split();
+    ASSERT_EQ(partition[0].Min(), Point(-1, -2, -3));
+    ASSERT_EQ(partition[0].Max(), Point(4, 5.5, 3));
+    ASSERT_EQ(partition[1].Min(), Point(4, -2, -3));
+    ASSERT_EQ(partition[1].Max(), Point(9, 5.5, 3));
+}
+
+/*
+Scenario: Splitting a y-wide box
+  Given box ← bounding_box(min=point(-1, -2, -3) max=point(5, 8, 3))
+  When (left, right) ← split_bounds(box)
+  Then left.min = point(-1, -2, -3)
+    And left.max = point(5, 3, 3)
+    And right.min = point(-1, 3, -3)
+    And right.max = point(5, 8, 3)
+*/
+
+TEST(BoundsTest, SplittingAYWideCube) {
+    BoundingBox box { Point { -1, -2, -3 }, Point { 5, 8, 3 } };
+    auto partition = box.Split();
+    ASSERT_EQ(partition[0].Min(), Point(-1, -2, -3));
+    ASSERT_EQ(partition[0].Max(), Point(5, 3, 3));
+    ASSERT_EQ(partition[1].Min(), Point(-1, 3, -3));
+    ASSERT_EQ(partition[1].Max(), Point(5, 8, 3));
+}
+
+/*
+Scenario: Splitting a z-wide box
+  Given box ← bounding_box(min=point(-1, -2, -3) max=point(5, 3, 7))
+  When (left, right) ← split_bounds(box)
+  Then left.min = point(-1, -2, -3)
+    And left.max = point(5, 3, 2)
+    And right.min = point(-1, -2, 2)
+    And right.max = point(5, 3, 7)
+*/
+
+TEST(BoundsTest, SplittingAZWideCube) {
+    BoundingBox box { Point { -1, -2, -3 }, Point { 5, 3, 7 } };
+    auto partition = box.Split();
+    ASSERT_EQ(partition[0].Min(), Point(-1, -2, -3));
+    ASSERT_EQ(partition[0].Max(), Point(5, 3, 2));
+    ASSERT_EQ(partition[1].Min(), Point(-1, -2, 2));
+    ASSERT_EQ(partition[1].Max(), Point(5, 3, 7));
+}
