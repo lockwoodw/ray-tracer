@@ -1,13 +1,13 @@
 #include <stdexcept>
 #include "group.h"
 
-void ShapeGroup::AddShape(Shape* s) {
+void ShapeGroup::Add(Shape* s) {
     s->Parent(this);
     shapes_.push_back(s);
 }
 
 ShapeGroup& ShapeGroup::operator<<(Shape *s) {
-    AddShape(s);
+    Add(s);
     return *this;
 }
 

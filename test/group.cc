@@ -36,7 +36,7 @@ Scenario: Adding a child to a group
 TEST(GroupTest, AddingAChildToAGroup) {
     ShapeGroup g {};
     TestShape s {};
-    g.AddShape(&s);
+    g.Add(&s);
     ASSERT_FALSE(g.IsEmpty());
     ASSERT_TRUE(g.Contains(&s));
     ASSERT_EQ(s.Parent(), &g);

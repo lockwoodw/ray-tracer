@@ -14,7 +14,7 @@ class ShapeGroup: public Shape {
         ShapeGroup(): Shape { Point { 0, 0, 0 } }, shapes_ {} {}
 
         const bool IsEmpty() const { return shapes_.size() == 0; }
-        void AddShape(Shape* s);
+        void Add(Shape* s);
         ShapeGroup& operator<<(Shape *s);
         bool Contains(Shape* s) const;
 
