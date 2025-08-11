@@ -175,6 +175,7 @@ add_executable(
   ../src/sphere.cc
   ../src/pattern.cc
   ../src/plane.cc
+  ../src/bounds.cc
   intersections.cc
 )
 
@@ -196,6 +197,7 @@ add_executable(
   ../src/shape.cc
   ../src/sphere.cc
   ../src/pattern.cc
+  ../src/bounds.cc
   material.cc
 )
 
@@ -221,6 +223,7 @@ add_executable(
   ../src/world.cc
   ../src/plane.cc
   ../src/cube.cc
+  ../src/bounds.cc
   world.cc
 )
 
@@ -240,6 +243,7 @@ add_executable(
   ../src/space.cc
   ../src/colour.cc
   ../src/material.cc
+  ../src/bounds.cc
   ../src/shape.cc
   ../src/sphere.cc
   ../src/pattern.cc
@@ -311,6 +315,7 @@ add_executable(
   ../src/space.cc
   ../src/colour.cc
   ../src/material.cc
+  ../src/bounds.cc
   ../src/shape.cc
   ../src/sphere.cc
   ../src/pattern.cc
@@ -420,6 +425,7 @@ add_executable(
   ../src/sphere.cc
   ../src/transformations.cc
   ../src/bounds.cc
+  ../src/cylinder.cc
   ../src/group.cc
   group.cc
 )

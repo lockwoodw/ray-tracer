@@ -269,3 +269,21 @@ TEST(ShapeTest, TheTestShapeHasBounds) {
     ASSERT_EQ(min, box.Min());
     ASSERT_EQ(max, box.Max());
 }
+
+/*
+Scenario: Querying a shape's bounding box in its parent's space
+  Given shape ← sphere()
+    And set_transform(shape, translation(1, -3, 5) * scaling(0.5, 2, 4))
+  When box ← parent_space_bounds_of(shape)
+  Then box.min = point(0.5, -5, 1)
+    And box.max = point(1.5, -1, 9)
+*/
+
+TEST(ShapeTest, ConfirmingAShapesBoundingBoxInParentSpace) {
+    Sphere sphere {};
+    sphere.SetTransform(Transformation().Scale(0.5, 2, 4).Translate(1, -3, 5));
+    BoundingBox box = sphere.BoundsOfInParentSpace();
+    ASSERT_EQ(box.Min(), Point(0.5, -5, 1));
+    ASSERT_EQ(box.Max(), Point(1.5, -1, 9));
+}
+

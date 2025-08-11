@@ -173,3 +173,99 @@ TEST(BoundsTest, TransformingABoundingBox) {
         ASSERT_NEAR(transformed.Max().At(index), max.At(index), 1e-4);
     }
 }
+
+/*
+Scenario Outline: Intersecting a ray with a bounding box at the origin
+  Given box ← bounding_box(min=point(-1, -1, -1) max=point(1, 1, 1))
+    And direction ← normalize(<direction>)
+    And r ← ray(<origin>, direction)
+  Then intersects(box, r) is <result>
+
+  Examples:
+    | origin            | direction        | result |
+    | point(5, 0.5, 0)  | vector(-1, 0, 0) | true   |
+    | point(-5, 0.5, 0) | vector(1, 0, 0)  | true   |
+    | point(0.5, 5, 0)  | vector(0, -1, 0) | true   |
+    | point(0.5, -5, 0) | vector(0, 1, 0)  | true   |
+    | point(0.5, 0, 5)  | vector(0, 0, -1) | true   |
+    | point(0.5, 0, -5) | vector(0, 0, 1)  | true   |
+    | point(0, 0.5, 0)  | vector(0, 0, 1)  | true   |
+    | point(-2, 0, 0)   | vector(2, 4, 6)  | false  |
+    | point(0, -2, 0)   | vector(6, 2, 4)  | false  |
+    | point(0, 0, -2)   | vector(4, 6, 2)  | false  |
+    | point(2, 0, 2)    | vector(0, 0, -1) | false  |
+    | point(0, 2, 2)    | vector(0, -1, 0) | false  |
+    | point(2, 2, 0)    | vector(-1, 0, 0) | false  |
+*/
+
+TEST(BoundsTest, IntersectingARayWithABoundingBoxAtTheOrigin) {
+    BoundingBox box { Point { -1, -1, -1 }, Point { 1, 1, 1 } };
+    using Record = std::tuple<Point, Vector, bool>;
+    std::array<Record, 13> records = {
+        Record { Point { 5, 0.5, 0 },  Vector { -1, 0, 0 }, true },
+        Record { Point { -5, 0.5, 0 }, Vector { 1, 0, 0 },  true },
+        Record { Point { 0.5, 5, 0 },  Vector { 0, -1, 0 }, true },
+        Record { Point { 0.5, -5, 0 }, Vector { 0, 1, 0 },  true },
+        Record { Point { 0.5, 0, 5 },  Vector { 0, 0, -1 }, true },
+        Record { Point { 0.5, 0, -5 }, Vector { 0, 0, 1 },  true },
+        Record { Point { 0, 0.5, 0 },  Vector { 0, 0, 1 },  true },
+        Record { Point { -2, 0, 0 },   Vector { 2, 4, 6 },  false },
+        Record { Point { 0, -2, 0 },   Vector { 6, 2, 4 },  false },
+        Record { Point { 0, 0, -2 },   Vector { 4, 6, 2 },  false },
+        Record { Point { 2, 0, 2 },    Vector { 0, 0, -1 }, false },
+        Record { Point { 0, 2, 2 },    Vector { 0, -1, 0 }, false },
+        Record { Point { 2, 2, 0 },    Vector { -1, 0, 0 }, false },
+    };
+    for (auto record: records) {
+        Ray r { std::get<0>(record), std::get<1>(record).Normalize() };
+        ASSERT_EQ(box.Intersects(r), std::get<2>(record));
+    }
+}
+
+/*
+Scenario Outline: Intersecting a ray with a non-cubic bounding box
+  Given box ← bounding_box(min=point(5, -2, 0) max=point(11, 4, 7))
+    And direction ← normalize(<direction>)
+    And r ← ray(<origin>, direction)
+  Then intersects(box, r) is <result>
+
+  Examples:
+    | origin           | direction        | result |
+    | point(15, 1, 2)  | vector(-1, 0, 0) | true   |
+    | point(-5, -1, 4) | vector(1, 0, 0)  | true   |
+    | point(7, 6, 5)   | vector(0, -1, 0) | true   |
+    | point(9, -5, 6)  | vector(0, 1, 0)  | true   |
+    | point(8, 2, 12)  | vector(0, 0, -1) | true   |
+    | point(6, 0, -5)  | vector(0, 0, 1)  | true   |
+    | point(8, 1, 3.5) | vector(0, 0, 1)  | true   |
+    | point(9, -1, -8) | vector(2, 4, 6)  | false  |
+    | point(8, 3, -4)  | vector(6, 2, 4)  | false  |
+    | point(9, -1, -2) | vector(4, 6, 2)  | false  |
+    | point(4, 0, 9)   | vector(0, 0, -1) | false  |
+    | point(8, 6, -1)  | vector(0, -1, 0) | false  |
+    | point(12, 5, 4)  | vector(-1, 0, 0) | false  |
+*/
+
+TEST(BoundsTest, IntersectingARayWithANonCubicBoundingBox) {
+    BoundingBox box { Point { 5, -2, 0 }, Point { 11, 4, 7 } };
+    using Record = std::tuple<Point, Vector, bool>;
+    std::array<Record, 13> records = {
+        Record { Point { 15, 1, 2 },  Vector { -1, 0, 0 }, true },
+        Record { Point { -5, -1, 4 }, Vector { 1, 0, 0 },  true },
+        Record { Point { 7, 6, 5 },   Vector { 0, -1, 0 }, true },
+        Record { Point { 9, -5, 6 },  Vector { 0, 1, 0 },  true },
+        Record { Point { 8, 2, 12 },  Vector { 0, 0, -1 }, true },
+        Record { Point { 6, 0, -5 },  Vector { 0, 0, 1 },  true },
+        Record { Point { 8, 1, 3.5 }, Vector { 0, 0, 1 },  true },
+        Record { Point { 9, -1, -8 }, Vector { 2, 4, 6 },  false },
+        Record { Point { 8, 3, -4 },  Vector { 6, 2, 4 },  false },
+        Record { Point { 9, -1, -2 }, Vector { 4, 6, 2 },  false },
+        Record { Point { 4, 0, 9 },   Vector { 0, 0, -1 }, false },
+        Record { Point { 8, 6, -1 },  Vector { 0, -1, 0 }, false },
+        Record { Point { 12, 5, 4 },  Vector { -1, 0, 0 }, false },
+    };
+    for (auto record: records) {
+        Ray r { std::get<0>(record), std::get<1>(record).Normalize() };
+        ASSERT_EQ(box.Intersects(r), std::get<2>(record));
+    }
+}

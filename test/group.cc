@@ -9,6 +9,7 @@
 #include "shape.h"
 #include "sphere.h"
 #include "transformations.h"
+#include "cylinder.h"
 
 /*
 Scenario: Creating a new group
@@ -117,4 +118,70 @@ TEST(GroupTest, IntersectingATransformedGroup) {
     IntersectionList xs {};
     g.Intersect(xs, r);
     ASSERT_EQ(xs.Size(), 2);
+}
+
+/*
+Scenario: A group has a bounding box that contains its children
+  Given s ← sphere()
+    And set_transform(s, translation(2, 5, -3) * scaling(2, 2, 2))
+    And c ← cylinder()
+    And c.minimum ← -2
+    And c.maximum ← 2
+    And set_transform(c, translation(-4, -1, 4) * scaling(0.5, 1, 0.5))
+    And shape ← group()
+    And add_child(shape, s)
+    And add_child(shape, c)
+  When box ← bounds_of(shape)
+  Then box.min = point(-4.5, -3, -5)
+    And box.max = point(4, 7, 4.5)
+*/
+
+TEST(GroupTest, ConfirmingAGroupsBoundingBoxContainsItsChildren) {
+    Sphere s {};
+    s.SetTransform(Transformation().Scale(2).Translate(2, 5, -3));
+    Cylinder c { -2, 2, true };
+    c.SetTransform(Transformation().Scale(0.5, 1, 0.5).Translate(-4, -1, 4));
+    ShapeGroup group {};
+    group << &s << &c;
+    BoundingBox box = group.BoundsOf();
+    ASSERT_EQ(box.Min(), Point(-4.5, -3, -5));
+    ASSERT_EQ(box.Max(), Point(4, 7, 4.5));
+}
+
+/*
+Scenario: Intersecting ray+group doesn't test children if box is missed
+  Given child ← test_shape()
+    And shape ← group()
+    And add_child(shape, child)
+    And r ← ray(point(0, 0, -5), vector(0, 1, 0))
+  When xs ← intersect(shape, r)
+  Then child.saved_ray is unset
+*/
+
+TEST(GroupTest, IntersectingGroupDoesNotTestChildrenIfBoxIsMissed) {
+    TestShape child {};
+    ShapeGroup group {};
+    group << &child;
+    Ray r { Point { 0, 0, -5 }, Vector { 0, 1, 0 } };
+    IntersectionList xs {};
+    ASSERT_FALSE(group.Intersect(xs, r));
+}
+
+/*
+Scenario: Intersecting ray+group tests children if box is hit
+Given child ← test_shape()
+And shape ← group()
+And add_child(shape, child)
+And r ← ray(point(0, 0, -5), vector(0, 0, 1))
+When xs ← intersect(shape, r)
+Then child.saved_ray is set
+*/
+
+TEST(GroupTest, IntersectingGroupTestsChildrenIfBoxIsHit) {
+    TestShape child {};
+    ShapeGroup group {};
+    group << &child;
+    Ray r { Point { 0, 0, -5 }, Vector { 0, 0, 1 } };
+    IntersectionList xs {};
+    ASSERT_TRUE(group.Intersect(xs, r));
 }

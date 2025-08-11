@@ -48,6 +48,7 @@ class Shape {
         virtual bool operator==(const Shape&) const = 0;
 
         virtual const BoundingBox BoundsOf() const = 0;
+        const BoundingBox BoundsOfInParentSpace() const;
 
         const Point Origin() const { return origin_; }
 

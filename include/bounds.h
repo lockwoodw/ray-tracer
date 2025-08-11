@@ -3,15 +3,20 @@
 
 #include <limits>
 #include <array>
+#include <cmath> // for fabs
 
 #include "space.h"
 #include "matrix.h"
+#include "ray.h"
 
 const static double kBBInfinity { std::numeric_limits<double>::infinity() };
 
 class BoundingBox {
     Point min_;
     Point max_;
+
+    std::array<double, 2> IntersectionsByAxis(const Ray& ray,
+        const SpatialTuple::Coordinates axis) const;
 
     public:
         static const int kIndices[3];

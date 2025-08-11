@@ -46,5 +46,9 @@ Vector ShapeGroup::LocalNormalAt(const Point &object_point) const {
 }
 
 const BoundingBox ShapeGroup::BoundsOf() const {
-    return BoundingBox {};
+    BoundingBox box {};
+    for (auto s: shapes_) {
+        box.Add(s->BoundsOfInParentSpace());
+    }
+    return box;
 }
