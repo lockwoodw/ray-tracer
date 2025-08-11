@@ -7,7 +7,8 @@ Camera::Camera(int horizontal, int vertical, double field_of_view):
         horizontal_ { horizontal },
         vertical_ { vertical },
         field_of_view_ { field_of_view },
-        transform_ { Matrix::Identity(4) } {
+        transform_ { Matrix::Identity(4) },
+        inverse_transform_ { Matrix::Identity(4) } {
     double half_view = std::tan(field_of_view_ / 2);
     double aspect = static_cast<double>(horizontal_) / vertical_;
     if (aspect >= 1) {
@@ -39,11 +40,10 @@ const Ray Camera::RayAt(int pixel_x, int pixel_y) const {
     // (moving camera 2 units to the right is the same as moving the world 2
     // units to the left).
     // The canvas is positioned at z = -1 in world space.
-    Matrix inverse = transform_.Inverse();
     Point world_point { world_x, world_y, -1 },
           world_origin { 0, 0, 0 },
-          pixel = inverse * world_point,
-          origin = inverse * world_origin;
+          pixel = inverse_transform_ * world_point,
+          origin = inverse_transform_ * world_origin;
     Vector direction = pixel - origin;
     Ray ray { origin, direction.Normalize() };
     return ray;

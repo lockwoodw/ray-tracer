@@ -2,7 +2,9 @@
 #include "sphere.h"
 #include "utils.h"
 
-bool Sphere::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Sphere::Intersect(IntersectionList& list, const Ray& world_ray) const {
+    Ray ray = world_ray.Transform(inverse_transform_);
+
     Vector sphere_to_ray = ray.Origin() - origin_,
            direction = ray.Direction();
     double a = Vector::DotProduct(direction, direction),

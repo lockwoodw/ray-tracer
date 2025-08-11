@@ -2,7 +2,9 @@
 
 #include <cmath>
 
-bool Plane::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Plane::Intersect(IntersectionList& list, const Ray& world_ray) const {
+    Ray ray = world_ray.Transform(inverse_transform_);
+
     if (std::fabs(ray.Direction().Y()) >= kEpsilon) {
         // For explanation of this calculation for t,
         // see https://www.scratchapixel.com/lessons/3d-basic-rendering/…

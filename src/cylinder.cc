@@ -50,7 +50,9 @@ bool Cylinder::operator==(const Shape& s) const {
         && floating_point_compare(maximum_, other->maximum_);
 }
 
-bool Cylinder::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Cylinder::Intersect(IntersectionList& list, const Ray& world_ray) const {
+    Ray ray = world_ray.Transform(inverse_transform_);
+
     Vector rd = ray.Direction();
     double rdx = rd.X(),
            rdz = rd.Z();

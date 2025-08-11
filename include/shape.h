@@ -19,6 +19,7 @@ class Shape {
     protected:
         Point origin_;
         Matrix transform_;
+        Matrix inverse_transform_;
         Material material_;
         ShapeGroup* parent_;
 
@@ -28,12 +29,14 @@ class Shape {
         Shape(const Point& p):
             origin_ { p },
             transform_ { Matrix::Identity(4) },
+            inverse_transform_ { Matrix::Identity(4) },
             material_ { Material() },
             parent_ { nullptr } {}
 
         Shape(const Shape& s):
             origin_ { s.origin_ },
             transform_ { s.transform_ },
+            inverse_transform_ { s.inverse_transform_ },
             material_ { s.material_ },
             parent_ { s.parent_ } {}
 
@@ -58,6 +61,7 @@ class Shape {
 
         void SetTransform(const Matrix& m) {
             transform_ *= m;
+            inverse_transform_ = transform_.Inverse();
         }
 
         const Matrix& Transform() const {

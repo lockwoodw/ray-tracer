@@ -2,7 +2,9 @@
 
 #include <cmath>
 
-bool Sheet::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Sheet::Intersect(IntersectionList& list, const Ray& world_ray) const {
+    Ray ray = world_ray.Transform(inverse_transform_);
+
     // Same calculation as for Planes, but we also confirm the intersection
     // point lies within the bounds of the Sheet
     if (std::abs(ray.Direction().Y()) >= kEpsilon) {

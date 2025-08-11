@@ -8,7 +8,9 @@ bool Disc::operator==(const Shape& s) const {
     return origin_ == other->origin_ && floating_point_compare(radius_, other->radius_);
 }
 
-bool Disc::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Disc::Intersect(IntersectionList& list, const Ray& world_ray) const {
+    Ray ray = world_ray.Transform(inverse_transform_);
+
     // Check if ray intersects the plane that the disc lies on
     if (std::fabs(ray.Direction().Y()) >= kEpsilon) {
         // If the ray intersects the plane, check if the point of intersection

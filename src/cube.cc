@@ -33,7 +33,9 @@ std::array<double, 2> Cube::IntersectionsByAxis(const Ray& ray, const SpatialTup
     return t;
 }
 
-bool Cube::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Cube::Intersect(IntersectionList& list, const Ray& world_ray) const {
+    Ray ray = world_ray.Transform(inverse_transform_);
+
     std::array<double, 2> xt = IntersectionsByAxis(ray, SpatialTuple::Coordinates::kX),
                           yt = IntersectionsByAxis(ray, SpatialTuple::Coordinates::kY);
 

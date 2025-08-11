@@ -11,6 +11,7 @@ class Camera {
     int vertical_;
     double field_of_view_;
     Matrix transform_;
+    Matrix inverse_transform_;
     double half_width_;
     double half_height_;
     double pixel_size_;
@@ -40,6 +41,7 @@ class Camera {
 
         void SetTransform(const Matrix& transform) {
             transform_ *= transform;
+            inverse_transform_ = transform_.Inverse();
         }
 
         const Ray RayAt(int pixel_x, int pixel_y) const;
