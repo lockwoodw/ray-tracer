@@ -53,7 +53,7 @@ TEST(SphereTest, IntersectingAUnitSphereAtTwoPoints) {
     Ray r { ray_origin, direction };
     Sphere s { };
     IntersectionList xs {};
-    s.AddIntersections(xs, r);
+    s.Intersect(xs, r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_DOUBLE_EQ(xs[0]->Distance(), 4.0);
     ASSERT_DOUBLE_EQ(xs[1]->Distance(), 6.0);
@@ -67,7 +67,7 @@ TEST(SphereTest, IntersectingANonUnitSphereAtTwoPoints) {
     double radius { 2.5 };
     Sphere s { sphere_origin, radius };
     IntersectionList xs {};
-    s.AddIntersections(xs, r);
+    s.Intersect(xs, r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_DOUBLE_EQ(xs[0]->Distance(), 2.5);
     ASSERT_DOUBLE_EQ(xs[1]->Distance(), 7.5);
@@ -89,7 +89,7 @@ TEST(SphereTest, IntersectingASphereAtATangent) {
     Ray r { ray_origin, direction };
     Sphere s { };
     IntersectionList xs {};
-    s.AddIntersections(xs, r);
+    s.Intersect(xs, r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_DOUBLE_EQ(xs[0]->Distance(), 5.0);
     ASSERT_DOUBLE_EQ(xs[1]->Distance(), 5.0);
@@ -109,7 +109,7 @@ TEST(SphereTest, NotIntersectingASphere) {
     Ray r { ray_origin, direction };
     Sphere s { };
     IntersectionList xs {};
-    s.AddIntersections(xs, r);
+    s.Intersect(xs, r);
     ASSERT_EQ(xs.Size(), 0);
 }
 
@@ -129,7 +129,7 @@ TEST(SphereTest, IntersectingASphereFromInside) {
     Ray r { origin, direction };
     Sphere s { };
     IntersectionList xs {};
-    s.AddIntersections(xs, r);
+    s.Intersect(xs, r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_DOUBLE_EQ(xs[0]->Distance(), -1.0);
     ASSERT_DOUBLE_EQ(xs[1]->Distance(), 1.0);
@@ -151,7 +151,7 @@ TEST(SphereTest, IntersectingASphereBehindARay) {
     Ray r { ray_origin, direction };
     Sphere s { };
     IntersectionList xs {};
-    s.AddIntersections(xs, r);
+    s.Intersect(xs, r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_DOUBLE_EQ(xs[0]->Distance(), -6.0);
     ASSERT_DOUBLE_EQ(xs[1]->Distance(), -4.0);
@@ -173,7 +173,7 @@ TEST(SphereTest, IncludingTheObjectInTheIntersection) {
     Ray r { ray_origin, direction };
     Sphere s { };
     IntersectionList xs {};
-    s.AddIntersections(xs, r);
+    s.Intersect(xs, r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_EQ(*xs[0]->Object(), s);
     ASSERT_EQ(*xs[1]->Object(), s);
@@ -224,7 +224,7 @@ TEST(SphereTest, IntersectingASphereWithAScaledRay) {
     Matrix t = Transformation().Scale(2, 2, 2);
     s.SetTransform(t);
     IntersectionList xs {};
-    s.AddIntersections(xs, r);
+    s.Intersect(xs, r);
     ASSERT_EQ(xs.Size(), 2);
     ASSERT_EQ(xs[0]->Distance(), 3);
     ASSERT_EQ(xs[1]->Distance(), 7);
@@ -247,7 +247,7 @@ TEST(SphereTest, IntersectingATranslatedSphereWithARay) {
     Matrix t = Transformation().Translate(5, 0, 0);
     s.SetTransform(t);
     IntersectionList xs {};
-    s.AddIntersections(xs, r);
+    s.Intersect(xs, r);
     ASSERT_EQ(xs.Size(), 0);
 }
 

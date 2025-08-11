@@ -50,7 +50,7 @@ TEST(CubeTest, ConfirmingARayIntersectsACube) {
                t2 = std::get<3>(test_case);
         Ray r { point, direction };
         IntersectionList xs {};
-        c.AddIntersections(xs, r);
+        c.Intersect(xs, r);
         ASSERT_EQ(xs.Size(), 2);
         ASSERT_DOUBLE_EQ(xs[0]->Distance(), t1);
         ASSERT_DOUBLE_EQ(xs[1]->Distance(), t2);
@@ -91,7 +91,7 @@ TEST(CubeTest, ConfirmingARayMissesACube) {
         Vector direction = std::get<1>(test_case);
         Ray r { point, direction };
         IntersectionList xs {};
-        c.AddIntersections(xs, r);
+        c.Intersect(xs, r);
         ASSERT_EQ(xs.Size(), 0);
     }
 }

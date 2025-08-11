@@ -3,11 +3,6 @@
 
 const double Shape::kEpsilon = 1e-5;
 
-const bool Shape::AddIntersections(IntersectionList& list, const Ray& ray) const {
-    Ray local_ray = ray.Transform(transform_.Inverse());
-    return Intersect(list, local_ray);
-}
-
 Vector Shape::NormalAt(const Point &world_point) const {
     // convert world_point into point in object space
     Point object_point = ConvertWorldPointToObjectSpace(world_point);

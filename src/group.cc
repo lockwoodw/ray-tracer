@@ -33,7 +33,7 @@ bool ShapeGroup::Intersect(IntersectionList& list, const Ray& ray) const {
     Ray local_ray = ray.Transform(inverse_transform_);
     if (BoundsOf().Intersects(local_ray)) {
         for (auto s: shapes_) {
-            if (s->AddIntersections(list, local_ray)) {
+            if (s->Intersect(list, local_ray)) {
                 intersected = true;
             }
         }

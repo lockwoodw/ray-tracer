@@ -45,7 +45,7 @@ IntersectionList World::Intersect(const Ray& ray) const {
     std::set<const Shape *>::iterator it = objects_.begin(),
                                       end = objects_.end();
     while (it != end) {
-        (*it)->AddIntersections(xs, ray);
+        (*it)->Intersect(xs, ray);
         it++;
     }
     return xs;

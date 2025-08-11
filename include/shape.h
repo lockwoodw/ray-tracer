@@ -44,7 +44,6 @@ class Shape {
         virtual ~Shape() {} // required for abstract base class
 
         virtual bool Intersect(IntersectionList& list, const Ray& ray) const = 0;
-        const bool AddIntersections(IntersectionList& list, const Ray& ray) const;
 
         virtual Vector LocalNormalAt(const Point &object_point) const = 0;
         Vector NormalAt(const Point &world_point) const;
