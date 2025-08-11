@@ -19,7 +19,7 @@ class ShapeGroup: public Shape {
         bool Contains(Shape* s) const;
 
         bool operator==(const Shape& s) const;
-        void Intersect(IntersectionList& list, const Ray& ray) const override;
+        bool Intersect(IntersectionList& list, const Ray& ray) const override;
         Vector LocalNormalAt(const Point &object_point) const override;
         const BoundingBox BoundsOf() const override;
 };

@@ -28,11 +28,17 @@ bool ShapeGroup::operator==(const Shape& s) const {
     return origin_ == other->origin_ && shapes_ == other->shapes_;
 }
 
-void ShapeGroup::Intersect(IntersectionList& list, const Ray& ray) const {
+bool ShapeGroup::Intersect(IntersectionList& list, const Ray& ray) const {
+    bool intersected { false };
     Ray local_ray = ray.Transform(transform_.Inverse());
-    for (auto& s: shapes_) {
-        s->AddIntersections(list, local_ray);
+    if (BoundsOf().Intersects(local_ray)) {
+        for (auto s: shapes_) {
+            if (s->AddIntersections(list, local_ray)) {
+                intersected = true;
+            }
+        }
     }
+    return intersected;
 }
 
 Vector ShapeGroup::LocalNormalAt(const Point &object_point) const {

@@ -3,10 +3,9 @@
 
 const double Shape::kEpsilon = 1e-5;
 
-const Ray Shape::AddIntersections(IntersectionList& list, const Ray& ray) const {
+const bool Shape::AddIntersections(IntersectionList& list, const Ray& ray) const {
     Ray local_ray = ray.Transform(transform_.Inverse());
-    Intersect(list, local_ray);
-    return local_ray; // return value used for testing only
+    return Intersect(list, local_ray);
 }
 
 Vector Shape::NormalAt(const Point &world_point) const {
@@ -54,6 +53,13 @@ bool TestShape::operator==(const Shape& s) const {
         return false;
     }
     return origin_ == other->origin_ && id_ == other->id_;
+}
+
+const Ray TestShape::TestAddIntersections(IntersectionList& list, const Ray& ray) const {
+    // Same logic as Shape::AddIntersections() but returns the intersected ray
+    Ray local_ray = ray.Transform(transform_.Inverse());
+    Intersect(list, local_ray);
+    return local_ray;
 }
 
 const BoundingBox TestShape::BoundsOf() const {

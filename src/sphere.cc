@@ -2,7 +2,7 @@
 #include "sphere.h"
 #include "utils.h"
 
-void Sphere::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Sphere::Intersect(IntersectionList& list, const Ray& ray) const {
     Vector sphere_to_ray = ray.Origin() - origin_,
            direction = ray.Direction();
     double a = Vector::DotProduct(direction, direction),
@@ -11,7 +11,7 @@ void Sphere::Intersect(IntersectionList& list, const Ray& ray) const {
            discriminant = b * b - 4 * a * c;
 
     if (discriminant < 0) {
-        return;
+        return false;
     }
 
     // Use alternate approach from www.scratchapixel.com to avoid "catastrophic cancellation"
@@ -29,6 +29,7 @@ void Sphere::Intersect(IntersectionList& list, const Ray& ray) const {
 
     list.Add(t1, this);
     list.Add(t2, this);
+    return true;
 }
 
 bool Sphere::operator==(const Shape& s) const {

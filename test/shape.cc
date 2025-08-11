@@ -84,7 +84,7 @@ TEST(ShapeTest, IntersectingAScaledShapeWithARay) {
     TestShape s {};
     s.SetTransform(Transformation().Scale(2, 2, 2));
     IntersectionList xs {};
-    Ray saved = s.AddIntersections(xs, r);
+    Ray saved = s.TestAddIntersections(xs, r);
     Point expected_origin { 0, 0, -2.5 };
     Vector expected_direction { 0, 0, 0.5 };
     ASSERT_EQ(saved.Origin(), expected_origin);
@@ -106,7 +106,7 @@ TEST(ShapeTest, IntersectingATranslatedShapeWithARay) {
     TestShape s {};
     s.SetTransform(Transformation().Translate(5, 0, 0));
     IntersectionList xs {};
-    Ray saved = s.AddIntersections(xs, r);
+    Ray saved = s.TestAddIntersections(xs, r);
     Point expected_origin { -5, 0, -5 };
     Vector expected_direction { 0, 0, 1 };
     ASSERT_EQ(saved.Origin(), expected_origin);

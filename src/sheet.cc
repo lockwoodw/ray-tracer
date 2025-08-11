@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-void Sheet::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Sheet::Intersect(IntersectionList& list, const Ray& ray) const {
     // Same calculation as for Planes, but we also confirm the intersection
     // point lies within the bounds of the Sheet
     if (std::abs(ray.Direction().Y()) >= kEpsilon) {
@@ -16,8 +16,10 @@ void Sheet::Intersect(IntersectionList& list, const Ray& ray) const {
                depth = depth_ / 2;
         if (x >= -width && x <= width && z >= -depth && z <= depth) {
             list.Add(distance, this);
+            return true;
         }
     }
+    return false;
 }
 
 bool Sheet::operator==(const Shape& s) const {

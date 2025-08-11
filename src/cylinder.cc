@@ -10,7 +10,7 @@ bool Cylinder::RayIntersectsEnd(const Ray&r, double t) const {
     return (x*x + z*z) <= 1.0;
 }
 
-void Cylinder::AddEndIntersects(IntersectionList& list, const Ray& ray) const {
+bool Cylinder::AddEndIntersects(IntersectionList& list, const Ray& ray) const {
     Vector rd = ray.Direction();
     Point ro = ray.Origin();
 
@@ -19,22 +19,26 @@ void Cylinder::AddEndIntersects(IntersectionList& list, const Ray& ray) const {
     // Confirm the cylinder is closed and that the ray could intersect with
     // the cap(s)--i.e., it is not coplanar with the XZ plane (the caps are)
     if (!closed_ || std::fabs(rdy) <= kEpsilon) {
-        return;
+        return false;
     }
 
     // Check for intersection with lower end cap by intersecting the ray
     // with the plane where y=minimum_;
     double roy = ro.Y(),
            t = (minimum_ - roy) / rdy;
+    bool intersected = false;
     if (RayIntersectsEnd(ray, t)) {
         list.Add(t, this);
+        intersected = true;
     }
 
     // Check for intersection with upper end cap
     t = (maximum_ - roy) / rdy;
     if (RayIntersectsEnd(ray, t)) {
         list.Add(t, this);
+        intersected = true;
     }
+    return intersected;
 }
 
 bool Cylinder::operator==(const Shape& s) const {
@@ -46,7 +50,7 @@ bool Cylinder::operator==(const Shape& s) const {
         && floating_point_compare(maximum_, other->maximum_);
 }
 
-void Cylinder::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Cylinder::Intersect(IntersectionList& list, const Ray& ray) const {
     Vector rd = ray.Direction();
     double rdx = rd.X(),
            rdz = rd.Z();
@@ -55,8 +59,7 @@ void Cylinder::Intersect(IntersectionList& list, const Ray& ray) const {
 
     // Ray is parallel to y axis and misses cylinder
     if (std::fabs(a) < kEpsilon) {
-        AddEndIntersects(list, ray); // but might hit end caps
-        return;
+        return AddEndIntersects(list, ray); // but might hit end caps
     }
 
     Point ro = ray.Origin();
@@ -68,7 +71,7 @@ void Cylinder::Intersect(IntersectionList& list, const Ray& ray) const {
 
     // Ray does not intersect cylinder
     if (discriminant < 0) {
-        return;
+        return false;
     }
 
     double disc_sqrt = std::sqrt(discriminant),
@@ -90,15 +93,19 @@ void Cylinder::Intersect(IntersectionList& list, const Ray& ray) const {
            y1 = roy + t1 * rdy;
 
     // And compare against the min/max for the cylinder
+    bool intersected = false;
     if (minimum_ < y0 && y0 < maximum_) {
         list.Add(t0, this);
+        intersected = true;
     }
 
     if (minimum_ < y1 && y1 < maximum_) {
         list.Add(t1, this);
+        intersected = true;
     }
 
-    AddEndIntersects(list, ray);
+    bool intersected_ends = AddEndIntersects(list, ray);
+    return intersected || intersected_ends;
 }
 
 Vector Cylinder::LocalNormalAt(const Point &object_point) const {

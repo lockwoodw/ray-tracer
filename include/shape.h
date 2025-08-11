@@ -39,8 +39,8 @@ class Shape {
 
         virtual ~Shape() {} // required for abstract base class
 
-        virtual void Intersect(IntersectionList& list, const Ray& ray) const = 0;
-        const Ray AddIntersections(IntersectionList& list, const Ray& ray) const;
+        virtual bool Intersect(IntersectionList& list, const Ray& ray) const = 0;
+        const bool AddIntersections(IntersectionList& list, const Ray& ray) const;
 
         virtual Vector LocalNormalAt(const Point &object_point) const = 0;
         Vector NormalAt(const Point &world_point) const;
@@ -90,11 +90,16 @@ class TestShape: public Shape {
         TestShape(const TestShape& ts): Shape { ts.origin_ }, id_ { ts.id_ } {}
 
         bool operator==(const Shape& s) const override;
-        void Intersect(IntersectionList& list, const Ray& ray) const override { /* do nothing */}
+        bool Intersect(IntersectionList& list, const Ray& ray) const override {
+            // "the test shape will store a reference to the ray that it was intersected with"
+            // (http://raytracerchallenge.com/bonus/bounding-boxes.html)
+            return true;
+        }
         Vector LocalNormalAt(const Point &object_point) const {
             return Vector { object_point.X(), object_point.Y(), object_point.Z() };
         }
         const BoundingBox BoundsOf() const override;
+        const Ray TestAddIntersections(IntersectionList& list, const Ray& ray) const;
 };
 
 class Intersection {

@@ -15,7 +15,7 @@ class Cylinder: public Shape {
     bool closed_;
 
     bool RayIntersectsEnd(const Ray&r, double t) const;
-    void AddEndIntersects(IntersectionList& list, const Ray& ray) const;
+    bool AddEndIntersects(IntersectionList& list, const Ray& ray) const;
 
     public:
         Cylinder(): Shape { Point { 0, 0, 0 } },
@@ -30,7 +30,7 @@ class Cylinder: public Shape {
             minimum_ { min }, maximum_ { max }, closed_ { closed } {}
 
         bool operator==(const Shape& s) const;
-        void Intersect(IntersectionList& list, const Ray& ray) const override;
+        bool Intersect(IntersectionList& list, const Ray& ray) const override;
         Vector LocalNormalAt(const Point &object_point) const override;
         const BoundingBox BoundsOf() const override;
 

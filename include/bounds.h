@@ -28,6 +28,7 @@ class BoundingBox {
         bool Contains(const Point& p);
         bool Contains(const BoundingBox& b);
         const BoundingBox Transform(const Matrix& m) const;
+        const bool Intersects(const Ray& r) const;
 };
 
 #endif

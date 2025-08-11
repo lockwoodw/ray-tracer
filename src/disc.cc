@@ -8,7 +8,7 @@ bool Disc::operator==(const Shape& s) const {
     return origin_ == other->origin_ && floating_point_compare(radius_, other->radius_);
 }
 
-void Disc::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Disc::Intersect(IntersectionList& list, const Ray& ray) const {
     // Check if ray intersects the plane that the disc lies on
     if (std::fabs(ray.Direction().Y()) >= kEpsilon) {
         // If the ray intersects the plane, check if the point of intersection
@@ -31,8 +31,10 @@ void Disc::Intersect(IntersectionList& list, const Ray& ray) const {
         // Compare squared distances
         if (squared <= radius_*radius_) {
             list.Add(distance, this);
+            return true;
         }
     }
+    return false;
 }
 
 const BoundingBox Disc::BoundsOf() const {

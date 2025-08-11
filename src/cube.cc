@@ -33,14 +33,14 @@ std::array<double, 2> Cube::IntersectionsByAxis(const Ray& ray, const SpatialTup
     return t;
 }
 
-void Cube::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Cube::Intersect(IntersectionList& list, const Ray& ray) const {
     std::array<double, 2> xt = IntersectionsByAxis(ray, SpatialTuple::Coordinates::kX),
                           yt = IntersectionsByAxis(ray, SpatialTuple::Coordinates::kY);
 
     if (xt[0] > yt[1] || yt[0] > xt[1]) {
         // These cases are misses: the ray intersects the planes defined by the
         // X and Y axes but does not intersect the box
-        return;
+        return false;
     }
 
     double tmin = std::max(xt[0], yt[0]), // the max of the minimums
@@ -50,7 +50,7 @@ void Cube::Intersect(IntersectionList& list, const Ray& ray) const {
 
     if (zt[0] > tmax || zt[1] < tmin) {
         // Also misses
-        return;
+        return false;
     }
 
     tmin = std::max(tmin, zt[0]);
@@ -61,7 +61,9 @@ void Cube::Intersect(IntersectionList& list, const Ray& ray) const {
     if (tmax > tmin) {
         list.Add(tmin, this);
         list.Add(tmax, this);
+        return true;
     }
+    return false;
 }
 
 bool Cube::operator==(const Shape& s) const {

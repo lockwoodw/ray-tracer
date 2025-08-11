@@ -17,7 +17,7 @@ class Cube: public Shape {
         Cube(const Cube& p): Shape { p.origin_ } {}
 
         bool operator==(const Shape& s) const;
-        void Intersect(IntersectionList& list, const Ray& ray) const override;
+        bool Intersect(IntersectionList& list, const Ray& ray) const override;
         Vector LocalNormalAt(const Point &object_point) const override;
         const BoundingBox BoundsOf() const override;
 };

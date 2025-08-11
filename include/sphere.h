@@ -14,7 +14,7 @@ class Sphere: public Shape {
         const double Radius() { return radius_; }
 
         bool operator==(const Shape& s) const override;
-        void Intersect(IntersectionList& list, const Ray& ray) const override;
+        bool Intersect(IntersectionList& list, const Ray& ray) const override;
         Vector LocalNormalAt(const Point &object_point) const override;
         const BoundingBox BoundsOf() const override;
 };
