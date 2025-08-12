@@ -287,3 +287,19 @@ TEST(ShapeTest, ConfirmingAShapesBoundingBoxInParentSpace) {
     ASSERT_EQ(box.Max(), Point(1.5, -1, 9));
 }
 
+/*
+Scenario: Subdividing a primitive does nothing
+  Given shape ← sphere()
+  When divide(shape, 1)
+  Then shape is a sphere
+*/
+
+TEST(ShapeTest, SubdividingAPrimitiveDoesNothing) {
+    // No good way to test this, so we just call Divide() on a sphere and
+    // compare it to an identical (undivided) sphere.
+    Sphere s1 {},
+           s2 {};
+    s1.Divide(1);
+    ASSERT_EQ(s1, s2);
+}
+

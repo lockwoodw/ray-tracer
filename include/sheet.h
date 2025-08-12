@@ -24,6 +24,7 @@ class Sheet: public Shape {
             return Vector { 0, 1, 0 };
         }
         const BoundingBox BoundsOf() const override;
+        void Divide(int) override { /* do nothing: shape primitives are not divisible */ }
 };
 
 #endif

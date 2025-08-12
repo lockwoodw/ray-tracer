@@ -95,3 +95,21 @@ const BoundingBox ShapeGroup::BoundsOf() const {
     }
     return box;
 }
+
+void ShapeGroup::Divide(int threshold) {
+    // The threshold indicates the minimum number of children a group can have
+    // before it will be divided; a group with fewer children than the threshold
+    // will not be split, but the children themselves may be
+    if (threshold <= Size()) {
+        auto partitions = Partition();
+        if (partitions[0].size() > 0) {
+            AddSubgroup(partitions[0]);
+        }
+        if (partitions[1].size() > 0) {
+            AddSubgroup(partitions[1]);
+        }
+    }
+    for (auto s: shapes_) {
+        s->Divide(threshold);
+    }
+}

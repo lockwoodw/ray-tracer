@@ -251,3 +251,82 @@ TEST(GroupTest, CreatingASubgroupFromAListOfChildren) {
     ASSERT_TRUE(subgroup->Contains(&s1));
     ASSERT_TRUE(subgroup->Contains(&s2));
 }
+
+/*
+Scenario: Subdividing a group partitions its children
+  Given s1 ← sphere() with:
+      | transform | translation(-2, -2, 0) |
+    And s2 ← sphere() with:
+      | transform | translation(-2, 2, 0) |
+    And s3 ← sphere() with:
+      | transform | scaling(4, 4, 4) |
+    And g ← group() of [s1, s2, s3]
+  When divide(g, 1)
+  Then g[0] = s3
+    And subgroup ← g[1]
+    And subgroup is a group
+    And subgroup.count = 2
+    And subgroup[0] is a group of [s1]
+    And subgroup[1] is a group of [s2]
+*/
+
+TEST(GroupTest, ConfirmingSubdividingAGroupPartitionsItsChildren) {
+    Sphere s1 {};
+    s1.SetTransform(Transformation().Translate(-2, -2, 0));
+    Sphere s2;
+    s2.SetTransform(Transformation().Translate(-2, 2, 0));
+    Sphere s3;
+    s3.SetTransform(Transformation().Scale(4));
+    ShapeGroup g {};
+    g << &s1 << &s2 << &s3;
+    g.Divide(1);
+    ASSERT_EQ(g[0], &s3);
+    ShapeGroup* subgroup_0 = static_cast<ShapeGroup*>(g[1]);
+    ASSERT_EQ(subgroup_0->Size(), 2);
+    ShapeGroup* subgroup_1 = static_cast<ShapeGroup*>((*subgroup_0)[0]);
+    ASSERT_TRUE(subgroup_1->Contains(&s1));
+    ShapeGroup* subgroup_2 = static_cast<ShapeGroup*>((*subgroup_0)[1]);
+    ASSERT_TRUE(subgroup_2->Contains(&s2));
+}
+
+/*
+Scenario: Subdividing a group with too few children
+  Given s1 ← sphere() with:
+      | transform | translation(-2, 0, 0) |
+    And s2 ← sphere() with:
+      | transform | translation(2, 1, 0) |
+    And s3 ← sphere() with:
+      | transform | translation(2, -1, 0) |
+    And subgroup ← group() of [s1, s2, s3]
+    And s4 ← sphere()
+    And g ← group() of [subgroup, s4]
+  When divide(g, 3)
+  Then g[0] = subgroup
+    And g[1] = s4
+    And subgroup.count = 2
+    And subgroup[0] is a group of [s1]
+    And subgroup[1] is a group of [s2, s3]
+*/
+
+TEST(GroupTest, SubdividingAGroupWithTooFewChildren) {
+    Sphere s1 {};
+    s1.SetTransform(Transformation().Translate(-2, 0, 0));
+    Sphere s2;
+    s2.SetTransform(Transformation().Translate(2, 1, 0));
+    Sphere s3;
+    s3.SetTransform(Transformation().Translate(2, -1, 0));
+    ShapeGroup subgroup {};
+    subgroup << &s1 << &s2 << &s3;
+    Sphere s4 {};
+    ShapeGroup g {};
+    g << &subgroup << &s4;
+    g.Divide(3);
+    ASSERT_EQ(g[0], &subgroup);
+    ASSERT_EQ(g[1], &s4);
+    ASSERT_EQ(subgroup.Size(), 2);
+    ShapeGroup* subgroup_0 = static_cast<ShapeGroup*>(subgroup[0]);
+    ASSERT_TRUE(subgroup_0->Contains(&s1));
+    ShapeGroup* subgroup_1 = static_cast<ShapeGroup*>(subgroup[1]);
+    ASSERT_TRUE(subgroup_1->Contains(&s2));
+    ASSERT_TRUE(subgroup_1->Contains(&s3));
+}

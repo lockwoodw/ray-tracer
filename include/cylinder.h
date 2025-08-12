@@ -33,6 +33,7 @@ class Cylinder: public Shape {
         bool Intersect(IntersectionList& list, const Ray& ray) const override;
         Vector LocalNormalAt(const Point &object_point) const override;
         const BoundingBox BoundsOf() const override;
+        void Divide(int) override { /* do nothing: shape primitives are not divisible */ }
 
         void Minimum(double m) { minimum_ = m; }
         void Maximum(double m) { maximum_ = m; }

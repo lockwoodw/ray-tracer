@@ -52,6 +52,7 @@ class Shape {
 
         virtual const BoundingBox BoundsOf() const = 0;
         const BoundingBox BoundsOfInParentSpace() const;
+        virtual void Divide(int threshold) = 0;
 
         const Point Origin() const { return origin_; }
 
@@ -104,6 +105,8 @@ class TestShape: public Shape {
             return Vector { object_point.X(), object_point.Y(), object_point.Z() };
         }
         const BoundingBox BoundsOf() const override;
+        void Divide(int threshold) { /* do nothing: shape primitives are not divisible */ }
+
         const Ray TestAddIntersections(IntersectionList& list, const Ray& ray) const;
 };
 

@@ -32,6 +32,7 @@ class ShapeGroup: public Shape {
         bool Intersect(IntersectionList& list, const Ray& ray) const override;
         Vector LocalNormalAt(const Point &object_point) const override;
         const BoundingBox BoundsOf() const override;
+        void Divide(int) override;
 };
 
 #endif

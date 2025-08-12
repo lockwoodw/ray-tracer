@@ -20,6 +20,7 @@ class Cube: public Shape {
         bool Intersect(IntersectionList& list, const Ray& ray) const override;
         Vector LocalNormalAt(const Point &object_point) const override;
         const BoundingBox BoundsOf() const override;
+        void Divide(int) override { /* do nothing: shape primitives are not divisible */ }
 };
 
 #endif
