@@ -8,9 +8,9 @@ class Disc: public Shape {
     double radius_;
 
     public:
-        Disc(): Shape { Point { 0, 0, 0 } }, radius_ { 1.0 } {}
-        Disc(const Point& p, double r): Shape { p }, radius_ { r } {}
-        Disc(const Disc& s): Shape { s.origin_ }, radius_ { s.radius_ } {}
+        Disc(): Shape { Point { 0, 0, 0 } }, radius_ { 1.0 } { bbox_ = BoundsOf(); }
+        Disc(const Point& p, double r): Shape { p }, radius_ { r } { bbox_ = BoundsOf(); }
+        Disc(const Disc& s): Shape { s.origin_ }, radius_ { s.radius_ } { bbox_ = BoundsOf(); }
 
         const double Radius() { return radius_; }
 

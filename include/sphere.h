@@ -7,9 +7,9 @@ class Sphere: public Shape {
     double radius_;
 
     public:
-        Sphere(): Shape { Point { 0, 0, 0 } }, radius_ { 1.0 } {}
-        Sphere(const Point& p, double r): Shape { p }, radius_ { r } {}
-        Sphere(const Sphere& s): Shape { s.origin_ }, radius_ { s.radius_ } {}
+        Sphere(): Shape { Point { 0, 0, 0 } }, radius_ { 1.0 } { bbox_ = BoundsOf(); }
+        Sphere(const Point& p, double r): Shape { p }, radius_ { r } { bbox_ = BoundsOf(); }
+        Sphere(const Sphere& s): Shape { s.origin_ }, radius_ { s.radius_ } { bbox_ = BoundsOf(); }
 
         const double Radius() { return radius_; }
 

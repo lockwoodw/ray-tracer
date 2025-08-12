@@ -40,12 +40,6 @@ const Vector Shape::ConvertObjectNormalToWorldSpace(const Vector& object_normal)
     return world_normal;
 }
 
-const BoundingBox Shape::BoundsOfInParentSpace() const {
-    // return a shape's bounds in the space of its parent: transform
-    // the shape's bounding box by its transformation matrix
-    return BoundsOf().Transform(transform_);
-}
-
 int TestShape::count_ = 0;
 
 bool TestShape::operator==(const Shape& s) const {

@@ -7,8 +7,8 @@
 
 class Plane: public Shape {
     public:
-        Plane(): Shape { Point { 0, 0, 0 } } {}
-        Plane(const Plane& p): Shape { p.origin_ } {}
+        Plane(): Shape { Point { 0, 0, 0 } } { bbox_ = BoundsOf(); }
+        Plane(const Plane& p): Shape { p.origin_ } { bbox_ = BoundsOf(); }
 
         bool operator==(const Shape& s) const;
         bool Intersect(IntersectionList& list, const Ray& ray) const override;

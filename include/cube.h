@@ -13,8 +13,8 @@ class Cube: public Shape {
         const SpatialTuple::Coordinates axis);
 
     public:
-        Cube(): Shape { Point { 0, 0, 0 } } {}
-        Cube(const Cube& p): Shape { p.origin_ } {}
+        Cube(): Shape { Point { 0, 0, 0 } } { bbox_ = BoundsOf(); }
+        Cube(const Cube& p): Shape { p.origin_ } { bbox_ = BoundsOf(); }
 
         bool operator==(const Shape& s) const;
         bool Intersect(IntersectionList& list, const Ray& ray) const override;

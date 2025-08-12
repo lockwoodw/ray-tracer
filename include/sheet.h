@@ -13,9 +13,9 @@ class Sheet: public Shape {
     double depth_; // the extent of the sheet in z
 
     public:
-        Sheet(): Shape { Point { 0, 0, 0 } }, width_ { 1.0 }, depth_ { 1.0 } {}
+        Sheet(): Shape { Point { 0, 0, 0 } }, width_ { 1.0 }, depth_ { 1.0 } { bbox_ = BoundsOf(); }
         Sheet(const Sheet& s): Shape { s.origin_ }, width_ { s.width_ },
-            depth_ { s.depth_ } {}
+            depth_ { s.depth_ } { bbox_ = BoundsOf(); }
 
         bool operator==(const Shape& s) const;
         bool Intersect(IntersectionList& list, const Ray& ray) const override;

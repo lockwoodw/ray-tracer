@@ -23,6 +23,7 @@ class Shape {
         Matrix inverse_transform_;
         Material material_;
         ShapeGroup* parent_;
+        BoundingBox bbox_; // save bounding box of shape in parent space
 
     public:
         static const double kEpsilon;
@@ -32,14 +33,16 @@ class Shape {
             transform_ { Matrix::Identity(4) },
             inverse_transform_ { Matrix::Identity(4) },
             material_ { Material() },
-            parent_ { nullptr } {}
+            parent_ { nullptr },
+            bbox_ {} {}
 
         Shape(const Shape& s):
             origin_ { s.origin_ },
             transform_ { s.transform_ },
             inverse_transform_ { s.inverse_transform_ },
             material_ { s.material_ },
-            parent_ { s.parent_ } {}
+            parent_ { s.parent_ },
+            bbox_ { s.bbox_ } {}
 
         virtual ~Shape() {} // required for abstract base class
 
@@ -51,7 +54,10 @@ class Shape {
         virtual bool operator==(const Shape&) const = 0;
 
         virtual const BoundingBox BoundsOf() const = 0;
-        const BoundingBox BoundsOfInParentSpace() const;
+        const BoundingBox BoundsOfInParentSpace() const {
+            return bbox_;
+        }
+
         virtual void Divide(int threshold) = 0;
 
         const Point Origin() const { return origin_; }
@@ -63,6 +69,9 @@ class Shape {
         void SetTransform(const Matrix& m) {
             transform_ *= m;
             inverse_transform_ = transform_.Inverse();
+            // transform the shape's bounding box by its transformation matrix
+            // to get the box in parent space
+            bbox_ = BoundsOf().Transform(transform_);
         }
 
         const Matrix& Transform() const {
@@ -92,7 +101,7 @@ class TestShape: public Shape {
     int id_;
 
     public:
-        TestShape(): Shape { Point { 0, 0, 0 } }, id_ { count_++ } {}
+        TestShape(): Shape { Point { 0, 0, 0 } }, id_ { count_++ } { bbox_ = BoundsOf(); }
         TestShape(const TestShape& ts): Shape { ts.origin_ }, id_ { ts.id_ } {}
 
         bool operator==(const Shape& s) const override;

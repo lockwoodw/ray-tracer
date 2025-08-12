@@ -21,13 +21,13 @@ class Cylinder: public Shape {
         Cylinder(): Shape { Point { 0, 0, 0 } },
             minimum_ { -std::numeric_limits<double>::infinity() },
             maximum_ { std::numeric_limits<double>::infinity() },
-            closed_ { false } {}
+            closed_ { false } { bbox_ = BoundsOf(); }
         Cylinder(const Cylinder& c): Shape { c.origin_ }, minimum_ { c.minimum_ },
-            maximum_ { c.maximum_ }, closed_ { c.closed_ } {}
+            maximum_ { c.maximum_ }, closed_ { c.closed_ } { bbox_ = BoundsOf(); }
         Cylinder(double min, double max, bool closed): Shape { Point { 0, 0, 0} },
-            minimum_ { min }, maximum_ { max }, closed_ { closed } {}
+            minimum_ { min }, maximum_ { max }, closed_ { closed } { bbox_ = BoundsOf(); }
         Cylinder(Point origin, double min, double max, bool closed): Shape { origin },
-            minimum_ { min }, maximum_ { max }, closed_ { closed } {}
+            minimum_ { min }, maximum_ { max }, closed_ { closed } { bbox_ = BoundsOf(); }
 
         bool operator==(const Shape& s) const;
         bool Intersect(IntersectionList& list, const Ray& ray) const override;
