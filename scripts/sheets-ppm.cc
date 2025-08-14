@@ -1,8 +1,8 @@
 /*
 g++ -I include/ -o build/sheets-ppm src/utils.cc src/tuple.cc src/colour.cc \
-src/space.cc src/matrix.cc src/transformations.cc src/shape.cc src/pattern.cc \
-src/material.cc src/world.cc src/camera.cc src/canvas.cc src/plane.cc \
-src/sheet.cc scripts/sheets-ppm.cc
+src/space.cc src/matrix.cc src/transformations.cc src/bounds.cc src/shape.cc \
+src/pattern.cc src/material.cc src/world.cc src/camera.cc src/canvas.cc \
+src/plane.cc src/group.cc src/sheet.cc scripts/sheets-ppm.cc
 */
 
 #define _USE_MATH_DEFINES // for M_PI
@@ -21,6 +21,7 @@ src/sheet.cc scripts/sheets-ppm.cc
 #include "sphere.h"
 #include "pattern.h"
 #include "sheet.h"
+#include "group.h"
 
 static double kMaxScale { 20.0 };
 
@@ -74,15 +75,18 @@ int main(int argc, char** argv) {
            _90_degree_rad = M_PI / 2;
 
     World world {};
+    ShapeGroup shapes {};
+    world.Add(&shapes);
 
     Light light = WorldLight(scale);
     world.Add(&light);
 
-    Plane horizon {};
+    Sheet horizon {};
     horizon.SetTransform(
         Transformation()
+        .Scale(scale*60, 1, scale*50)
         .RotateX(_90_degree_rad)
-        .Translate(0, 0, 40*scale)
+        .Translate(scale*5, 0, 40*scale)
     );
     SpeckledPattern sp { Colour { 1.0, 174.0/255, 66.0/255 }};
     sp.SetDarkThreshold(0.8);
@@ -92,16 +96,17 @@ int main(int argc, char** argv) {
     horizon_material.SurfacePattern(&sp);
     // horizon_material.Reflectivity(1.0);
     horizon.SetMaterial(horizon_material);
-    world.Add(&horizon);
+    shapes.Add(&horizon);
 
-    Plane boundary {};
+    Sheet boundary {};
     boundary.SetTransform(
         Transformation()
+        .Scale(scale*50, 1, scale*50)
         .Translate(0, 5.5*scale, 0)
         .RotateZ(M_PI/12)
     );
     boundary.SetMaterial(GlassMaterial());
-    world.Add(&boundary);
+    shapes.Add(&boundary);
 
     std::vector<Sheet*> sheets {};
 
@@ -124,9 +129,10 @@ int main(int argc, char** argv) {
                 .Translate(i*(sheet_scale + scale), sheet_y, (z_offset*5 -i)*scale)
             );
             sheets.push_back(sheet);
-            world.Add(sheet);
+            shapes.Add(sheet);
         }
     }
+    shapes.Divide(50);
 
     Camera camera { 108 * scale_int, 135 * scale_int, M_PI / 3 };
     camera.SetTransform(CameraTransform(scale));

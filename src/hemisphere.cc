@@ -5,6 +5,12 @@
 #include "utils.h"
 
 bool Hemisphere::Intersect(IntersectionList& list, const Ray& world_ray) const {
+    // Determine the ray's points of intersection on a regular sphere;
+    // evaluate the x-coordinate of each point; if both points have a
+    // positive x-coordinate, then that is a miss of the hemisphere;
+    // if both are negative, then add those intersections as is; if one of
+    // the x-coordinates is positive, then adjust that point so that it lies
+    // along the ray but intersects the ZY plane.
     IntersectionList local_list {};
     if (Sphere::Intersect(local_list, world_ray) && local_list.Size() == 2) {
         // local hit points on object
@@ -40,6 +46,7 @@ bool Hemisphere::Intersect(IntersectionList& list, const Ray& world_ray) const {
         else if (x1 > 0) {
             list.Add(d0, this);
             if (closed_) {
+                // Move hit point back to intersection of ray and ZY plane
                 list.Add(distance_to_zy, this);
             }
             else {
@@ -65,6 +72,7 @@ bool Hemisphere::operator==(const Shape& s) const {
 }
 
 Vector Hemisphere::LocalNormalAt(const Point &object_point) const {
+    // Add epsilon to avoid "acne"
     if (object_point.X() + kEpsilon > 0) {
         return Vector { 1, 0, 0 }; // Normal for ZY plane
     }
