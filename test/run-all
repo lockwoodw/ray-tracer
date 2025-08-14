@@ -6,6 +6,7 @@ build/colour-test
 build/cube-test
 build/disc-test
 build/group-test
+build/hemisphere-test
 build/intersections-test
 build/material-test
 build/matrix-test

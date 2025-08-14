@@ -458,6 +458,30 @@ target_link_libraries(
 
 target_include_directories(bounds-test PRIVATE ../include/)
 
+add_executable(
+  hemisphere-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/transformations.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/bounds.cc
+  ../src/sphere.cc
+  ../src/pattern.cc
+  ../src/hemisphere.cc
+  hemisphere.cc
+)
+
+target_link_libraries(
+  hemisphere-test
+  GTest::gtest_main
+)
+
+target_include_directories(hemisphere-test PRIVATE ../include/)
+
 include(GoogleTest)
 gtest_discover_tests(
   utils-test
@@ -481,6 +505,7 @@ gtest_discover_tests(
   disc-test
   group-test
   bounds-test
+  hemisphere-test
 )
 
 # cmake --build build
