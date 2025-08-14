@@ -4,7 +4,8 @@
 #include "shape.h"
 
 class Sphere: public Shape {
-    double radius_;
+    protected:
+        double radius_;
 
     public:
         Sphere(): Shape { Point { 0, 0, 0 } }, radius_ { 1.0 } { bbox_ = BoundsOf(); }
