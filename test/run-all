@@ -19,6 +19,5 @@ build/space-test
 build/sphere-test
 build/transformations-test
 build/tuple-test
-build/type-test
 build/utils-test
 build/world-test

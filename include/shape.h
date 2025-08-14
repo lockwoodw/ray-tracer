@@ -78,6 +78,10 @@ class Shape {
             return transform_;
         }
 
+        const Matrix& InverseTransform() const {
+            return inverse_transform_;
+        }
+
         void SetMaterial(const Material& m) {
             material_ = m;
         }
