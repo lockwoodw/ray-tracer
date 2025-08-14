@@ -55,7 +55,7 @@ const Colour World::ColourAt(const IntersectionComputation& ic, const int max_de
     Colour colour {};
     for (const Light* light: lights_) {
         Point point = ic.OverPoint();
-        bool in_shadow = InShadow(point, light);
+        bool in_shadow = light->CastsShadow() ? InShadow(point, light) : false;
         colour += ic.Object()->ApplyLightAt(*light, point, ic.EyeVector(), ic.NormalVector(), in_shadow);
     }
     Colour reflected = ReflectedColour(ic, max_depth);

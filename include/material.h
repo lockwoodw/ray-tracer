@@ -7,12 +7,15 @@
 class Light {
     Point position_;
     Colour intensity_;
+    bool casts_shadow_;
 
     public:
         Light(const Point& p, const Colour& c): position_ { p }, intensity_ { c } {}
         Light(const Light& light): position_ { light.position_ }, intensity_ { light.intensity_} {}
         const Point Position() const { return position_; }
         const Colour Intensity() const { return intensity_; }
+        void CastsShadow(bool c) { casts_shadow_ = c; }
+        bool CastsShadow() const { return casts_shadow_; }
 };
 
 // forward declarations

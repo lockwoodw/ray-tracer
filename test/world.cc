@@ -786,3 +786,26 @@ TEST(WorldTest, IntersectingAScaledCubeWithARay) {
         ASSERT_EQ(xs[i]->Distance(), expected[i]);
     }
 }
+
+TEST(WorldTest, ConfirmingAShadowlessLight) {
+    World w {};
+    Point light_origin { -10, 10, 0 };
+    Colour light_colour { 1, 1, 1 };
+    Light light { light_origin, light_colour };
+    w.Add(&light);
+    Plane p {};
+    p.SetTransform(Transformation().Translate(0, -1, 0));
+    w.Add(&p);
+    Ray r { Point { -5, 5, 0 }, Vector { 1, -1, 0 } };
+    // Save original colour
+    Colour original = w.ColourAt(r);
+    // Now place an object above the plane
+    Sphere s {};
+    w.Add(&s);
+    // And capture the colour again when the light casts no shadow
+    light.CastsShadow(false);
+    Intersection i { 6, &p };
+    IntersectionComputation ic { i, r };
+    Colour shaded = w.ColourAt(ic);
+    ASSERT_EQ(original, shaded);
+}
