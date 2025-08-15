@@ -4,7 +4,12 @@
 
 const Colour Pattern::ObjectColourAt(const Shape* object, const Point& world_point) const {
     Point object_point = object->ConvertWorldPointToObjectSpace(world_point),
-          pattern_point = transform_.Inverse() * object_point;
+          pattern_point {};
+    // Note: for reasons TBD, pattern_point must be defined first and then
+    // assigned, as in the next line; the two statements can't be combined as
+    //    Point pattern_point = inverse_transform_ …
+    // without tests failing in test/world.cc.
+    pattern_point = inverse_transform_ * object_point;
     return ColourAt(pattern_point);
 }
 
@@ -66,12 +71,12 @@ TwoColourMetaPattern::~TwoColourMetaPattern() {
 // Override the base class method because we need to calculate the world point
 // in pattern space for all patterns
 const Colour TwoColourMetaPattern::ObjectColourAt(const Shape* object, const Point& world_point) const {
-    Point object_point = object->Transform().Inverse() * world_point;
+    Point object_point = object->InverseTransform() * world_point;
     return ColourAt(object_point);
 }
 
 const Colour StripePattern::ColourAt(const Point& object_point) const {
-    Point p = transform_.Inverse() * object_point;
+    Point p = inverse_transform_ * object_point;
     const Pattern* pattern = (static_cast<int>(std::floor(p.X())) % 2) == 0 ? a_ : b_;
     return pattern->ColourAt(object_point);
 }
@@ -85,7 +90,7 @@ const Colour GradientPattern::ColourAt(const Point& object_point) const {
     // Blending function: calculate distance between colours a and b;
     // multiply distance by fractional portion of x coordinate;
     // add this product to the base colour
-    Point p = transform_.Inverse() * object_point;
+    Point p = inverse_transform_ * object_point;
     Colour a = a_->ColourAt(object_point),
            b = b_->ColourAt(object_point);
     return a + ((b - a) * (p.X() - std::floor(p.X())));
@@ -98,7 +103,7 @@ bool GradientPattern::operator==(const Pattern& p) const {
 
 const Colour RingPattern::ColourAt(const Point& object_point) const {
     // Test distance between a_ and b_ in both x and z dimensions
-    Point p = transform_.Inverse() * object_point;
+    Point p = inverse_transform_ * object_point;
     double x = p.X(),
            z = p.Z(),
            distance = std::floor(std::sqrt(x * x + z * z));
@@ -113,7 +118,7 @@ bool RingPattern::operator==(const Pattern& p) const {
 
 const Colour CheckerPattern::ColourAt(const Point& object_point) const {
     // Apply stripe algorithm but in all three dimensions
-    Point p = transform_.Inverse() * object_point;
+    Point p = inverse_transform_ * object_point;
     const Pattern* pattern = (static_cast<int>(std::floor(p.X()) + std::floor(p.Y()) + std::floor(p.Z())) % 2 == 0)
         ? a_ : b_;
     return pattern->ColourAt(object_point);
@@ -127,7 +132,7 @@ bool CheckerPattern::operator==(const Pattern& p) const {
 const Colour RadialGradientPattern::ColourAt(const Point& object_point) const {
     // Combine ring and gradient patterns: each band in the ring will be a gradient.
     // Determine the starting pattern for the gradient, based on the band.
-    Point p = transform_.Inverse() * object_point;
+    Point p = inverse_transform_ * object_point;
     double x = p.X(),
            z = p.Z(),
            distance = std::floor(std::sqrt(x * x + z * z));
@@ -159,7 +164,7 @@ bool AveragePatternBlender::operator==(const PatternBlender& pb) const {
 // Override the base class method because we need to calculate the world point
 // in pattern space for both patterns
 const Colour BlendedPattern::ObjectColourAt(const Shape* object, const Point& world_point) const {
-    Point object_point = object->Transform().Inverse() * world_point;
+    Point object_point = object->InverseTransform() * world_point;
     return ColourAt(object_point);
 }
 
@@ -228,7 +233,7 @@ double PerlinNoise::Noise(const Point& point) const {
 }
 
 const Colour PerturbedPattern::ObjectColourAt(const Shape* object, const Point& world_point) const {
-    Point object_point = object->Transform().Inverse() * world_point;
+    Point object_point = object->InverseTransform() * world_point;
     double offset = generator_.Noise(object_point);
     Point perturbed { object_point.X() + offset, object_point.Y() + offset, object_point.Z() + offset };
     return ColourAt(perturbed);

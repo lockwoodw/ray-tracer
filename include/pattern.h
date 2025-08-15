@@ -13,18 +13,26 @@
 class Pattern {
     protected:
         Matrix transform_;
+        Matrix inverse_transform_;
 
     public:
-        Pattern(): transform_ { Matrix::Identity(4) } {}
-        Pattern(const Pattern& p): transform_ { p.transform_ } {}
+        Pattern(): transform_ { Matrix::Identity(4) },
+            inverse_transform_ { Matrix::Identity(4) } {}
+        Pattern(const Pattern& p): transform_ { p.transform_ },
+            inverse_transform_ { p.inverse_transform_ } {}
         virtual ~Pattern() {}
 
         void SetTransform(const Matrix& m) {
             transform_ *= m;
+            inverse_transform_ = transform_.Inverse();
         }
 
         const Matrix& Transform() const {
             return transform_;
+        }
+
+        const Matrix& InverseTransform() const {
+            return inverse_transform_;
         }
 
         virtual const Colour ObjectColourAt(const Shape* object, const Point& world_point) const;
