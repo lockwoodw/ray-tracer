@@ -3,3 +3,4 @@ git-ignore/
 build/
 .vscode/
 *.ppm
+images/
