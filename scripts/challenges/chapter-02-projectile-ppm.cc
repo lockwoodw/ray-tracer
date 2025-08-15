@@ -1,4 +1,6 @@
 /*
+The Ray Tracer Challenge: Chapter 2
+
 Plot projectile in PPM format given an initial position and velocity, including
 the effects of gravity and wind resistance.
 

@@ -1,3 +1,13 @@
+/*
+The Ray Tracer Challenge: Chapter 1
+
+Output projectile position in CSV format given an initial position and velocity,
+including the effects of gravity and wind resistance.
+
+To simulate the effect of different initial velocities, you can supply a scaling
+factor from the command line.
+*/
+
 #include <iostream>
 #include "projectile.h"
 

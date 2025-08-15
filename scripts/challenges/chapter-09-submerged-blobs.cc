@@ -1,7 +1,10 @@
 /*
-Render a scene composed of randomly positioned submerged spheres of different sizes and colours.
+The Ray Tracer Challenge: Chapter 9
 
-Supply a scaling factor at the command line to increase the resolution.
+Render a scene composed of randomly positioned submerged spheres of different
+sizes and colours.
+
+Supply a scaling factor at the command line to increase the image dimensions.
 */
 
 #include <ctime>

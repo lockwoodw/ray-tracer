@@ -1,6 +1,9 @@
 /*
+The Ray Tracer Challenge: Chapter 10
 
-Supply a scaling factor at the command line to increase the resolution.
+Blend two patterns together.
+
+Supply a scaling factor at the command line to increase the image dimensions.
 */
 
 #define _USE_MATH_DEFINES // for M_PI
@@ -9,11 +12,9 @@ Supply a scaling factor at the command line to increase the resolution.
 #include <iostream>
 
 #include "camera.h"
-#include "sphere.h"
 #include "transformations.h"
 #include "material.h"
 #include "world.h"
-#include "space.h"
 #include "plane.h"
 #include "pattern.h"
 
@@ -42,18 +43,22 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    int scale_int = static_cast<int>(scale);
+
     World world {};
 
     Plane floor {};
-    StripePattern p1 { Colour { 1, 1, 1 }, Colour { 0, 1, 0 } },
-                  p2 { p1.A(), p1.B() },
-                  p3 { Colour { 1, 1, 1 }, Colour { 1, 0, 0 }};
+
+    StripePattern p1 { Colour { 1, 1, 1 }, Colour { 0.2, 0.6, 0.3 } },
+                  p2 { p1.A(), p1.B() };
+
     p1.SetTransform(Transformation().RotateY(M_PI / 4));
     p2.SetTransform(Transformation().RotateY(-M_PI / 4));
-    p3.SetTransform(Transformation().Scale(0.25, 1, 1));
+
     AveragePatternBlender blender {};
     BlendedPattern bp { &blender };
-    bp.Add(&p1).Add(&p2);//.Add(&p3);
+    bp.Add(&p1).Add(&p2);
+
     Material m1 {};
     m1.Specular(0);
     m1.SurfacePattern(&bp);
@@ -61,11 +66,10 @@ int main(int argc, char** argv) {
 
     world.Add(&floor);
 
-
     Light light = WorldLight(scale);
     world.Add(&light);
 
-    Camera camera { 100 * static_cast<int>(scale), 50 * static_cast<int>(scale), M_PI / 8 };
+    Camera camera { 100 * scale_int, 50 * scale_int, M_PI / 8 };
     camera.SetTransform(CameraTransform(scale));
 
     Canvas canvas = camera.Render(world);

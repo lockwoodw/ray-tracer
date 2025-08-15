@@ -1,7 +1,9 @@
 /*
+The Ray Tracer Challenge: Chapter 9
+
 Render a hexagonal-shaped room in PPM format.
 
-Supply a scaling factor at the command line to increase the resolution.
+Supply a scaling factor at the command line to increase the image dimensions.
 */
 
 #define _USE_MATH_DEFINES // for M_PI
@@ -53,6 +55,8 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    int scale_int = static_cast<int>(scale);
+
     World world {};
     world.Add(Floor());
 
@@ -90,7 +94,7 @@ int main(int argc, char** argv) {
     Light light = WorldLight(scale);
     world.Add(&light);
 
-    Camera camera { 100 * static_cast<int>(scale), 100 * static_cast<int>(scale), M_PI / (1.5 * scale) };
+    Camera camera { 100 * scale_int, 100 * scale_int, M_PI / (1.5 * scale) };
     camera.SetTransform(CameraTransform(scale));
 
     Canvas canvas = camera.Render(world);

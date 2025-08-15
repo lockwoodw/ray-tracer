@@ -1,4 +1,6 @@
 /*
+The Ray Tracer Challenge: Chapter 6
+
 Render overlapping spheres with material properties and light source, in PPM format.
 */
 
@@ -49,7 +51,10 @@ int main(int argc, char** argv) {
     // Transform spheres so they overlap: bring spheres 2 and 3 closer to the
     // ray origin; move sphere 1 further away. Make sphere2 an ellipsoid.
     Matrix transform1 = Transformation().Translate(-25, 0, 20),
-           transform2 = Transformation().Scale(2, 0.5, 0.5).Translate(50, 0, -50).RotateY(DegreesToRadians(35)),
+           transform2 = Transformation()
+               .Scale(2, 0.5, 0.5)
+               .Translate(50, 0, -50)
+               .RotateY(DegreesToRadians(35)),
            transform3 = Transformation().Translate(-60, 40, -60);
     sphere1.SetTransform(transform1);
     sphere2.SetTransform(transform2);
@@ -69,9 +74,9 @@ int main(int argc, char** argv) {
             Ray ray { ray_origin, v };
             // Confirm which sphere the ray hits (if any)
             IntersectionList xs {};
-            sphere1.AddIntersections(xs, ray);
-            sphere2.AddIntersections(xs, ray);
-            sphere3.AddIntersections(xs, ray);
+            sphere1.Intersect(xs, ray);
+            sphere2.Intersect(xs, ray);
+            sphere3.Intersect(xs, ray);
             const Intersection* i = xs.Hit();
             Colour pixel = background;
             if (i) {
@@ -81,7 +86,7 @@ int main(int argc, char** argv) {
                 // Determine the normal at that point
                 Vector normal = match->NormalAt(hit_point);
                 Vector eye = -ray.Direction();
-                pixel = match->ShapeMaterial().ApplyLightAt(light, hit_point, eye, normal);
+                pixel = match->ShapeMaterial().ApplyLightAt(match, light, hit_point, eye, normal);
             }
             canvas[row][column] = pixel;
         }

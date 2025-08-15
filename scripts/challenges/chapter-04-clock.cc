@@ -1,4 +1,6 @@
 /*
+The Ray Tracer Challenge: Chapter 4
+
 Generate a 12-point clockface in PPM format with a given radius.
 */
 
@@ -41,7 +43,8 @@ int main(int argc, char **argv) {
 
     // Set up canvas so it can hold clock with equal padding on all sides
     double clock_diameter = radius * 2,
-           translation_offset = radius * 1.5;
+           translation_offset = radius * 1.5,
+           z_rotation = -M_PI / 6; // negative == clockwise
     int canvas_dimension = clock_diameter + radius;
     Colour colour { 1, 0, 0 }, // red
            white { 1, 1, 1 };  // white
@@ -54,7 +57,7 @@ int main(int argc, char **argv) {
         // * Shift point over and down to center it within the canvas, which
         //   has its origin in the top-left corner.
         Matrix transform = Transformation()
-            .RotateZ(i * (-M_PI / 6)) // negative == clockwise
+            .RotateZ(i * z_rotation)
             .Translate(translation_offset, -translation_offset, 0);
 
         Point p = transform * origin;

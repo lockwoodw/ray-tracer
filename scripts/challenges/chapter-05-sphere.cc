@@ -1,4 +1,6 @@
 /*
+The Ray Tracer Challenge: Chapter 5
+
 Render transformed sphere in PPM format.
 */
 
@@ -24,8 +26,7 @@ int main(int argc, char** argv) {
     Point ray_origin { 0, 0, -radius * 2 };
 
     // Configure canvas large enough to hold sphere with padding around it
-    Colour background { 1, 1, 1 },
-           sphere_colour { 1, 0, 0 },
+    Colour sphere_colour { 1, 0, 0 },
            default_colour { 0, 0, 0 };
     double quad_dimension { radius * 1.5 };
     int canvas_dimension { static_cast<int>(2 * quad_dimension) };
@@ -51,9 +52,9 @@ int main(int argc, char** argv) {
             Ray ray { ray_origin, v };
             // Confirm hit
             IntersectionList xs {};
-            sphere.AddIntersections(xs, ray);
-            const Intersection* i = xs.Hit();
-            canvas[row][column] = (i != nullptr) ? sphere_colour : background;
+            if (sphere.Intersect(xs, ray)) {
+                canvas[row][column] = sphere_colour;
+            }
         }
     }
 

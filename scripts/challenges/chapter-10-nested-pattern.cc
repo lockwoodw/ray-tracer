@@ -1,6 +1,10 @@
 /*
+The Ray Tracer Challenge: Chapter 10
 
-Supply a scaling factor at the command line to increase the resolution.
+Nest patterns: two solid patterns in a striped pattern; two of those striped
+patterns in a checker pattern.
+
+Supply a scaling factor at the command line to increase the image dimensions.
 */
 
 #define _USE_MATH_DEFINES // for M_PI
@@ -13,7 +17,7 @@ Supply a scaling factor at the command line to increase the resolution.
 #include "transformations.h"
 #include "material.h"
 #include "world.h"
-#include "space.h"
+// #include "space.h"
 #include "plane.h"
 #include "pattern.h"
 
@@ -44,16 +48,26 @@ int main(int argc, char** argv) {
 
     World world {};
 
-    Cube floor {};
+    Plane floor {};
 
-    Colour red { 1, 0, 0 }, pink { 1, 182.0 / 255, 193.0 /255 }, white { 1, 1, 1 }, black { 0, 0, 0 };
-    SolidPattern red_p { red }, pink_p { pink }, white_p { white }, black_p { black };
-    StripePattern striped_1 { &red_p, &pink_p }, striped_2 { white, black };
+    Colour red { 1, 0, 0 },
+           pink { 1, 182.0 / 255, 193.0 /255 },
+           white { 1, 1, 1 },
+           black { 0, 0, 0 };
+
+    SolidPattern red_p { red },
+                 pink_p { pink },
+                 white_p { white },
+                 black_p { black };
+
+    StripePattern striped_1 { &red_p, &pink_p },
+                  striped_2 { white, black };
+
     double rotation { M_PI / 4 };
     striped_1.SetTransform(Transformation().Scale(0.25, 1, 1).RotateY(rotation));
     striped_2.SetTransform(Transformation().Scale(0.25, 1, 1).RotateY(-rotation));
+
     CheckerPattern checked { &striped_1, &striped_2 };
-    // checked.SetTransform(Transformation().RotateY(rotation));
 
     Material m1 {};
     m1.Specular(0);
@@ -61,7 +75,6 @@ int main(int argc, char** argv) {
     floor.SetMaterial(m1);
 
     world.Add(&floor);
-
 
     Light light = WorldLight(scale);
     world.Add(&light);
