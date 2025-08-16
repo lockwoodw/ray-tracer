@@ -1,4 +1,6 @@
 /*
+The Ray Tracer Challenge: Chapter 10
+
 Render a scene using perturbed patterns.
 
 Supply a scaling factor at the command line to increase the image dimensions.

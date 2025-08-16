@@ -270,3 +270,81 @@ target_include_directories(
     PUBLIC
     ../../include
 )
+
+add_executable(
+    chapter-11-reflections
+    ../../src/utils.cc
+    ../../src/tuple.cc
+    ../../src/space.cc
+    ../../src/colour.cc
+    ../../src/canvas.cc
+    ../../src/matrix.cc
+    ../../src/transformations.cc
+    ../../src/bounds.cc
+    ../../src/material.cc
+    ../../src/shape.cc
+    ../../src/sphere.cc
+    ../../src/plane.cc
+    ../../src/camera.cc
+    ../../src/world.cc
+    ../../src/pattern.cc
+    chapter-11-reflections.cc
+)
+
+target_include_directories(
+    chapter-11-reflections
+    PUBLIC
+    ../../include
+)
+
+add_executable(
+    chapter-11-fresnel
+    ../../src/utils.cc
+    ../../src/tuple.cc
+    ../../src/space.cc
+    ../../src/colour.cc
+    ../../src/canvas.cc
+    ../../src/matrix.cc
+    ../../src/transformations.cc
+    ../../src/bounds.cc
+    ../../src/material.cc
+    ../../src/shape.cc
+    ../../src/sphere.cc
+    ../../src/plane.cc
+    ../../src/camera.cc
+    ../../src/world.cc
+    ../../src/pattern.cc
+    chapter-11-fresnel.cc
+)
+
+target_include_directories(
+    chapter-11-fresnel
+    PUBLIC
+    ../../include
+)
+
+add_executable(
+    chapter-11-pond
+    ../../src/utils.cc
+    ../../src/tuple.cc
+    ../../src/space.cc
+    ../../src/colour.cc
+    ../../src/canvas.cc
+    ../../src/matrix.cc
+    ../../src/transformations.cc
+    ../../src/bounds.cc
+    ../../src/material.cc
+    ../../src/shape.cc
+    ../../src/sphere.cc
+    ../../src/plane.cc
+    ../../src/camera.cc
+    ../../src/world.cc
+    ../../src/pattern.cc
+    chapter-11-pond.cc
+)
+
+target_include_directories(
+    chapter-11-pond
+    PUBLIC
+    ../../include
+)
