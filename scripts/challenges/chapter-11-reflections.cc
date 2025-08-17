@@ -9,32 +9,14 @@ Supply a scaling factor at the command line to increase the image dimensions.
 #define _USE_MATH_DEFINES // for M_PI
 
 #include <cmath>
-#include <iostream>
 
-#include "colour.h"
-#include "material.h"
+#include "challenges.h"
 #include "world.h"
 #include "plane.h"
 #include "camera.h"
 #include "canvas.h"
 #include "sphere.h"
 #include "pattern.h"
-
-static double kMaxScale { 20.0 };
-
-double GetScale(int argc, char** argv) {
-    double scale { 1.0 };
-
-    if (argc > 1) {
-        scale = atof(argv[1]);
-    }
-
-    if (scale <= 0 || scale > kMaxScale) {
-        std::cerr << "Given scale invalid (1-" << kMaxScale << ")" << std::endl;
-        exit(-1);
-    }
-    return scale;
-}
 
 Light WorldLight(double scale) {
     double scaled = 10 * scale;
@@ -106,7 +88,7 @@ CheckerPattern FloorPattern(double scale) {
     double scaled = 2 * scale;
     CheckerPattern pattern { Colour::kBlack, Colour::kWhite };
     pattern.SetTransform(Transformation()
-        .Scale(scaled, scaled, scaled)
+        .Scale(scaled)
         .RotateY(M_PI / 3)
         .Translate(scale, scale, 0)
     );

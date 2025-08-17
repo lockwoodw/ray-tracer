@@ -10,32 +10,14 @@ Supply a scaling factor at the command line to increase the image dimensions.
 #define _USE_MATH_DEFINES // for M_PI
 
 #include <cmath>
-#include <iostream>
 
-#include "colour.h"
-#include "material.h"
+#include "challenges.h"
 #include "world.h"
 #include "plane.h"
 #include "camera.h"
 #include "canvas.h"
 #include "sphere.h"
 #include "pattern.h"
-
-static double kMaxScale { 20.0 };
-
-double GetScale(int argc, char** argv) {
-    double scale { 1.0 };
-
-    if (argc > 1) {
-        scale = atof(argv[1]);
-    }
-
-    if (scale <= 0 || scale > kMaxScale) {
-        std::cerr << "Given scale invalid (1-" << kMaxScale << ")" << std::endl;
-        exit(-1);
-    }
-    return scale;
-}
 
 Light WorldLight(double scale) {
     double scaled = 10 * scale;
@@ -125,16 +107,7 @@ Plane Horizon(double scale) {
 Sphere GlassMarble(double scale) {
     double scaled = 0.8 * scale;
     Sphere s {};
-    Material m {};
-    m.Transparency(1.0);
-    m.RefractiveIndex(1.52);
-    m.Diffuse(0.1);
-    m.Ambient(0.1);
-    m.Reflectivity(1.0);
-    m.Shininess(300);
-    m.Specular(1);
-    m.Surface(Colour { 0.1, 0.1, 0.1 });
-    s.SetMaterial(m);
+    s.SetMaterial(GlassMarbleMaterial(Colour { 0.1, 0.1, 0.1 }));
     s.SetTransform(Transformation()
         .Scale(scaled)
         .Translate(1.5*scale, -(scale - scaled), 2*scale)
@@ -167,15 +140,15 @@ int main(int argc, char** argv) {
     Light light = WorldLight(scale);
     world.Add(&light);
 
-    Plane floor {};
-    floor.SetTransform(Transformation().Translate(0, -scale, 0));
+    Plane sand {};
+    sand.SetTransform(Transformation().Translate(0, -scale, 0));
     SpeckledPattern speckled_ptn { Colour { 193.0 / 255, 154.0 / 255, 107.0 / 255 } };
     speckled_ptn.SetDarkThreshold(0.8);
     speckled_ptn.SetAttentuation(0.3);
-    Material floor_material = FloorMaterial();
-    floor_material.SurfacePattern(&speckled_ptn);
-    floor.SetMaterial(floor_material);
-    world.Add(&floor);
+    Material sand_material = FloorMaterial();
+    sand_material.SurfacePattern(&speckled_ptn);
+    sand.SetMaterial(sand_material);
+    world.Add(&sand);
 
     Plane water = Water(scale);
     world.Add(&water);

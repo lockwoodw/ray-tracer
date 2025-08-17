@@ -298,6 +298,32 @@ target_include_directories(
 )
 
 add_executable(
+    chapter-11-refraction
+    ../../src/utils.cc
+    ../../src/tuple.cc
+    ../../src/space.cc
+    ../../src/colour.cc
+    ../../src/canvas.cc
+    ../../src/matrix.cc
+    ../../src/transformations.cc
+    ../../src/bounds.cc
+    ../../src/material.cc
+    ../../src/shape.cc
+    ../../src/sphere.cc
+    ../../src/plane.cc
+    ../../src/camera.cc
+    ../../src/world.cc
+    ../../src/pattern.cc
+    chapter-11-refraction.cc
+)
+
+target_include_directories(
+    chapter-11-refraction
+    PUBLIC
+    ../../include
+)
+
+add_executable(
     chapter-11-fresnel
     ../../src/utils.cc
     ../../src/tuple.cc
@@ -345,6 +371,33 @@ add_executable(
 
 target_include_directories(
     chapter-11-pond
+    PUBLIC
+    ../../include
+)
+
+add_executable(
+    chapter-12-room
+    ../../src/utils.cc
+    ../../src/tuple.cc
+    ../../src/space.cc
+    ../../src/colour.cc
+    ../../src/canvas.cc
+    ../../src/matrix.cc
+    ../../src/transformations.cc
+    ../../src/bounds.cc
+    ../../src/material.cc
+    ../../src/shape.cc
+    ../../src/sphere.cc
+    ../../src/plane.cc
+    ../../src/cube.cc
+    ../../src/camera.cc
+    ../../src/world.cc
+    ../../src/pattern.cc
+    chapter-12-room.cc
+)
+
+target_include_directories(
+    chapter-12-room
     PUBLIC
     ../../include
 )

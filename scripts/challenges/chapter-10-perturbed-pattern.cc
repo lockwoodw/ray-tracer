@@ -16,7 +16,6 @@ Supply a scaling factor at the command line to increase the image dimensions.
 #include "transformations.h"
 #include "material.h"
 #include "world.h"
-// #include "space.h"
 #include "plane.h"
 #include "pattern.h"
 
