@@ -9,8 +9,9 @@
 class Sheet: public Shape {
     // A finite plane
 
-    double width_; // the extent of the sheet in x
-    double depth_; // the extent of the sheet in z
+    protected:
+        double width_; // the extent of the sheet in x
+        double depth_; // the extent of the sheet in z
 
     public:
         Sheet(): Shape { Point { 0, 0, 0 } }, width_ { 1.0 }, depth_ { 1.0 } { bbox_ = BoundsOf(); }
