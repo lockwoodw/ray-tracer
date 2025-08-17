@@ -14,7 +14,7 @@ bool PorousSheet::Intersect(IntersectionList& list, const Ray& world_ray) const 
                width = width_ / 2,
                depth = depth_ / 2;
         if (x >= -width && x <= width && z >= -depth && z <= depth) {
-            if (pass_fn_(intersection)) {
+            if (pass_through_fn_(intersection)) {
                 list.Add(distance, this);
                 return true;
             }
@@ -30,5 +30,5 @@ bool PorousSheet::operator==(const Shape& s) const {
     }
     return origin_ == other->origin_ && floating_point_compare(width_, other->width_)
         && floating_point_compare(depth_, other->depth_)
-        && pass_fn_ == other->pass_fn_;
+        && pass_through_fn_ == other->pass_through_fn_;
 }

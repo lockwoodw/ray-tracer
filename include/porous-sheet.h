@@ -5,17 +5,18 @@
 #include "space.h"
 #include "utils.h"
 
-typedef bool(*PassFn)(const Point&);
+typedef bool(*PassThroughFunction)(const Point&);
 
 class PorousSheet: public Sheet {
-    // A sheet that renders points according to a given pass function
+    // A sheet that renders points according to a given pass-through function
 
-    PassFn pass_fn_;
+    PassThroughFunction pass_through_fn_;
 
     public:
-        PorousSheet(): Sheet {}, pass_fn_ { nullptr } {}
-        PorousSheet(PassFn pf): Sheet {}, pass_fn_ { pf } {}
-        PorousSheet(const PorousSheet& p): Sheet {}, pass_fn_ { p.pass_fn_ } {}
+        PorousSheet(): Sheet {}, pass_through_fn_ { nullptr } {}
+        PorousSheet(PassThroughFunction ptf): Sheet {}, pass_through_fn_ { ptf } {}
+        PorousSheet(const PorousSheet& p): Sheet {},
+            pass_through_fn_ { p.pass_through_fn_ } {}
 
         bool operator==(const Shape& s) const;
         bool Intersect(IntersectionList& list, const Ray& ray) const override;
