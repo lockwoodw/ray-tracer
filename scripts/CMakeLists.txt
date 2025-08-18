@@ -174,6 +174,34 @@ target_include_directories(
     ../include
 )
 
+add_executable(
+    planets
+    ../src/utils.cc
+    ../src/tuple.cc
+    ../src/space.cc
+    ../src/colour.cc
+    ../src/canvas.cc
+    ../src/matrix.cc
+    ../src/transformations.cc
+    ../src/bounds.cc
+    ../src/material.cc
+    ../src/shape.cc
+    ../src/plane.cc
+    ../src/sphere.cc
+    ../src/group.cc
+    ../src/disc.cc
+    ../src/camera.cc
+    ../src/world.cc
+    ../src/pattern.cc
+    planets.cc
+)
+
+target_include_directories(
+    planets
+    PUBLIC
+    ../include
+)
+
 # mkdir build
 # cmake -S . -B build
 # cmake --build build
