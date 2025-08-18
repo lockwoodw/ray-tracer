@@ -119,6 +119,60 @@ target_include_directories(
 
 target_compile_definitions(bubbles PRIVATE RAY_TRACER_ROCKS_CC_UNDERWATER)
 
+add_executable(
+    flags
+    ../src/utils.cc
+    ../src/tuple.cc
+    ../src/space.cc
+    ../src/colour.cc
+    ../src/canvas.cc
+    ../src/matrix.cc
+    ../src/transformations.cc
+    ../src/bounds.cc
+    ../src/material.cc
+    ../src/shape.cc
+    ../src/plane.cc
+    ../src/group.cc
+    ../src/sheet.cc
+    ../src/sphere.cc
+    ../src/camera.cc
+    ../src/world.cc
+    ../src/pattern.cc
+    flags.cc
+)
+
+target_include_directories(
+    flags
+    PUBLIC
+    ../include
+)
+
+add_executable(
+    getting-started
+    ../src/utils.cc
+    ../src/tuple.cc
+    ../src/space.cc
+    ../src/colour.cc
+    ../src/canvas.cc
+    ../src/matrix.cc
+    ../src/transformations.cc
+    ../src/bounds.cc
+    ../src/material.cc
+    ../src/shape.cc
+    ../src/plane.cc
+    ../src/group.cc
+    ../src/sphere.cc
+    ../src/camera.cc
+    ../src/world.cc
+    ../src/pattern.cc
+    getting-started.cc
+)
+
+target_include_directories(
+    getting-started
+    PUBLIC
+    ../include
+)
 
 # mkdir build
 # cmake -S . -B build

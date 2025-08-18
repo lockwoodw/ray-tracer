@@ -37,7 +37,7 @@ Camera SceneCamera(double scale, int width, int height, double fov, const Matrix
     return camera;
 }
 
-Material GlassMarbleMaterial(const Colour& colour) {
+Material GlassMaterial(const Colour& colour = Colour::kWhite) {
     return Material()
         .Transparency(1.0)
         .RefractiveIndex(1.33333)

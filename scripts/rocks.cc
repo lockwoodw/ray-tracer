@@ -92,13 +92,13 @@ Plane Sky(double scale) {
 
 Sheet Water(double scale) {
     Sheet water {};
-    
+
     water.SetTransform(
         Transformation()
         .Scale(100*scale, 1, 30*scale)
         .Translate(0, 0.6 * scale, 0)
     );
-    
+
     water.SetMaterial(
         Material()
         .Transparency(1.0)
@@ -135,9 +135,9 @@ class BubbleFactory {
             Sphere* outside = new Sphere();
             shapes_.push_back(outside);
             outside->SetTransform(Transformation().Scale(scale));
-            outside->SetMaterial(GlassMarbleMaterial(colour));
+            outside->SetMaterial(GlassMaterial(colour));
             *bubble << outside;
-            
+
             if (bubble_ratio > 0.0 && bubble_ratio < 1.0) {
                 Sphere* inside = new Sphere();
                 shapes_.push_back(inside);
@@ -157,12 +157,12 @@ int main(int argc, char** argv) {
 
     Light light = WorldLight(scale);
     world.Add(&light);
-    
+
     ShapeGroup collection {};
     world.Add(&collection);
-    
+
     PatternFactory pattern_factory {};
-    
+
     Colour
     pale_brown      { 152.0 / 255, 118.0 / 255,  84.0 / 255 },
     wood_brown      { 193.0 / 255, 154.0 / 255, 107.0 / 255 },
@@ -171,10 +171,10 @@ int main(int argc, char** argv) {
     raw_umber       { 130.0 / 255, 102.0 / 255,  68.0 / 255 },
     almond          { 239.0 / 255, 222.0 / 255,  205.0 / 255 },
     blanched_almond { 1.0,         235.0 / 255,  almond.Blue() };
-    
+
     Sphere rock_1 {};
     collection.Add(&rock_1);
-    
+
     rock_1.SetTransform(
         Transformation()
         .Scale(scale, 0.8*scale, 1.3*scale)
@@ -185,10 +185,10 @@ int main(int argc, char** argv) {
     rock_1.SetMaterial(RockMaterial(pattern_factory.RockPattern(
         spanish_bistre, raw_umber, &rock_1.InverseTransform()
     )));
-        
+
     Sphere rock_2 {};
     collection.Add(&rock_2);
-    
+
     rock_2.SetTransform(
         Transformation()
         .Scale(scale, scale, 2*scale)
@@ -196,11 +196,11 @@ int main(int argc, char** argv) {
         .RotateZ(M_PI/12)
         .Translate(0.15*scale, 0, 1.25 * scale)
     );
-    
+
     rock_2.SetMaterial(RockMaterial(pattern_factory.RockPattern(
         pale_brown, wood_brown, &rock_2.InverseTransform()
     )));
-    
+
     Sphere rock_3 {};
     collection.Add(&rock_3);
 
@@ -225,7 +225,7 @@ int main(int argc, char** argv) {
     sand.SetMaterial(Material().SurfacePattern(pattern_factory.SandPattern(
         blanched_almond
     )));
-    
+
     Plane sky = Sky(scale);
     world.Add(&sky);
 
