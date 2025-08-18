@@ -61,6 +61,94 @@ target_include_directories(
     ../include
 )
 
+add_executable(
+    porous-sheet-example-3
+    ../src/utils.cc
+    ../src/tuple.cc
+    ../src/space.cc
+    ../src/colour.cc
+    ../src/canvas.cc
+    ../src/matrix.cc
+    ../src/transformations.cc
+    ../src/bounds.cc
+    ../src/material.cc
+    ../src/shape.cc
+    ../src/plane.cc
+    ../src/sheet.cc
+    ../src/porous-sheet.cc
+    ../src/sphere.cc
+    ../src/cube.cc
+    ../src/group.cc
+    ../src/camera.cc
+    ../src/world.cc
+    ../src/pattern.cc
+    porous-sheet-example-3.cc
+)
+
+target_include_directories(
+    porous-sheet-example-3
+    PUBLIC
+    ../include
+)
+
+add_executable(
+    shape-group-test
+    ../src/utils.cc
+    ../src/tuple.cc
+    ../src/space.cc
+    ../src/colour.cc
+    ../src/canvas.cc
+    ../src/matrix.cc
+    ../src/transformations.cc
+    ../src/bounds.cc
+    ../src/material.cc
+    ../src/shape.cc
+    ../src/plane.cc
+    ../src/sheet.cc
+    ../src/porous-sheet.cc
+    ../src/sphere.cc
+    ../src/cube.cc
+    ../src/group.cc
+    ../src/camera.cc
+    ../src/world.cc
+    ../src/pattern.cc
+    shape-group-test.cc
+)
+
+target_include_directories(
+    shape-group-test
+    PUBLIC
+    ../include
+)
+
+add_executable(
+    rock
+    ../src/utils.cc
+    ../src/tuple.cc
+    ../src/space.cc
+    ../src/colour.cc
+    ../src/canvas.cc
+    ../src/matrix.cc
+    ../src/transformations.cc
+    ../src/bounds.cc
+    ../src/material.cc
+    ../src/shape.cc
+    ../src/plane.cc
+    ../src/sphere.cc
+    ../src/group.cc
+    ../src/camera.cc
+    ../src/world.cc
+    ../src/pattern.cc
+    rock.cc
+)
+
+target_include_directories(
+    rock
+    PUBLIC
+    ../include
+)
+
+
 # mkdir build
 # cmake -S . -B build
 # cmake --build build

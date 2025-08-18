@@ -1,6 +1,9 @@
 #ifndef RAY_TRACER_SCRIPTS_H
 #define RAY_TRACER_SCRIPTS_H
 
+#define _USE_MATH_DEFINES // for M_PI
+
+#include <cmath>
 #include <iostream>
 
 #include "matrix.h"
@@ -32,6 +35,30 @@ Camera SceneCamera(double scale, int width, int height, double fov, const Matrix
     Camera camera { width * scale_int, height * scale_int, fov };
     camera.SetTransform(view_transform);
     return camera;
+}
+
+Material GlassMarbleMaterial(const Colour& colour) {
+    return Material()
+        .Transparency(1.0)
+        .RefractiveIndex(1.333333333)
+        .Diffuse(0.1)
+        .Ambient(0.1)
+        .Reflectivity(1.0)
+        .Shininess(300)
+        .Specular(1)
+        .Surface(colour);
+}
+
+Material AirBubbleMaterial() {
+    return Material()
+        .Transparency(1.0)
+        .RefractiveIndex(1.00029)
+        .Diffuse(0)
+        .Ambient(0)
+        .Specular(0)
+        .Reflectivity(0)
+        .Shininess(10)
+        .CastsShadow(false);
 }
 
 #endif
