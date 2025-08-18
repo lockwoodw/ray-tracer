@@ -62,7 +62,7 @@ target_include_directories(
 )
 
 add_executable(
-    porous-sheet-example-3
+    rocks
     ../src/utils.cc
     ../src/tuple.cc
     ../src/space.cc
@@ -74,25 +74,23 @@ add_executable(
     ../src/material.cc
     ../src/shape.cc
     ../src/plane.cc
-    ../src/sheet.cc
-    ../src/porous-sheet.cc
     ../src/sphere.cc
-    ../src/cube.cc
     ../src/group.cc
+    ../src/sheet.cc
     ../src/camera.cc
     ../src/world.cc
     ../src/pattern.cc
-    porous-sheet-example-3.cc
+    rocks.cc
 )
 
 target_include_directories(
-    porous-sheet-example-3
+    rocks
     PUBLIC
     ../include
 )
 
 add_executable(
-    shape-group-test
+    bubbles
     ../src/utils.cc
     ../src/tuple.cc
     ../src/space.cc
@@ -104,49 +102,22 @@ add_executable(
     ../src/material.cc
     ../src/shape.cc
     ../src/plane.cc
+    ../src/sphere.cc
+    ../src/group.cc
     ../src/sheet.cc
-    ../src/porous-sheet.cc
-    ../src/sphere.cc
-    ../src/cube.cc
-    ../src/group.cc
     ../src/camera.cc
     ../src/world.cc
     ../src/pattern.cc
-    shape-group-test.cc
+    rocks.cc
 )
 
 target_include_directories(
-    shape-group-test
+    bubbles
     PUBLIC
     ../include
 )
 
-add_executable(
-    rock
-    ../src/utils.cc
-    ../src/tuple.cc
-    ../src/space.cc
-    ../src/colour.cc
-    ../src/canvas.cc
-    ../src/matrix.cc
-    ../src/transformations.cc
-    ../src/bounds.cc
-    ../src/material.cc
-    ../src/shape.cc
-    ../src/plane.cc
-    ../src/sphere.cc
-    ../src/group.cc
-    ../src/camera.cc
-    ../src/world.cc
-    ../src/pattern.cc
-    rock.cc
-)
-
-target_include_directories(
-    rock
-    PUBLIC
-    ../include
-)
+target_compile_definitions(bubbles PRIVATE RAY_TRACER_ROCKS_CC_UNDERWATER)
 
 
 # mkdir build

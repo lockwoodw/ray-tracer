@@ -3,12 +3,7 @@
 #include "sphere.h"
 #include "pattern.h"
 #include "group.h"
-
-// Light WorldLight(double scale) {
-//     Point origin { -5*scale, 5 * scale, -5*scale };
-//     Colour colour { 1, 1, 1 };
-//     return Light { origin, colour };
-// }
+#include "sheet.h"
 
 Light WorldLight(double scale) {
     Point origin { -25 * scale, 30 * scale, -20 * scale };
@@ -17,10 +12,12 @@ Light WorldLight(double scale) {
 }
 
 Matrix CameraTransform(double scale) {
-    // Point from { -0.5*scale, 3*scale, -6.5* scale }, to { -0.5*scale, 2*scale, 0 };
-    // Point from { 0, 3*scale, -3* scale }, to { 0, 0, -2*scale };
-    // Point from { 0.25 * scale, 2.5 * scale, -5 * scale }, to { 0, 0, 0 };
-    Point from { 2.1 * scale, 0.5 * scale, -2 * scale }, to { 0, scale, -0.5*scale };
+#ifdef RAY_TRACER_ROCKS_CC_UNDERWATER
+    Point from { 2.4 * scale, 0.5 * scale, -2 * scale }, to { 0, scale, -0.5*scale };
+#else
+    Point from { 0.25 * scale, 2.5 * scale, -5 * scale }, to { 0, 0, 0 };
+#endif
+
     Vector up { 0, 1, 0 };
     return ViewTransform { from, to, up };
 }
@@ -37,21 +34,13 @@ class PatternFactory {
             }
         }
 
-        Pattern* SandPattern(const Colour& colour, /*const Colour& light,*/
+        Pattern* SandPattern(const Colour& colour,
                 const Matrix* transform = nullptr) {
             SpeckledPattern* speckled_ptn = new SpeckledPattern(colour);
             patterns_.push_back(speckled_ptn);
             speckled_ptn->SetDarkThreshold(0.8);
             speckled_ptn->SetAttentuation(0.3);
             speckled_ptn->SetLightThreshold(0.8);
-            // SpeckledPattern* light_ptn = new SpeckledPattern(light);
-            // patterns_.push_back(light_ptn);
-            // RadialGradientPattern* gradient_ptn = new RadialGradientPattern(dark_ptn, light_ptn);
-            // patterns_.push_back(gradient_ptn);
-            // if (transform) {
-            //     gradient_ptn->SetTransform(*transform);
-            // }
-            // PerturbedPattern* perturbed_ptn = new PerturbedPattern(gradient_ptn);
             return speckled_ptn;
         }
 
@@ -89,7 +78,7 @@ Plane Sky(double scale) {
     sky.SetTransform(
         Transformation()
         .RotateX(M_PI/2)
-        .Translate(0, 0, scale * 70)
+        .Translate(0, 0, scale * 30)
     );
 
     sky.SetMaterial(
@@ -101,13 +90,13 @@ Plane Sky(double scale) {
     return sky;
 }
 
-Plane Water(double scale) {
-    Plane water {};
+Sheet Water(double scale) {
+    Sheet water {};
     
     water.SetTransform(
         Transformation()
-        .RotateZ(-M_PI*179/180)
-        .Translate(0, 0.75 * scale, 0)
+        .Scale(100*scale, 1, 30*scale)
+        .Translate(0, 0.6 * scale, 0)
     );
     
     water.SetMaterial(
@@ -119,7 +108,7 @@ Plane Water(double scale) {
         .Reflectivity(0.9)
         .Specular(1)
         .Surface(Colour { 0.0, 0.5, 1 })
-        // .CastsShadow(false)
+        .CastsShadow(false)
     );
 
     return water;
@@ -159,7 +148,6 @@ class BubbleFactory {
 
             return bubble;
         }
-
 };
 
 int main(int argc, char** argv) {
@@ -170,8 +158,8 @@ int main(int argc, char** argv) {
     Light light = WorldLight(scale);
     world.Add(&light);
     
-    ShapeGroup rocks {};
-    world.Add(&rocks);
+    ShapeGroup collection {};
+    world.Add(&collection);
     
     PatternFactory pattern_factory {};
     
@@ -185,15 +173,13 @@ int main(int argc, char** argv) {
     blanched_almond { 1.0,         235.0 / 255,  almond.Blue() };
     
     Sphere rock_1 {};
-    rocks.Add(&rock_1);
+    collection.Add(&rock_1);
     
     rock_1.SetTransform(
         Transformation()
-        // .Scale(scale)
         .Scale(scale, 0.8*scale, 1.3*scale)
-        // .RotateY(M_PI/8)
-        .RotateX(M_PI/2)
-        .Translate(-scale, -0.1*scale, -scale)
+        .RotateZ(M_PI/6)
+        .Translate(-scale, -0.1*scale, -1.3*scale)
     );
 
     rock_1.SetMaterial(RockMaterial(pattern_factory.RockPattern(
@@ -201,7 +187,7 @@ int main(int argc, char** argv) {
     )));
         
     Sphere rock_2 {};
-    rocks.Add(&rock_2);
+    collection.Add(&rock_2);
     
     rock_2.SetTransform(
         Transformation()
@@ -209,7 +195,6 @@ int main(int argc, char** argv) {
         .RotateY(-M_PI/3)
         .RotateZ(M_PI/12)
         .Translate(0.15*scale, 0, 1.25 * scale)
-        // .Shear(0, 0, 0, 0, 0, 2)
     );
     
     rock_2.SetMaterial(RockMaterial(pattern_factory.RockPattern(
@@ -217,7 +202,7 @@ int main(int argc, char** argv) {
     )));
     
     Sphere rock_3 {};
-    rocks.Add(&rock_3);
+    collection.Add(&rock_3);
 
     rock_3.SetTransform(
         Transformation()
@@ -232,26 +217,36 @@ int main(int argc, char** argv) {
     Plane sand {};
     world.Add(&sand);
 
+    sand.SetTransform(
+        Transformation()
+        .RotateZ(-M_PI/90)
+    );
+
     sand.SetMaterial(Material().SurfacePattern(pattern_factory.SandPattern(
-        blanched_almond/*, almond*/
+        blanched_almond
     )));
     
     Plane sky = Sky(scale);
     world.Add(&sky);
 
-    Plane water = Water(scale);
-    world.Add(&water);
+    Sheet water = Water(scale);
+    collection.Add(&water);
 
     BubbleFactory bubble_factory {};
 
-    for (int i = 0; i < 6; i++) {
-        Bubble bubble = bubble_factory.Generate(Colour { 1, 1, 1 }, 0.05*scale, 0.999999);
-        rocks.Add(bubble);
+    int n_bubbles { 6 };
+    for (int i = 0; i < n_bubbles; i++) {
+        Bubble bubble = bubble_factory.Generate(Colour { 1, 1, 1 },
+            (0.02 + 0.008 * i) * scale, 0.999999);
+        collection.Add(bubble);
         bubble->SetTransform(
             Transformation()
-            // .Scale(0.1*scale)
-            .Shear(0, 0, 0.5, 0, 0, 0)
-            .Translate(scale + i*(i%2-1)*0.1*scale, 0.05*scale + i*0.1*scale, -scale + i*0.1*scale)
+            .Shear(0, 0, 0.09 + 0.5 * i / n_bubbles, 0, 0, 0)
+            .Translate(
+                scale + i * (i % 2 - 1) * 0.1 *scale,
+                0.05 * scale + i * 0.1 * scale,
+                -scale + i * 0.1 * scale
+            )
         );
     }
 
