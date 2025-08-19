@@ -6,15 +6,8 @@ Render a glass sphere containing an air bubble, like the one described on p. 159
 Supply a scaling factor at the command line to increase the image dimensions.
 */
 
-#define _USE_MATH_DEFINES // for M_PI
-
-#include <cmath>
-
 #include "challenges.h"
-#include "world.h"
 #include "plane.h"
-#include "camera.h"
-#include "canvas.h"
 #include "sphere.h"
 #include "pattern.h"
 
@@ -62,7 +55,7 @@ Plane Horizon(double scale) {
 
 Sphere GlassMarble(double scale) {
     Sphere s {};
-    s.SetMaterial(GlassMarbleMaterial(Colour { 0.5, 0.05, 0.05 }));
+    s.SetMaterial(GlassMaterial(Colour { 0.5, 0.05, 0.05 }));
     s.SetTransform(Transformation().Scale(scale, scale, scale).Translate(0, scale, 0));
     return s;
 }
@@ -99,11 +92,10 @@ int main(int argc, char** argv) {
     Sphere bubble = AirBubble(scale);
     world.Add(&bubble);
 
-    Camera camera { 108 * scale_int, 135 * scale_int, M_PI / 3 };
-    camera.SetTransform(CameraTransform(scale));
-
+    Camera camera = SceneCamera(scale, 108, 135, M_PI / 3, CameraTransform(scale));
     Canvas canvas = camera.Render(world);
     PPMv3 ppm { canvas };
     std::cout << ppm;
+
     return 0;
 }

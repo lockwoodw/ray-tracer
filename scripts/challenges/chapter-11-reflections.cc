@@ -6,15 +6,8 @@ Render a scene demonstrating reflections (p. 149).
 Supply a scaling factor at the command line to increase the image dimensions.
 */
 
-#define _USE_MATH_DEFINES // for M_PI
-
-#include <cmath>
-
 #include "challenges.h"
-#include "world.h"
 #include "plane.h"
-#include "camera.h"
-#include "canvas.h"
 #include "sphere.h"
 #include "pattern.h"
 
@@ -97,7 +90,6 @@ CheckerPattern FloorPattern(double scale) {
 
 int main(int argc, char** argv) {
     double scale = GetScale(argc, argv);
-    int scale_int = static_cast<int>(scale);
 
     World world {};
 
@@ -119,11 +111,10 @@ int main(int argc, char** argv) {
     Sphere smaller_sphere = SmallerSphere(scale);
     world.Add(&smaller_sphere);
 
-    Camera camera { 108 * scale_int, 135 * scale_int, M_PI / 3 };
-    camera.SetTransform(CameraTransform(scale));
-
+    Camera camera = SceneCamera(scale, 108, 135, M_PI / 3, CameraTransform(scale));
     Canvas canvas = camera.Render(world);
     PPMv3 ppm { canvas };
     std::cout << ppm;
+
     return 0;
 }

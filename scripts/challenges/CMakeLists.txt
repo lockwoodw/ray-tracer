@@ -401,3 +401,29 @@ target_include_directories(
     PUBLIC
     ../../include
 )
+
+add_executable(
+    bonus-bvh
+    ../../src/utils.cc
+    ../../src/tuple.cc
+    ../../src/space.cc
+    ../../src/colour.cc
+    ../../src/canvas.cc
+    ../../src/matrix.cc
+    ../../src/transformations.cc
+    ../../src/bounds.cc
+    ../../src/material.cc
+    ../../src/shape.cc
+    ../../src/sphere.cc
+    ../../src/group.cc
+    ../../src/plane.cc
+    ../../src/camera.cc
+    ../../src/world.cc
+    bonus-bvh.cc
+)
+
+target_include_directories(
+    bonus-bvh
+    PUBLIC
+    ../../include
+)

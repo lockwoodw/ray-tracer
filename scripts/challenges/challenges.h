@@ -1,10 +1,18 @@
 #ifndef RAY_TRACER_CHALLENGES_H
 #define RAY_TRACER_CHALLENGES_H
 
+#define _USE_MATH_DEFINES // for M_PI
+
+#include <cmath>
 #include <iostream>
 
+#include "matrix.h"
+#include "transformations.h"
 #include "colour.h"
 #include "material.h"
+#include "world.h"
+#include "camera.h"
+#include "canvas.h"
 
 static double kMaxScale { 20.0 };
 
@@ -22,7 +30,15 @@ double GetScale(int argc, char** argv) {
     return scale;
 }
 
-Material GlassMarbleMaterial(const Colour& colour) {
+Camera SceneCamera(double scale, int width, int height, double fov,
+        const Matrix& view_transform) {
+    int scale_int = static_cast<int>(scale);
+    Camera camera { width * scale_int, height * scale_int, fov };
+    camera.SetTransform(view_transform);
+    return camera;
+}
+
+Material GlassMaterial(const Colour& colour) {
     return Material()
         .Transparency(1.0)
         .RefractiveIndex(1.52)

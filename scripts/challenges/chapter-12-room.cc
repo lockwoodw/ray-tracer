@@ -6,16 +6,10 @@ Render a scene of a room with a table and other objects (pp. 175-6).
 Supply a scaling factor at the command line to increase the image dimensions.
 */
 
-#define _USE_MATH_DEFINES // for M_PI
-
-#include <cmath>
 #include <vector>
 #include <array>
 
 #include "challenges.h"
-#include "world.h"
-#include "camera.h"
-#include "canvas.h"
 #include "pattern.h"
 #include "cube.h"
 #include "sphere.h"
@@ -29,7 +23,6 @@ Matrix CameraTransform(double scale) {
 
 int main(int argc, char** argv) {
     double scale = GetScale(argc, argv);
-    int scale_int = static_cast<int>(scale);
 
     World world {};
 
@@ -87,7 +80,7 @@ int main(int argc, char** argv) {
         .Translate(-(tv_width + room_width) + 1.5, tv_height + tv_elevation, tv_z)
     );
 
-    tv.SetMaterial(GlassMarbleMaterial(Colour::kWhite));
+    tv.SetMaterial(GlassMaterial(Colour::kWhite));
 
     Light led_light_1 {
         Point { -room_width+0.5, tv_height + tv_elevation + tv_height/2, tv_z + tv_width/2},
@@ -162,7 +155,7 @@ int main(int argc, char** argv) {
     Transformation bulb_1_translation = Transformation().Translate(bulb_1_x, bulb_1_y, bulb_1_z);
     bulb_1.SetTransform(Transformation().Scale(bulb_scale).Apply(bulb_1_translation));
     Colour bulb_1_colour { 0.9, 0.05, 0.05 };
-    bulb_1.SetMaterial(GlassMarbleMaterial(bulb_1_colour));
+    bulb_1.SetMaterial(GlassMaterial(bulb_1_colour));
 
     double bubble_scale { 0.98 * bulb_scale };
 
@@ -182,7 +175,7 @@ int main(int argc, char** argv) {
     Transformation bulb_2_translation = Transformation().Translate(bulb_2_x, bulb_2_y, bulb_2_z);
     bulb_2.SetTransform(Transformation().Scale(bulb_scale).Apply(bulb_2_translation));
     Colour bulb_2_colour { 0.05, 0.05, 0.9 };
-    bulb_2.SetMaterial(GlassMarbleMaterial(bulb_2_colour));
+    bulb_2.SetMaterial(GlassMaterial(bulb_2_colour));
 
     Sphere air_bubble_2 {};
     world.Add(&air_bubble_2);
@@ -200,16 +193,14 @@ int main(int argc, char** argv) {
     Transformation bulb_3_translation = Transformation().Translate(bulb_3_x, bulb_3_y, bulb_3_z);
     bulb3.SetTransform(Transformation().Scale(bulb_scale).Apply(bulb_3_translation));
     Colour bulb_3_colour { 0.8, 0.6, 0.05 };
-    bulb3.SetMaterial(GlassMarbleMaterial(bulb_3_colour));
+    bulb3.SetMaterial(GlassMaterial(bulb_3_colour));
 
     Sphere air_bubble_3 {};
     air_bubble_3.SetTransform(Transformation().Scale(bubble_scale).Apply(bulb_3_translation));
     air_bubble_3.SetMaterial(AirBubbleMaterial());
     world.Add(&air_bubble_3);
 
-    Camera camera { 108 * scale_int, 135 * scale_int, M_PI / 3 };
-    camera.SetTransform(CameraTransform(scale));
-
+    Camera camera = SceneCamera(scale, 108, 135, M_PI / 3, CameraTransform(scale));
     Canvas canvas = camera.Render(world);
     PPMv3 ppm { canvas };
     std::cout << ppm;
