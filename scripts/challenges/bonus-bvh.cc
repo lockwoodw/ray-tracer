@@ -17,13 +17,13 @@ Supply a scaling factor at the command line to increase the image dimensions.
 #include "plane.h"
 
 Light WorldLight(double scale) {
-    Point origin { 60*scale, 60 * scale, -20*scale };
+    Point origin { 30*scale, 30 * scale, -30*scale };
     Colour colour { 1, 1, 1 };
     return Light { origin, colour };
 }
 
 Matrix CameraTransform(double scale) {
-    Point from { 50*scale, 50*scale, -70 * scale }, to { 30*scale, 40*scale, 0 };
+    Point from { 30*scale, 35*scale, -40 * scale }, to { 20*scale, 25*scale, 0 };
     Vector up { 0, 1, 0 };
     return ViewTransform { from, to, up };
 }
@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
     world.Add(&shapes);
 
     std::vector<Shape*> objects {};
-    int dim { 20 };
+    int dim { 10 };
     for (int y = 0; y < dim; y++) {
         for (int z = 0; z < dim; z++) {
             for (int x = 0; x < dim; x++) {
@@ -68,13 +68,13 @@ int main(int argc, char** argv) {
         }
     }
 
-    shapes.Divide(10000);
+    shapes.Divide(100*dim);
 
     Camera camera = SceneCamera(scale, 108, 135, M_PI / 3, CameraTransform(scale));
     Canvas canvas = camera.Render(world);
     PPMv3 ppm { canvas };
     std::cout << ppm;
- 
+
     for (auto o: objects) {
         delete o;
     }
