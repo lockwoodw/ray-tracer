@@ -429,7 +429,7 @@ target_include_directories(
 )
 
 add_executable(
-    chapter-13-cylinder
+    chapter-13-cylinders
     ../../src/utils.cc
     ../../src/tuple.cc
     ../../src/space.cc
@@ -448,11 +448,39 @@ add_executable(
     ../../src/disc.cc
     ../../src/camera.cc
     ../../src/world.cc
-    chapter-13-cylinder.cc
+    chapter-13-cylinders.cc
 )
 
 target_include_directories(
-    chapter-13-cylinder
+    chapter-13-cylinders
+    PUBLIC
+    ../../include
+)
+
+add_executable(
+    chapter-14-groups
+    ../../src/utils.cc
+    ../../src/tuple.cc
+    ../../src/space.cc
+    ../../src/colour.cc
+    ../../src/canvas.cc
+    ../../src/matrix.cc
+    ../../src/transformations.cc
+    ../../src/bounds.cc
+    ../../src/material.cc
+    ../../src/pattern.cc
+    ../../src/shape.cc
+    ../../src/sphere.cc
+    ../../src/group.cc
+    ../../src/sheet.cc
+    ../../src/disc.cc
+    ../../src/camera.cc
+    ../../src/world.cc
+    chapter-14-groups.cc
+)
+
+target_include_directories(
+    chapter-14-groups
     PUBLIC
     ../../include
 )
