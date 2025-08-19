@@ -136,7 +136,8 @@ int main(int argc, char** argv) {
     Transformation leg_scale = Transformation().Scale(leg_width, leg_height, leg_width);
     for (auto corner: corners) {
         Cube* leg = new Cube();
-        auto [ x, z ] = corner;
+        double x = corner[0],
+               z = corner[1];
         leg->SetTransform(Transformation(leg_scale)
             .Translate(x * leg_center_x, leg_height, z * leg_center_z));
         leg->SetMaterial(leg_material);

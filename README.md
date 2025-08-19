@@ -9,13 +9,12 @@ A C++ implementation of Jamis Buck's [Ray Tracer Challenge](http://raytracerchal
 * Chapter 17, "Next Steps".
 
 ## Technologies Used
-* C++ 17+
+* C++ 14
 * CMake
 * Google Test
 
 ## Known Issues
-* For `ShapeGroup::Divide(threshold)`, small values of `threshold` produce incorrect results.
-* For scenes involving multiple lights, shadows are not applied consistently.
+* For `ShapeGroup::Divide(threshold)`, small values for `threshold` produce incorrect results.
 
 ## License
 [MIT](LICENSE) © William Lockwood
