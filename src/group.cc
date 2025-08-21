@@ -4,6 +4,8 @@
 void ShapeGroup::Add(Shape* s) {
     s->Parent(this);
     shapes_.push_back(s);
+    // update parent bounding box after adding shape
+    bbox_ = BoundsOf().Transform(transform_);
 }
 
 ShapeGroup& ShapeGroup::operator<<(Shape *s) {
