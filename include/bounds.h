@@ -25,6 +25,7 @@ class BoundingBox {
             max_ { Point { -kBBInfinity, -kBBInfinity, -kBBInfinity } } {}
         BoundingBox(const Point& min, const Point& max): min_ { min },
             max_ { max } {}
+        BoundingBox(const BoundingBox& b): min_ { b.min_ }, max_ { b.max_ } {}
 
         const Point Min() const { return min_; }
         const Point Max() const { return max_; }
