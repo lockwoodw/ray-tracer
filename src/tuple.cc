@@ -145,7 +145,7 @@ std::ostream& operator<<(std::ostream& os, const Tuple& t) {
     for (int i = 0; i < t.size_; i++) {
         os << (i > 0 ? ", " : "") << t.elements_[i];
     }
-    os << " ]" << std::endl;
+    os << " ]";
     return os;
 }
 
