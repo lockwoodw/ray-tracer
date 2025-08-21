@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <array>
+#include <vector>
 
 #include "group.h"
 
@@ -329,4 +330,61 @@ TEST(GroupTest, SubdividingAGroupWithTooFewChildren) {
     ShapeGroup* subgroup_1 = static_cast<ShapeGroup*>(subgroup[1]);
     ASSERT_TRUE(subgroup_1->Contains(&s2));
     ASSERT_TRUE(subgroup_1->Contains(&s3));
+}
+
+// For Issue ShapeGroup::Divide() drops shapes under certain conditions #1
+TEST(GroupTest, ConfirmingTheBoundingBoxOfAGroupAfterAddingAShape) {
+    ShapeGroup g {};
+    Sphere s {};
+    g.Add(&s);
+    BoundingBox g_bbox = g.BoundsOfInParentSpace(),
+                s_bbox = s.BoundsOfInParentSpace();
+    ASSERT_EQ(s_bbox.Min(), g_bbox.Min());
+    ASSERT_EQ(s_bbox.Max(), g_bbox.Max());
+}
+
+// For Issue ShapeGroup::Divide() drops shapes under certain conditions #1
+TEST(GroupTest, DividingACubeOfSpheresDoesNotDropObjects) {
+    std::vector<Shape *> objects;
+
+    auto clean_up = [&objects] () {
+        for (auto o: objects) {
+            delete o;
+        }
+    };
+
+    try
+    {
+        // Set up the BVH test, a 6*6*6 cube of spheres
+        ShapeGroup shapes {};
+        int dim { 6 };
+        for (int y = 0; y < dim; y++) {
+            for (int z = 0; z < dim; z++) {
+                for (int x = 0; x < dim; x++) {
+                    Sphere* s = new Sphere();
+                    objects.push_back(s);
+                    shapes << s;
+                    s->SetTransform(
+                        Transformation()
+                        .Translate(2*x, 2*y, 2*z)
+                    );
+                }
+            }
+        }
+        // Divide the group with a threshold <= (dim/2)^3
+        int half_dim { dim / 2};
+        shapes.Divide(half_dim*half_dim*half_dim);
+
+        // Fire a ray at the sphere centered at the origin
+        Ray r { Point { 0, 0, -5 }, Vector { 0, 0, 1 } };
+        IntersectionList xs {};
+        bool result = shapes.Intersect(xs, r);
+        ASSERT_TRUE(result);
+    }
+    catch(const std::exception& e)
+    {
+        clean_up();
+        throw e;
+    }
+    clean_up();
 }
