@@ -233,3 +233,8 @@ target_include_directories(
 # mkdir build
 # cmake -S . -B build
 # cmake --build build
+
+# for debugging:
+# cd build
+# cmake .. -D CMAKE_BUILD_TYPE=Debug
+# cmake --build .

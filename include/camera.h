@@ -46,6 +46,7 @@ class Camera {
 
         const Ray RayAt(int pixel_x, int pixel_y) const;
         const Canvas Render(const World& world) const;
+        const Canvas RenderConcurrent(const World& world) const;
 };
 
 #endif

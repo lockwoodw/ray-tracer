@@ -1,4 +1,5 @@
 #include <cmath>
+#include <future>
 #include "camera.h"
 #include "space.h"
 #include "colour.h"
@@ -58,5 +59,46 @@ const Canvas Camera::Render(const World& world) const {
             image[row][column] = colour;
         }
     }
+    return image;
+}
+
+const Canvas Camera::RenderConcurrent(const World& world) const {
+    std::future<Colour>** projection = new std::future<Colour>*[vertical_];
+    Canvas image { horizontal_, vertical_ };
+    for (int row = 0; row < vertical_; row++) {
+        projection[row] = new std::future<Colour>[horizontal_];
+        for (int column = 0; column < horizontal_; column++) {
+            try
+            {
+                projection[row][column] = std::async(std::launch::async,
+                    [&world, this, row, column] () {
+                        Ray ray = RayAt(column, row);
+                        return world.ColourAt(ray);
+                    }
+                );
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << "Exception creating future at [" << row
+                    << ", " << column << "]: " << e.what() << '\n';
+            }
+        }
+    }
+    for (int row = 0; row < vertical_; row++) {
+        for (int column = 0; column < horizontal_; column++) {
+            try
+            {
+                image[row][column] = projection[row][column].get();
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << "Exception retrieving future at [" << row
+                    << ", " << column << "]: " << e.what() << '\n';
+                image[row][column] = Colour::kBlack;
+            }
+        }
+        delete[] projection[row];
+    }
+    delete[] projection;
     return image;
 }

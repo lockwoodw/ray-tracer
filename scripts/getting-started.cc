@@ -41,10 +41,10 @@ int main(int argc, char** argv) {
         .Scale(scale)
         .Translate(-2*scale, scale, 0)
     );
-    s2.SetMaterial(Material().Surface(Colour(0, 0, 1)));
+    s2.SetMaterial(GlassMaterial(Colour {0, 0, 1}));
 
     Camera camera = SceneCamera(scale, 108, 135, M_PI / 3, CameraTransform(scale));
-    Canvas canvas = camera.Render(world);
+    Canvas canvas = camera.RenderConcurrent(world);
     PPMv3 ppm { canvas };
     std::cout << ppm;
     return 0;

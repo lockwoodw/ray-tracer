@@ -163,7 +163,7 @@ int main(int argc, char** argv) {
     );
 
     Camera camera = SceneCamera(scale, 108, 135, M_PI / 3, CameraTransform(scale));
-    Canvas canvas = camera.Render(world);
+    Canvas canvas = camera.RenderConcurrent(world);
     PPMv3 ppm { canvas };
     std::cout << ppm;
 
