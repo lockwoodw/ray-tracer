@@ -13,8 +13,7 @@ A C++ implementation of Jamis Buck's [Ray Tracer Challenge](http://raytracerchal
 * CMake
 * Google Test
 
-## Known Issues
-* For `ShapeGroup::Divide(threshold)`, small values for `threshold` produce incorrect results.
+<!-- ## Known Issues -->
 
 ## License
 [MIT](LICENSE) © William Lockwood
