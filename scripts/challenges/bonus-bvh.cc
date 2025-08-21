@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    shapes.Divide(100*dim);
+    shapes.Divide(50);
 
     Camera camera = SceneCamera(scale, 108, 135, M_PI / 3, CameraTransform(scale));
     Canvas canvas = camera.Render(world);
