@@ -4,24 +4,16 @@ Render a scene composed of randomly positioned submerged spheres of different si
 Supply a scaling factor at the command line to increase the resolution.
 */
 
-#define _USE_MATH_DEFINES // for M_PI
-
-#include <cmath>
-#include <iostream>
 #include <vector>
 #include <ctime>
 #include <cstdlib>
 #include <cstring> // memset
 
-#include "camera.h"
-#include "sphere.h"
-#include "transformations.h"
-#include "colour.h"
-#include "material.h"
-#include "world.h"
-#include "space.h"
+#include "scripts.h"
 #include "plane.h"
+#include "sphere.h"
 #include "pattern.h"
+#include "group.h"
 
 class PatternManager {
     std::vector<Pattern*> patterns_;
@@ -54,8 +46,8 @@ Pattern* PatternManager::GroundPattern(double scale) {
 
 Pattern* PatternManager::HorizonPattern(double scale) {
     GradientPattern* gp = new GradientPattern(
-        Colour { 1, 215.0 / 255, 0 },                    // gold
-        Colour { 135.0 / 255, 206.0 / 255, 250.0 / 255 } // light sky blue
+        Colour { 140.0 / 255, 190.0 / 255, 214.0 / 255 }, // dark sky blue
+        Colour { 135.0 / 255, 206.0 / 255, 250.0 / 255 }  // light sky blue
     );
     gp->SetTransform(Transformation().Scale(scale * 20, 1, 1).RotateY(-M_PI / 2));
     PerturbedPattern* horizon_pattern = new PerturbedPattern(gp);
@@ -67,7 +59,7 @@ Pattern* PatternManager::HorizonPattern(double scale) {
 Pattern* PatternManager::BlobPattern(double scale, const Colour& base_colour) {
     RadialGradientPattern* rgp = new RadialGradientPattern(
         base_colour,
-        Colour { 245.0 / 255, 222.0 / 255, 179.0 / 255 } // wheat
+        Colour { 152.0 / 255, 118.0 / 255, 84.0 / 255 } // pale brown
     );
     rgp->SetTransform(Transformation().Scale(0.25 * scale, 1, 1));
     PerturbedPattern* blob_pattern = new PerturbedPattern(rgp);
@@ -82,7 +74,7 @@ Plane Ground(Pattern* ground_pattern) {
     material.Specular(0);
     material.SurfacePattern(ground_pattern);
     ground.SetMaterial(material);
-    ground.SetTransform(Transformation().RotateZ(-M_PI / 48));
+    // ground.SetTransform(Transformation().RotateZ(-M_PI / 48));
     return ground;
 }
 
@@ -92,7 +84,7 @@ Plane Horizon(double scale, Pattern* horizon_pattern) {
     material.Specular(0);
     material.SurfacePattern(horizon_pattern);
     horizon.SetMaterial(material);
-    Matrix transform = Transformation().RotateX(M_PI/2).Translate(0, 0, 40 * scale);
+    Matrix transform = Transformation().RotateX(M_PI/2).Translate(0, 0, 200 * scale);
     horizon.SetTransform(transform);
     return horizon;
 }
@@ -107,19 +99,22 @@ class SimpleRandomNumberGenerator {
         }
 };
 
-Colour RandomColour(const SimpleRandomNumberGenerator& srng) {
+Colour RandomBlobColour(const SimpleRandomNumberGenerator& srng) {
     auto Number = [srng] () -> double {
         int number = srng.Number();
-        return static_cast<double>(number % 100 + 1) / 100;
+        return static_cast<double>(number % 7 + 1) / 14;
     };
-    return Colour { Number(), Number(), Number() };
+    Colour base { 152.0 / 255, 118.0 / 255, 84.0 / 255 };
+    return Colour { base.Red() + Number(), base.Green() + Number(), base.Blue() + Number() };
 }
 
 Sphere Blob(double scale, double x, double z, const SimpleRandomNumberGenerator& srng,
         PatternManager& pm) {
     Material material {};
     material.Specular(0.1);
-    material.SurfacePattern(pm.BlobPattern(scale, RandomColour(srng)));
+    material.Shininess(10);
+    material.Diffuse(1);
+    material.SurfacePattern(pm.BlobPattern(scale, RandomBlobColour(srng)));
     Sphere blob {};
     blob.SetMaterial(material);
     double size = scale * 0.25 * (srng.Number() % 3 + 1),
@@ -157,7 +152,7 @@ Light WorldLight(double scale) {
 }
 
 Matrix CameraTransform(double scale) {
-    Point from { 0, 1.5 * scale, -10 * scale }, to { 0, scale, 0 };
+    Point from { 10*scale, scale, -10 * scale }, to { 0, scale, 0 };
     Vector up { 0, 1, 0 };
     return ViewTransform { from, to, up };
 }
@@ -194,7 +189,7 @@ int main(int argc, char** argv) {
     };    
     int n_blobs { 2 };
     int map_dimension = scale_int * n_blobs;
-    n_blobs += 2 * scale_int; // ensure larger scaled scenes have additional blobs
+    n_blobs += 10 * scale_int; // ensure larger scaled scenes have additional blobs
     int** map = new int*[map_dimension];
 
     for (int i = 0; i < map_dimension; i++) {
@@ -218,20 +213,23 @@ int main(int argc, char** argv) {
     };
 
     // Generate the spheres
+    ShapeGroup collection {};
+    world.Add(&collection);
+
     Sphere blobs[n_blobs] {};
     for (int i = 0; i < n_blobs; i++) {
         MapPosition position = XZ(map);
         blobs[i] = Blob(scale, position.x_, position.z_, srng, pattern_mgr);
-        world.Add(&blobs[i]);
+        collection.Add(&blobs[i]);
     }
 
     Light light = WorldLight(scale);
     world.Add(&light);
 
-    Camera camera { 200 * scale_int, 100 * scale_int, M_PI / 3 };
+    Camera camera { 191 * scale_int, 100 * scale_int, M_PI / 3 };
     camera.SetTransform(CameraTransform(scale));
 
-    Canvas canvas = camera.Render(world);
+    Canvas canvas = camera.RenderConcurrent(world);
     PPMv3 ppm { canvas };
     std::cout << ppm;
 
