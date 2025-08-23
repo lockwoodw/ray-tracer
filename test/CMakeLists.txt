@@ -508,4 +508,26 @@ gtest_discover_tests(
   hemisphere-test
 )
 
+add_executable(
+  cone-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/bounds.cc
+  ../src/cylinder.cc
+  ../src/cone.cc
+  cone.cc
+)
+
+target_link_libraries(
+  cone-test
+  GTest::gtest_main
+)
+
+target_include_directories(cone-test PRIVATE ../include/)
+
 # cmake --build build

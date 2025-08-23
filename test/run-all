@@ -3,6 +3,7 @@ build/bounds-test
 build/camera-test
 build/canvas-test
 build/colour-test
+build/cone-test
 build/cube-test
 build/disc-test
 build/group-test

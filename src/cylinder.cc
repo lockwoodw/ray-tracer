@@ -134,7 +134,7 @@ Vector Cylinder::LocalNormalAt(const Point &object_point) const {
 
 const BoundingBox Cylinder::BoundsOf() const {
     if (closed_) {
-      return BoundingBox { Point { -1, minimum_, -1 }, Point { 1, maximum_, 1 } };
+        return BoundingBox { Point { -1, minimum_, -1 }, Point { 1, maximum_, 1 } };
     }
     return BoundingBox { Point { -1, -kInfinity, -1 }, Point { 1, kInfinity, 1 } };
 }

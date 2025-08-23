@@ -10,12 +10,13 @@
 #include "utils.h"
 
 class Cylinder: public Shape {
-    double minimum_;
-    double maximum_;
-    bool closed_;
+    protected:
+        double minimum_;
+        double maximum_;
+        bool closed_;
 
-    bool RayIntersectsEnd(const Ray&r, double t) const;
-    bool AddEndIntersects(IntersectionList& list, const Ray& ray) const;
+        bool RayIntersectsEnd(const Ray&r, double t) const;
+        bool AddEndIntersects(IntersectionList& list, const Ray& ray) const;
 
     public:
         Cylinder(): Shape { Point { 0, 0, 0 } },
