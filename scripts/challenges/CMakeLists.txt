@@ -458,6 +458,37 @@ target_include_directories(
 )
 
 add_executable(
+    chapter-13-cones
+    ../../src/utils.cc
+    ../../src/tuple.cc
+    ../../src/space.cc
+    ../../src/colour.cc
+    ../../src/canvas.cc
+    ../../src/matrix.cc
+    ../../src/transformations.cc
+    ../../src/bounds.cc
+    ../../src/material.cc
+    ../../src/pattern.cc
+    ../../src/shape.cc
+    ../../src/group.cc
+    ../../src/sphere.cc
+    ../../src/hemisphere.cc
+    ../../src/plane.cc
+    ../../src/sheet.cc
+    ../../src/cylinder.cc
+    ../../src/cone.cc
+    ../../src/camera.cc
+    ../../src/world.cc
+    chapter-13-cones.cc
+)
+
+target_include_directories(
+    chapter-13-cones
+    PUBLIC
+    ../../include
+)
+
+add_executable(
     chapter-14-groups
     ../../src/utils.cc
     ../../src/tuple.cc

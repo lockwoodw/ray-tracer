@@ -25,6 +25,7 @@ class Colour {
         double Red() { return tuple_[kRed]; }
         double Green() { return tuple_[kGreen]; }
         double Blue() { return tuple_[kBlue]; }
+        double At(int index) { return tuple_[index]; }
 
         Colour operator+(const Colour& c) const;
         Colour& operator+=(const Colour& c);
@@ -35,6 +36,7 @@ class Colour {
         bool operator==(const Colour& c) const;
         bool operator!=(const Colour& c) const;
         Colour& operator=(const Colour& c);
+        double& operator[](std::size_t index) { return tuple_[index]; }
 
         friend std::ostream& operator<<(std::ostream& os, const Colour& c);
         static const Colour kBlack;
