@@ -5,6 +5,8 @@
 
 #include <cmath>
 #include <iostream>
+#include <random>
+#include <ctime>
 
 #include "matrix.h"
 #include "transformations.h"
@@ -59,6 +61,46 @@ Material AirBubbleMaterial() {
         .Reflectivity(0)
         .Shininess(10)
         .CastsShadow(false);
+}
+
+static std::mt19937_64 kMTEngine { static_cast<long unsigned int>(time(nullptr)) };
+
+Colour GetNewColour(Colour c, double range = 0.5, double minimum = 0.2) {
+    std::uniform_real_distribution<double> urd { -range, range };
+
+    auto new_colour_pt = [minimum] (std::uniform_real_distribution<double> urd, double pt) {
+        double offset = urd(kMTEngine),
+               new_pt = pt + offset;
+        return std::max(std::min(new_pt, 1.0), minimum);
+    };
+
+    std::set<int> remaining {
+        Colour::kRed, Colour::kGreen, Colour::kBlue
+    };
+
+    double  red = c.Red(),
+            green = c.Green(),
+            blue = c.Blue(),
+            max_colour = std::max(std::max(red, green), blue);
+
+    int max_colour_index {};
+
+    for (auto it = remaining.begin(); it != remaining.end(); it++) {
+        if (simple_floating_point_compare(c.At(*it), max_colour)) {
+            max_colour_index = *it;
+            remaining.erase(it);
+            break;
+        }
+    }
+    double current_pt = c.At(max_colour_index),
+           new_pt = new_colour_pt(urd, current_pt);
+    double diff = std::fabs(current_pt - new_pt);
+    c[max_colour_index] = new_pt;
+    std::uniform_real_distribution<double> local_urd { -diff, diff };
+    for (auto it = remaining.begin(); it != remaining.end(); it++) {
+        c[*it] = new_colour_pt(urd, c[*it]);
+    }
+    return c;
 }
 
 #endif

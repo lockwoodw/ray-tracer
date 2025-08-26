@@ -257,6 +257,38 @@ target_include_directories(
     ../include
 )
 
+add_executable(
+    mushrooms
+    ../src/utils.cc
+    ../src/tuple.cc
+    ../src/space.cc
+    ../src/colour.cc
+    ../src/canvas.cc
+    ../src/matrix.cc
+    ../src/transformations.cc
+    ../src/bounds.cc
+    ../src/material.cc
+    ../src/shape.cc
+    ../src/plane.cc
+    ../src/disc.cc
+    ../src/group.cc
+    ../src/sphere.cc
+    ../src/hemisphere.cc
+    ../src/cylinder.cc
+    ../src/cone.cc
+    ../src/camera.cc
+    ../src/world.cc
+    ../src/pattern.cc
+    mushrooms.cc
+)
+
+target_include_directories(
+    mushrooms
+    PUBLIC
+    ../include
+)
+
+
 # mkdir build
 # cmake -S . -B build
 # cmake --build build
