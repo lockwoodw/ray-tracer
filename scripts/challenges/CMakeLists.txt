@@ -515,3 +515,31 @@ target_include_directories(
     PUBLIC
     ../../include
 )
+
+add_executable(
+    chapter-14-hexagon
+    ../../src/utils.cc
+    ../../src/tuple.cc
+    ../../src/space.cc
+    ../../src/colour.cc
+    ../../src/canvas.cc
+    ../../src/matrix.cc
+    ../../src/transformations.cc
+    ../../src/bounds.cc
+    ../../src/material.cc
+    ../../src/pattern.cc
+    ../../src/shape.cc
+    ../../src/sphere.cc
+    ../../src/cylinder.cc
+    ../../src/group.cc
+    ../../src/plane.cc
+    ../../src/camera.cc
+    ../../src/world.cc
+    chapter-14-hexagon.cc
+)
+
+target_include_directories(
+    chapter-14-hexagon
+    PUBLIC
+    ../../include
+)
