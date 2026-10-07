@@ -1,4 +1,3 @@
-#include <stdexcept>
 #include "group.h"
 
 void ShapeGroup::Add(Shape* s) {
@@ -71,6 +70,22 @@ bool ShapeGroup::operator==(const Shape& s) const {
         return false;
     }
     return origin_ == other->origin_ && shapes_ == other->shapes_;
+}
+
+size_t ShapeGroup::Clear() {
+    size_t n {};
+    std::for_each(shapes_.begin(), shapes_.end(),
+        [&n] (Shape* s) {
+            ShapeGroup* other = dynamic_cast<ShapeGroup*>(s);
+            if (other != nullptr) {
+                n += other->Clear();
+            }
+            delete s;
+            n++;
+        }
+    );
+    shapes_.clear();
+    return n;
 }
 
 bool ShapeGroup::Intersect(IntersectionList& list, const Ray& ray) const {

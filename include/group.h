@@ -2,6 +2,8 @@
 #define RAY_TRACER_GROUP_H
 
 #include <vector>
+#include <stdexcept>
+#include <algorithm>
 
 #include "shape.h"
 
@@ -27,6 +29,7 @@ class ShapeGroup: public Shape {
         void AddSubgroup(std::vector<Shape *> shapes);
         const size_t Size() const { return shapes_.size(); }
         Shape* operator[](int i);
+        size_t Clear();
 
         bool operator==(const Shape& s) const;
         bool Intersect(IntersectionList& list, const Ray& ray) const override;
