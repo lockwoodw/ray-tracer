@@ -388,3 +388,27 @@ TEST(GroupTest, DividingACubeOfSpheresDoesNotDropObjects) {
     }
     clean_up();
 }
+
+// Confirm setting material for group also sets material for its children
+TEST(GroupTest, SettingMaterialForShapeGroupSetsChildMaterial) {
+    ShapeGroup g {};
+    Sphere s {};
+    g.Add(&s);
+    Colour red { 1, 0, 0 };
+    Material m {};
+    m.Surface(red);
+    g.SetMaterial(m);
+    ASSERT_EQ(s.ShapeMaterial().Surface(), red);
+}
+
+TEST(GroupTest, SettingMaterialForNestedShapeGroupSetsChildMaterial) {
+    ShapeGroup g {}, nested {};
+    Sphere s {};
+    nested.Add(&s);
+    g.Add(&nested);
+    Colour red { 1, 0, 0 };
+    Material m {};
+    m.Surface(red);
+    g.SetMaterial(m);
+    ASSERT_EQ(s.ShapeMaterial().Surface(), red);
+}
