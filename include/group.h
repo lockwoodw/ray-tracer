@@ -36,6 +36,8 @@ class ShapeGroup: public Shape {
         Vector LocalNormalAt(const Point &object_point) const override;
         const BoundingBox BoundsOf() const override;
         void Divide(int) override;
+
+        void SetMaterial(const Material& m);
 };
 
 #endif

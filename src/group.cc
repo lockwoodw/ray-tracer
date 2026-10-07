@@ -130,3 +130,18 @@ void ShapeGroup::Divide(int threshold) {
         s->Divide(threshold);
     }
 }
+
+void ShapeGroup::SetMaterial(const Material& m) {
+    material_ = m;
+    for (auto s: shapes_) {
+        // If the shape is actually a ShapeGroup, call the correct class method
+        ShapeGroup* sg = dynamic_cast<ShapeGroup*>(s);
+        if (sg == nullptr) {
+            // not a ShapeGroup
+            s->SetMaterial(m);
+        }
+        else {
+            sg->SetMaterial(m);
+        }
+    }
+}
