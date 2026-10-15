@@ -482,6 +482,49 @@ target_link_libraries(
 
 target_include_directories(hemisphere-test PRIVATE ../include/)
 
+add_executable(
+  cone-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/bounds.cc
+  ../src/cylinder.cc
+  ../src/cone.cc
+  cone.cc
+)
+
+target_link_libraries(
+  cone-test
+  GTest::gtest_main
+)
+
+target_include_directories(cone-test PRIVATE ../include/)
+
+add_executable(
+  triangle-test
+  ../src/utils.cc
+  ../src/tuple.cc
+  ../src/matrix.cc
+  ../src/space.cc
+  ../src/colour.cc
+  ../src/material.cc
+  ../src/shape.cc
+  ../src/bounds.cc
+  ../src/triangle.cc
+  triangle.cc
+)
+
+target_link_libraries(
+  triangle-test
+  GTest::gtest_main
+)
+
+target_include_directories(triangle-test PRIVATE ../include/)
+
 include(GoogleTest)
 gtest_discover_tests(
   utils-test
@@ -506,28 +549,8 @@ gtest_discover_tests(
   group-test
   bounds-test
   hemisphere-test
-)
-
-add_executable(
   cone-test
-  ../src/utils.cc
-  ../src/tuple.cc
-  ../src/matrix.cc
-  ../src/space.cc
-  ../src/colour.cc
-  ../src/material.cc
-  ../src/shape.cc
-  ../src/bounds.cc
-  ../src/cylinder.cc
-  ../src/cone.cc
-  cone.cc
+  triangle-test
 )
-
-target_link_libraries(
-  cone-test
-  GTest::gtest_main
-)
-
-target_include_directories(cone-test PRIVATE ../include/)
 
 # cmake --build build

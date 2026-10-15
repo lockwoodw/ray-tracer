@@ -19,6 +19,7 @@ build/sheet-test
 build/space-test
 build/sphere-test
 build/transformations-test
+build/triangle-test
 build/tuple-test
 build/utils-test
 build/world-test
