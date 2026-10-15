@@ -131,3 +131,11 @@ TEST(TriangleTest, FindingTheNormalOnATriangle) {
     ASSERT_EQ(n2, t.Normal());
     ASSERT_EQ(n3, t.Normal());
 }
+
+// Test Centroid method
+TEST(TriangleTest, FindingTheCentroid) {
+    Point p1 { 1, 1, 0 }, p2 { 3, 4, 0 }, p3 { 4, 5, 0 },
+          expected { 8 / 3.0, 10 / 3.0, 0 };
+    Triangle t { p1, p2, p3 };
+    ASSERT_EQ(t.Centroid(), expected);
+}

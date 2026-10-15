@@ -78,3 +78,11 @@ const BoundingBox Triangle::BoundsOf() const {
     }
     return BoundingBox { Point { min_x, min_y, min_z }, Point { max_x, max_y, max_z } };
 }
+
+const Point Triangle::Centroid() const {
+    return Point {
+        (p1_.X() + p2_.X() + p3_.X()) / 3,
+        (p1_.Y() + p2_.Y() + p3_.Y()) / 3,
+        (p1_.Z() + p2_.Z() + p3_.Z()) / 3
+    };
+}

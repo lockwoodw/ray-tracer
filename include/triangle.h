@@ -18,6 +18,8 @@ class Triangle: public Shape {
         const Vector Edge2() const { return edge2_; }
         const Vector Normal() const { return normal_; }
 
+        const Point Centroid() const;
+
         bool operator==(const Shape& s) const;
         bool Intersect(IntersectionList& list, const Ray& ray) const override;
         Vector LocalNormalAt(const Point &object_point) const override;
