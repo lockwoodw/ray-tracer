@@ -2,6 +2,7 @@
 
 #include "triangle.h"
 #include "ray.h"
+#include "transformations.h"
 
 /*
 Scenario: Constructing a triangle
@@ -132,10 +133,28 @@ TEST(TriangleTest, FindingTheNormalOnATriangle) {
     ASSERT_EQ(n3, t.Normal());
 }
 
-// Test Centroid method
 TEST(TriangleTest, FindingTheCentroid) {
     Point p1 { 1, 1, 0 }, p2 { 3, 4, 0 }, p3 { 4, 5, 0 },
-          expected { 8 / 3.0, 10 / 3.0, 0 };
+        expected { 8 / 3.0, 10 / 3.0, 0 };
     Triangle t { p1, p2, p3 };
     ASSERT_EQ(t.Centroid(), expected);
+}
+
+TEST(TriangleTest, RayStrikesAScaledTriangle) {
+    Point p1 { 0, 1, 0 }, p2 { -1, 0, 0 }, p3 { 1, 0, 0 };
+    Triangle t { p1, p2, p3 };
+    t.SetTransform(Transformation().Scale(3));
+    Ray ray { Point(0, 0, -2), Vector(0, 1, 1) };
+    IntersectionList xs {};
+    t.Intersect(xs, ray);
+    ASSERT_EQ(xs.Size(), 1);
+}
+
+TEST(TriangleTest, ConfirmingTheBoundingBoxOfATriangle) {
+    Point p1 { 0, 0, 10 }, p2 { -3, 0, -3 }, p3 { 14, 0, 0 },
+        min { -3, 0, -3 }, max { 14, 0, 10 };
+    Triangle t { p1, p2, p3 };
+    auto bbox = t.BoundsOf();
+    ASSERT_EQ(min, bbox.Min());
+    ASSERT_EQ(max, bbox.Max());
 }

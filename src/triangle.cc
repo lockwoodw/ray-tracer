@@ -28,9 +28,10 @@ bool Triangle::operator==(const Shape& s) const {
     return p1_ == other->p1_ && p2_ == other->p2_ && p2_ == other->p2_;
 }
 
-bool Triangle::Intersect(IntersectionList& list, const Ray& ray) const {
+bool Triangle::Intersect(IntersectionList& list, const Ray& world_ray) const {
     // Implement the Möller-Trumbore algorithm
     // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+    Ray ray = world_ray.Transform(inverse_transform_);
 
     // Ray is parallel to triangle?
     Vector dir_cross_edge2 = Vector::CrossProduct(ray.Direction(), edge2_);

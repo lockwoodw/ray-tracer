@@ -514,6 +514,7 @@ add_executable(
   ../src/material.cc
   ../src/shape.cc
   ../src/bounds.cc
+  ../src/transformations.cc
   ../src/triangle.cc
   triangle.cc
 )
