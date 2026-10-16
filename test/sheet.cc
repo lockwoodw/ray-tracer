@@ -85,3 +85,23 @@ TEST(SheetTest, ASheetHasABoundingBox) {
     ASSERT_EQ(min, box.Min());
     ASSERT_EQ(max, box.Max());
 }
+
+TEST(SheetTest, IntersectingARectangularSheet) {
+    Sheet p { 1, 4 };
+    Ray r { Point { 0, 1, 2 }, Vector { 0, -1, 0 } };
+    IntersectionList xs {};
+    p.Intersect(xs, r);
+    ASSERT_EQ(xs.Size(), 1);
+    const Intersection* i = xs[0];
+    ASSERT_DOUBLE_EQ(i->Distance(), 1);
+    ASSERT_EQ(p, *i->Object());
+}
+
+TEST(SheetTest, FindingTheBoundingBoxForARectangularSheet) {
+    Sheet s { 2, 6};
+    BoundingBox box = s.BoundsOf();
+    Point min { -1, 0, -3 },
+          max { 1, 0, 3 };
+    ASSERT_EQ(min, box.Min());
+    ASSERT_EQ(max, box.Max());
+}

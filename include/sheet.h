@@ -1,6 +1,8 @@
 #ifndef RAY_TRACER_SHEET_H
 #define RAY_TRACER_SHEET_H
 
+#include <cmath>
+
 #include "shape.h"
 
 #include "space.h"
@@ -15,8 +17,18 @@ class Sheet: public Shape {
 
     public:
         Sheet(): Shape { Point { 0, 0, 0 } }, width_ { 1.0 }, depth_ { 1.0 } { bbox_ = BoundsOf(); }
+
+        Sheet(double w, double d): Shape { Point { 0, 0, 0 } }, width_ { std::fabs(w) },
+            depth_ { std::fabs(d) } { bbox_ = BoundsOf(); }
+
+        Sheet(Point o, double w, double d): Shape { o }, width_ { std::fabs(w) },
+            depth_ { std::fabs(d) } { bbox_ = BoundsOf(); }
+
         Sheet(const Sheet& s): Shape { s.origin_ }, width_ { s.width_ },
             depth_ { s.depth_ } { bbox_ = BoundsOf(); }
+
+        const double Width() const { return width_; }
+        const double Depth() const { return depth_; }
 
         bool operator==(const Shape& s) const;
         bool Intersect(IntersectionList& list, const Ray& ray) const override;
