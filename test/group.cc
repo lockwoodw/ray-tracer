@@ -11,6 +11,8 @@
 #include "sphere.h"
 #include "transformations.h"
 #include "cylinder.h"
+#include "sheet.h"
+#include "triangle.h"
 
 /*
 Scenario: Creating a new group
@@ -411,4 +413,27 @@ TEST(GroupTest, SettingMaterialForNestedShapeGroupSetsChildMaterial) {
     m.Surface(red);
     g.SetMaterial(m);
     ASSERT_EQ(s.ShapeMaterial().Surface(), red);
+}
+
+TEST(GroupTest, RayStrikesA2DShapeInAGroup) {
+    // Confirm that a flat (2D) bounding box can still be hit.
+    // Create a group containing only 2D shapes (coplanar with the x-z plane).
+    Point p1 { 0, 0, 1 }, p2 { -1, 0, 0 }, p3 { 1, 0, 0 };
+    Triangle triangle { p1, p2, p3 };
+    Sheet sheet { 2, 2 };
+    ShapeGroup group {};
+    group << &triangle << &sheet;
+    // fire a ray that will hit both shapes
+    Ray ray_1 { Point(0, 1, 0.5), Vector(0, -1, 0) };
+    IntersectionList xs_1 {};
+    group.Intersect(xs_1, ray_1);
+    ASSERT_EQ(xs_1.Size(), 2);
+    ASSERT_EQ(xs_1.Hit()->Distance(), 1);
+    // fire a ray that will hit only the sheet
+    Ray ray_2 { Point(-0.9, 2, 0.9), Vector(0, -1, 0) };
+    IntersectionList xs_2 {};
+    group.Intersect(xs_2, ray_2);
+    ASSERT_EQ(xs_2.Size(), 1);
+    ASSERT_EQ(xs_2.Hit()->Distance(), 2);
+    ASSERT_EQ(xs_2.Hit()->Object(), &sheet);
 }

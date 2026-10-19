@@ -129,7 +129,11 @@ const bool BoundingBox::Intersects(const Ray& ray) const {
     tmin = std::max(tmin, zt[0]);
     tmax = std::min(tmax, zt[1]);
 
-    return tmax > tmin;
+    // Edge case: for 3D shapes, tmin > tmax indicates the ray misses the box,
+    // but if the box contains only a 2D shape that is parallel to one of the
+    // cardinal planes, then there is a single intersection and tmin == tmax;
+    // therefore, return tmax >= tmin.
+    return tmax >= tmin;
 }
 
 const std::array<const BoundingBox, 2> BoundingBox::Split() const {

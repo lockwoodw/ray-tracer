@@ -426,6 +426,8 @@ add_executable(
   ../src/transformations.cc
   ../src/bounds.cc
   ../src/cylinder.cc
+  ../src/sheet.cc
+  ../src/triangle.cc
   ../src/group.cc
   group.cc
 )

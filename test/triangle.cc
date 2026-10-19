@@ -133,6 +133,26 @@ TEST(TriangleTest, FindingTheNormalOnATriangle) {
     ASSERT_EQ(n3, t.Normal());
 }
 
+/*
+Scenario: A triangle has a bounding box
+  Given p1 ← point(-3, 7, 2)
+    And p2 ← point(6, 2, -4)
+    And p3 ← point(2, -1, -1)
+    And shape ← triangle(p1, p2, p3)
+  When box ← bounds_of(shape)
+  Then box.min = point(-3, -1, -4)
+    And box.max = point(6, 7, 2)
+*/
+
+TEST(TriangleTest, ConfirmingTheBoundingBoxOfATriangle) {
+    Point p1 { -3, 7, 2 }, p2 { 6, 2, -4 }, p3 { 2, -1, -1 },
+        min { -3, -1, -4 }, max { 6, 7, 2 };
+    Triangle t { p1, p2, p3 };
+    auto bbox = t.BoundsOf();
+    ASSERT_EQ(min, bbox.Min());
+    ASSERT_EQ(max, bbox.Max());
+}
+
 TEST(TriangleTest, FindingTheCentroid) {
     Point p1 { 1, 1, 0 }, p2 { 3, 4, 0 }, p3 { 4, 5, 0 },
         expected { 8 / 3.0, 10 / 3.0, 0 };
@@ -148,13 +168,4 @@ TEST(TriangleTest, RayStrikesAScaledTriangle) {
     IntersectionList xs {};
     t.Intersect(xs, ray);
     ASSERT_EQ(xs.Size(), 1);
-}
-
-TEST(TriangleTest, ConfirmingTheBoundingBoxOfATriangle) {
-    Point p1 { 0, 0, 10 }, p2 { -3, 0, -3 }, p3 { 14, 0, 0 },
-        min { -3, 0, -3 }, max { 14, 0, 10 };
-    Triangle t { p1, p2, p3 };
-    auto bbox = t.BoundsOf();
-    ASSERT_EQ(min, bbox.Min());
-    ASSERT_EQ(max, bbox.Max());
 }
