@@ -66,18 +66,11 @@ Vector Triangle::LocalNormalAt(const Point &object_point) const {
 }
 
 const BoundingBox Triangle::BoundsOf() const {
-    double min_x { p1_.X() }, min_y { p1_.Y() }, min_z { p1_.Z() },
-        max_x { p1_.X() }, max_y { p1_.Y() }, max_z { p1_.Z() };
-    std::vector<Point> vertices { p2_, p3_ };
-    for (auto p: vertices) {
-        if (p.X() < min_x) { min_x = p.X(); }
-        if (p.Y() < min_y) { min_y = p.Y(); }
-        if (p.Z() < min_z) { min_z = p.Z(); }
-        if (p.X() > max_x) { max_x = p.X(); }
-        if (p.Y() > max_y) { max_y = p.Y(); }
-        if (p.Z() > max_z) { max_z = p.Z(); }
-    }
-    return BoundingBox { Point { min_x, min_y, min_z }, Point { max_x, max_y, max_z } };
+    BoundingBox bbox {};
+    bbox.Add(p1_);
+    bbox.Add(p2_);
+    bbox.Add(p3_);
+    return bbox;
 }
 
 const Point Triangle::Centroid() const {
