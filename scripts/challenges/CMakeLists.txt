@@ -543,3 +543,32 @@ target_include_directories(
     PUBLIC
     ../../include
 )
+
+add_executable(
+    chapter-15-triangles
+    ../../src/utils.cc
+    ../../src/tuple.cc
+    ../../src/space.cc
+    ../../src/colour.cc
+    ../../src/canvas.cc
+    ../../src/matrix.cc
+    ../../src/transformations.cc
+    ../../src/bounds.cc
+    ../../src/material.cc
+    ../../src/pattern.cc
+    ../../src/shape.cc
+    ../../src/triangle.cc
+    ../../src/group.cc
+    ../../src/sheet.cc
+    ../../src/plane.cc
+    ../../src/camera.cc
+    ../../src/world.cc
+    ../../src/polyhedron.cc
+    chapter-15-triangles.cc
+)
+
+target_include_directories(
+    chapter-15-triangles
+    PUBLIC
+    ../../include
+)
