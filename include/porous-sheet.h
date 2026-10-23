@@ -15,6 +15,8 @@ class PorousSheet: public Sheet {
     public:
         PorousSheet(): Sheet {}, pass_through_fn_ { nullptr } {}
         PorousSheet(PassThroughFunction ptf): Sheet {}, pass_through_fn_ { ptf } {}
+        PorousSheet(PassThroughFunction ptf, double w, double d):
+            Sheet { w, d }, pass_through_fn_ { ptf } {}
         PorousSheet(const PorousSheet& p): Sheet {},
             pass_through_fn_ { p.pass_through_fn_ } {}
 
