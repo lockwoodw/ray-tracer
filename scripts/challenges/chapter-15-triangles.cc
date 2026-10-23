@@ -114,11 +114,15 @@ int main(int argc, char** argv) {
     // rotation required to sit the dodecahedron on its bottom face
     // (the difference between a straight line [180] and the internal angle, halved)
     double x_rot_offset { (180 - 116.56505) / 2 };
-    double y_offset { 1.376381 }; // determined empirically
+    // the inradius (radius of circle that touches all the edges) of a pentagonal
+    // face when edge length == 1 is 1/(10)sqrt(25+10sqrt(5))
+    // source: Weisstein, Eric W. "Regular Dodecahedron."
+    //   From MathWorld--A Wolfram Resource. https://mathworld.wolfram.com/RegularDodecahedron.html
+    double in_radius { std::sqrt(25 + 10 * std::sqrt(5)) / 10 };
     dodecahedron->SetTransform(
         Transformation()
             .RotateX(x_rot_offset*M_PI/180)
-            .Translate(1.5, y_offset, 1.5)
+            .Translate(1.5, 2 * in_radius, 1.5)
             .Scale(scale)
     );
     dodecahedron->SetMaterial(Material().Surface(Colour(1, 0, 0)));
