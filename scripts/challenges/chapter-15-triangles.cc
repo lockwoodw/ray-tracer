@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
     dodecahedron->SetMaterial(Material().Surface(Colour(1, 0, 0)));
     world.Add(dodecahedron);
 
-    Camera camera = SceneCamera(scale, 200, 100, k60DegreesRad, CameraTransform(scale));
+    Camera camera = SceneCamera(scale, 108, 135, k60DegreesRad, CameraTransform(scale));
     Canvas canvas = camera.RenderConcurrent(world);
     PPMv3 ppm { canvas };
     std::cout << ppm;
