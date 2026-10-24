@@ -317,6 +317,33 @@ target_include_directories(
     ../include
 )
 
+add_executable(
+    leaves
+    ../src/utils.cc
+    ../src/tuple.cc
+    ../src/space.cc
+    ../src/colour.cc
+    ../src/canvas.cc
+    ../src/matrix.cc
+    ../src/transformations.cc
+    ../src/bounds.cc
+    ../src/material.cc
+    ../src/pattern.cc
+    ../src/shape.cc
+    ../src/triangle.cc
+    ../src/group.cc
+    ../src/plane.cc
+    ../src/camera.cc
+    ../src/world.cc
+    leaves.cc
+)
+
+target_include_directories(
+    leaves
+    PUBLIC
+    ../include
+)
+
 
 # mkdir build
 # cmake -S . -B build
