@@ -17,6 +17,8 @@
 #include "canvas.h"
 
 static double kMaxScale { 20.0 };
+const double k60DegreesRad { M_PI / 3 };
+const double k45DegreesRad { M_PI / 4 } ;
 
 double GetScale(int argc, char** argv) {
     double scale { 1.0 };

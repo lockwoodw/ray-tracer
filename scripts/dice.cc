@@ -9,10 +9,6 @@ Supply a scaling factor at the command line to increase the image dimensions.
 #include "triangle.h"
 #include "plane.h"
 #include "polyhedron.h"
-#include "porous-sheet.h"
-
-const double k60DegreesRad { M_PI / 3 };
-const double k45DegreesRad { M_PI / 4 } ;
 
 Matrix CameraTransform(double scale) {
     Point from { 5 * scale, 4.5 * scale, -10 * scale }, to { 0, scale, 0 };
@@ -102,14 +98,11 @@ int main(int argc, char** argv) {
     ceiling.SetTransform(
         Transformation()
         .RotateZ(M_PI/24)
-        .Translate(0, 3.9*scale, 0)
+        .Translate(0, 5*scale, 0)
     );
     ceiling.SetMaterial(
         Material()
-        // .Reflectivity(0)
-        // .Shininess(0)
-        .Specular(0.2)
-        // .Surface(Colour(0.3, 0.3, 0.3))
+        .Surface(Colour(0.3, 0.3, 1))
     );
     world.Add(&ceiling);
 

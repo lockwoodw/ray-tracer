@@ -308,7 +308,6 @@ add_executable(
     ../src/camera.cc
     ../src/world.cc
     ../src/polyhedron.cc
-    ../src/porous-sheet.cc
     dice.cc
 )
 
