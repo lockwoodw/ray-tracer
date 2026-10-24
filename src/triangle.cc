@@ -10,12 +10,14 @@ Triangle::Triangle(const Point &p1, const Point &p2, const Point &p3):
     bbox_ = BoundsOf();
     edge1_ = p2_ - p1_;
     edge2_ = p3_ - p1_;
+    edge3_ = p3_ - p2_;
     normal_ = Vector::CrossProduct(edge2_, edge1_).Normalize();
+    area_ = CalculateArea();
 }
 
 Triangle::Triangle(const Triangle& t): Shape { t.origin_ }, p1_ { t.p1_ },
     p2_ { t.p2_ }, p3_ { t.p3_ }, edge1_ { t.edge1_ }, edge2_ { t.edge2_},
-    normal_ { t.normal_ }
+    edge3_ { t.edge3_ }, normal_ { t.normal_ }, area_ { t.area_ }
 {
     bbox_ = BoundsOf();
 }
@@ -79,4 +81,13 @@ const Point Triangle::Centroid() const {
         (p1_.Y() + p2_.Y() + p3_.Y()) / 3,
         (p1_.Z() + p2_.Z() + p3_.Z()) / 3
     };
+}
+
+const double Triangle::CalculateArea() const {
+    // using Heron's formula
+    // area = 0.25 × √( (a + b + c) × (-a + b + c) × (a - b + c) × (a + b - c) )
+    double a { edge1_.Magnitude() },
+           b { edge2_.Magnitude() },
+           c { edge3_.Magnitude() };
+    return 0.25 * std::sqrt((a + b + c) * (-a + b + c) * (a - b + c) * (a + b - c));
 }

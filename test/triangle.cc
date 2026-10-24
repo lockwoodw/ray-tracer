@@ -169,3 +169,10 @@ TEST(TriangleTest, RayStrikesAScaledTriangle) {
     t.Intersect(xs, ray);
     ASSERT_EQ(xs.Size(), 1);
 }
+
+TEST(TriangleTest, ConfirmingTheArea) {
+    Point p1 { 0, 0, 4 }, p2 { -3, 0, 0 }, p3 { 3, 0, 0 };
+    double base { 6 }, height { 4 }, expected { 0.5 * base * height };
+    Triangle t { p1, p2, p3 };
+    ASSERT_EQ(t.Area(), expected);
+}
