@@ -159,7 +159,7 @@ int main(int argc, char** argv) {
     world.Add(&submerged);
 
     Camera camera = SceneCamera(scale, width, height, k60DegreesRad, CameraTransform(scale));
-    Canvas canvas = camera.Render(world);
+    Canvas canvas = camera.RenderConcurrent(world);
     PPMv3 ppm { canvas };
     std::cout << ppm;
 
