@@ -13,11 +13,13 @@ Triangle::Triangle(const Point &p1, const Point &p2, const Point &p3):
     edge3_ = p3_ - p2_;
     normal_ = Vector::CrossProduct(edge2_, edge1_).Normalize();
     area_ = CalculateArea();
+    centroid_ = CalculateCentroid();
 }
 
 Triangle::Triangle(const Triangle& t): Shape { t.origin_ }, p1_ { t.p1_ },
     p2_ { t.p2_ }, p3_ { t.p3_ }, edge1_ { t.edge1_ }, edge2_ { t.edge2_},
-    edge3_ { t.edge3_ }, normal_ { t.normal_ }, area_ { t.area_ }
+    edge3_ { t.edge3_ }, normal_ { t.normal_ }, area_ { t.area_ },
+    centroid_ { t.centroid_ }
 {
     bbox_ = BoundsOf();
 }
@@ -75,7 +77,7 @@ const BoundingBox Triangle::BoundsOf() const {
     return bbox;
 }
 
-const Point Triangle::Centroid() const {
+const Point Triangle::CalculateCentroid() const {
     return Point {
         (p1_.X() + p2_.X() + p3_.X()) / 3,
         (p1_.Y() + p2_.Y() + p3_.Y()) / 3,

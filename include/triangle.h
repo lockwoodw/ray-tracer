@@ -4,11 +4,12 @@
 #include "shape.h"
 
 class Triangle: public Shape {
-    Point p1_, p2_, p3_;
+    Point p1_, p2_, p3_, centroid_;
     Vector edge1_, edge2_, edge3_, normal_;
     double area_;
 
-    double const CalculateArea() const;
+    const double CalculateArea() const;
+    const Point CalculateCentroid() const;
 
     public:
         Triangle(const Point &p1, const Point &p2, const Point &p3);
@@ -22,7 +23,7 @@ class Triangle: public Shape {
         const Vector Edge3() const { return edge3_; }
         const Vector Normal() const { return normal_; }
 
-        const Point Centroid() const;
+        const Point Centroid() const { return centroid_; }
         const double Area() const { return area_; }
 
         bool operator==(const Shape& s) const;
