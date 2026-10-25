@@ -7,11 +7,9 @@
 static Colour
     kAlmond { 239.0 / 255, 222.0 / 255, 205.0 / 255 },
     kBlanchedAlmond { 1.0 ,235.0 / 255, 205.0 / 255 },
-    kPaleBrown { 152.0 / 255, 118.0 / 255, 84.0 / 255 },
     kRed { 1.0, 0, 0 },
-    kDarkRed { 139.0 / 255, 0, 0 },
-    kFernGreen { 79.0 / 255, 121.0 / 255, 66.0 / 255 },
-    kNeonGreen { 57.0 / 255, 1.0, 20.0 / 255 }
+    kBlue { 0, 0, 1.0 },
+    kGreen { 0, 1.0, 0 }
 ;
 
 static SpeckledPattern kSpeckledPtn { kAlmond };
@@ -26,6 +24,7 @@ Light WorldLight(double scale) {
 }
 
 Matrix CameraTransform(double scale) {
+    // Point from { 1.5*scale, 0.5*scale, -7 * scale }, to { 0, scale, 0 };
     Point from { 0.25 * scale, 2.5 * scale, -5 * scale }, to { 0, scale, 0 };
     Vector up { 0, 1, 0 };
     return ViewTransform { from, to, up };
@@ -86,7 +85,8 @@ int main(int argc, char** argv) {
     Light light = WorldLight(scale);
     world.Add(&light);
 
-    Light moon { Point(10*scale, 4*scale, scale * (kHorizonDepth-5e-1)), Colour(0.3, 0.3, 0.3) };
+    Light moon { Point(10*scale, 4*scale, scale * (kHorizonDepth-5e-1)),
+        Colour(0.3, 0.3, 0.3) };
     world.Add(&moon);
 
     Plane sand = Sand();
@@ -99,14 +99,14 @@ int main(int argc, char** argv) {
         return floating_point_compare(p.X(), 1 / (1 + std::exp(-p.Z())), 1e-1);
     };
 
-    PorousSheet sigmoid = PorousSheet(sigmoid_fn, 5, 150);
-    sigmoid.SetTransform(
+    PorousSheet river = PorousSheet(sigmoid_fn, 5, 150);
+    river.SetTransform(
         Transformation()
         .Translate(0, 1e-6, 0)
         .Scale(5*scale, 1, scale)
     );
-    sigmoid.SetMaterial(WaterMaterial());
-    world.Add(&sigmoid);
+    river.SetMaterial(WaterMaterial());
+    world.Add(&river);
 
     PolyhedronFactory factory {};
 
@@ -147,37 +147,37 @@ int main(int argc, char** argv) {
     small_pyramid->SetMaterial(pyramid_m);
     world.Add(small_pyramid);
 
-    Polyhedron pentagon = factory.Pentagon();
-    Transformation pentagon_transform { Transformation().RotateX(-k90DegreesRad) },
-        p2_transform = pentagon_transform, p3_transform = pentagon_transform;
-    pentagon_transform
+    Polyhedron flare_1 = factory.Pentagon();
+    Transformation flare_1_transform { Transformation().RotateX(-k90DegreesRad) },
+        flare_2_transform = flare_1_transform, flare_3_transform = flare_1_transform;
+    flare_1_transform
         .Translate(-0.5, 0.85, -2)
         .Scale(scale/2)
     ;
-    pentagon->SetTransform(pentagon_transform);
-    pentagon->SetMaterial(
+    flare_1->SetTransform(flare_1_transform);
+    flare_1->SetMaterial(
         Material()
         .Transparency(1)
-        .Surface(Colour(1, 0, 0))
+        .Surface(kRed)
         .CastsShadow(false)
     );
-    world.Add(pentagon);
+    world.Add(flare_1);
 
-    Polyhedron p2 = factory.Pentagon();
-    p2_transform.Translate(-1, 0.95, -3).Scale(scale/2);
-    Material p2_m = pentagon->ShapeMaterial();
-    p2_m.Surface(Colour(0, 1, 0));
-    p2->SetTransform(p2_transform);
-    p2->SetMaterial(p2_m);
-    world.Add(p2);
+    Polyhedron flare_2 = factory.Pentagon();
+    flare_2_transform.Translate(-1, 0.95, -3).Scale(scale/2);
+    Material p2_m = flare_1->ShapeMaterial();
+    p2_m.Surface(kGreen);
+    flare_2->SetTransform(flare_2_transform);
+    flare_2->SetMaterial(p2_m);
+    world.Add(flare_2);
 
-    Polyhedron p3 = factory.Pentagon();
-    p3_transform.Translate(-0.2, 0.75, -1).Scale(scale/2);
-    Material p3_m = pentagon->ShapeMaterial();
-    p3_m.Surface(Colour(0, 0, 1));
-    p3->SetTransform(p3_transform);
-    p3->SetMaterial(p3_m);
-    world.Add(p3);
+    Polyhedron flare_3 = factory.Pentagon();
+    flare_3_transform.Translate(-0.2, 0.75, -1).Scale(scale/2);
+    Material p3_m = flare_1->ShapeMaterial();
+    p3_m.Surface(kBlue);
+    flare_3->SetTransform(flare_3_transform);
+    flare_3->SetMaterial(p3_m);
+    world.Add(flare_3);
 
     Camera camera = SceneCamera(scale, width, height, k60DegreesRad, CameraTransform(scale));
     Canvas canvas = camera.RenderConcurrent(world);
