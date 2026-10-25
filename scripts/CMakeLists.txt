@@ -344,6 +344,36 @@ target_include_directories(
     ../include
 )
 
+add_executable(
+    desert
+    ../src/utils.cc
+    ../src/tuple.cc
+    ../src/space.cc
+    ../src/colour.cc
+    ../src/canvas.cc
+    ../src/matrix.cc
+    ../src/transformations.cc
+    ../src/bounds.cc
+    ../src/material.cc
+    ../src/shape.cc
+    ../src/plane.cc
+    ../src/group.cc
+    ../src/camera.cc
+    ../src/pattern.cc
+    ../src/world.cc
+    ../src/triangle.cc
+    ../src/sheet.cc
+    ../src/polyhedron.cc
+    ../src/porous-sheet.cc
+    desert.cc
+)
+
+target_include_directories(
+    desert
+    PUBLIC
+    ../include
+)
+
 
 # mkdir build
 # cmake -S . -B build
